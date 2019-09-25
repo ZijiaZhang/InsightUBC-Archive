@@ -44,7 +44,7 @@ export class DataSetDataCourse {
         kind: kind,
         numRows: 0
     };
-        this.fileLocation = name + ".zip";
+        this.fileLocation = "data/" + name + ".zip";
     }
 
     /**
