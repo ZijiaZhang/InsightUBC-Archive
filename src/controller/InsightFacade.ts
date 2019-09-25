@@ -86,7 +86,9 @@ export default class InsightFacade implements IInsightFacade {
 
     public performQuery(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            if (InsightFacade.checkEBNF(query)) {
+            if (query === null || query === undefined) {
+                reject(new InsightError("Query is null or undefined"));
+            } else if (InsightFacade.checkEBNF(query)) {
                 if (InsightFacade.checkSemantic(query)) {
                     resolve(QueryParser.getQueryResult(query));
                 } else {
@@ -140,7 +142,7 @@ export default class InsightFacade implements IInsightFacade {
     private static checkEBNF(inputquery: any): boolean {
         let isSyntaxValid: boolean = true;
         if (inputquery.hasOwnProperty("WHERE")) {
-            let where: object = inputquery["WHERE"];
+            const where: object = inputquery["WHERE"];
             // check that where clause can only have zero or one "FILTER", cannot have more than one
             if (Object.keys(where).length === 1) {
                 return this.checkFilter(where);
@@ -151,14 +153,14 @@ export default class InsightFacade implements IInsightFacade {
             isSyntaxValid = false;
         }
         if (inputquery.hasOwnProperty("OPTIONS")) {
-            let options: any = inputquery["OPTIONS"];
+            const options: any = inputquery["OPTIONS"];
             // check that option clause must have one "COLUMNS"
             // zero or one "ORDER", cannot have more than one "ORDER"
             if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
                 isSyntaxValid = false;
             }
             if (options.hasOwnProperty("COLUMNS")) {
-                let column: string[] = inputquery["COLUMNS"];
+                const column: string[] = inputquery["COLUMNS"];
                 if (column.length === 0) {
                     isSyntaxValid = false;
                 } else {
@@ -173,8 +175,8 @@ export default class InsightFacade implements IInsightFacade {
                 isSyntaxValid = false;
             }
             if (options.hasOwnProperty("ORDER")) {
-                const optionKey = options["ORDER"];
-                return this.checkKeyExist(optionKey);
+                const orderKey = options["ORDER"];
+                return this.checkKeyExist(orderKey);
             }
         } else {
             isSyntaxValid = false;
@@ -182,16 +184,19 @@ export default class InsightFacade implements IInsightFacade {
         return isSyntaxValid;
     }
 
-    private static checkSemantic(inputquery: object): boolean {
+    private static checkSemantic(inputquery: any): boolean {
         let isSemanticCorrect: boolean = true;
-        if (!inputquery.hasOwnProperty("WHERE")) {
-            isSemanticCorrect = false;
-        }
-        if (!inputquery.hasOwnProperty("OPTIONS")) {
-            isSemanticCorrect = false;
-        }
-        if (!inputquery.hasOwnProperty("COLUMNS")) {
-            isSemanticCorrect = false;
+        if (inputquery.hasOwnProperty("OPTIONS")) {
+            const options: any = inputquery["OPTIONS"];
+            if (options.hasOwnProperty("COLUMNS")) {
+                const column: string[] = inputquery["COLUMNS"];
+                if (options.hasOwnProperty("ORDER")) {
+                    const orderKey = options["ORDER"];
+                    if (!column.includes(orderKey)) {
+                        isSemanticCorrect = false;
+                    }
+                }
+            }
         }
         return isSemanticCorrect;
     }
