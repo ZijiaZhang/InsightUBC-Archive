@@ -1,0 +1,18 @@
+{
+    "title": "Invalid Non-Exist in Database Name",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "kkk_dept",
+                "kkk_avg"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

@@ -1,0 +1,19 @@
+{
+    "title": "Invalid value type in LT, should be number",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_id": "*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ],
+            "ORDER": "courses_id"
+        }
+    },
+    "isQueryValid": false,
+    "result":"InsightError"
+}

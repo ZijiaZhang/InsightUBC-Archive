@@ -1,0 +1,3180 @@
+{
+    "title": "Invalid value type in LT, should be number",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_id": "*90*"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ],
+            "ORDER": "courses_id"
+        }
+    },
+    "isQueryValid": true,
+    "result": [
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "kin",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "190"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "geog",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "wood",
+            "courses_id": "290"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "caps",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "comm",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "poli",
+            "courses_id": "390"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fre",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "engl",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "soci",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "soci",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "cpsc",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "fnh",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "apbi",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "econ",
+            "courses_id": "490"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "frst",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "phar",
+            "courses_id": "590"
+        },
+        {
+            "courses_dept": "medi",
+            "courses_id": "590"
+        }
+    ]
+}

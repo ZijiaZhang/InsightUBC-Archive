@@ -1,0 +1,19 @@
+{
+    "title": "Invalid value type id, should be mKey",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_dept": 2015
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ],
+            "ORDER": "courses_id"
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

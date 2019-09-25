@@ -1,0 +1,18 @@
+{
+    "title": "Invalid query with syntax Error in Filter",
+    "query": {
+        "WHERE": {
+            "TTRR": {
+                "courses_avg":97
+            }
+        },
+        "OPTION": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_avg"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}

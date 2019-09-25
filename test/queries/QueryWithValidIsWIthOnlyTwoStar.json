@@ -1,0 +1,225 @@
+{
+    "title": "Invalid value type in LT, should be number",
+    "query": {
+        "WHERE": {
+            "AND": [
+                {
+                    "IS": {
+                        "courses_id": "**"
+                    }
+                },
+                {
+                    "GT": {
+                        "courses_avg": 97
+                    }
+                }
+            ]
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept",
+                "courses_id"
+            ],
+            "ORDER": "courses_id"
+        }
+    },
+    "isQueryValid": true,
+    "result": [
+        {
+            "courses_dept": "spph",
+            "courses_id": "300"
+        },
+        {
+            "courses_dept": "spph",
+            "courses_id": "300"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "421"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "421"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "421"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "421"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "421"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "449"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "449"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "449"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "449"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "449"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "449"
+        },
+        {
+            "courses_dept": "educ",
+            "courses_id": "500"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "509"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "509"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "509"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "509"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "519"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "519"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "525"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "525"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "527"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "527"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "532"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "532"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "534"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "534"
+        },
+        {
+            "courses_dept": "eece",
+            "courses_id": "541"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "541"
+        },
+        {
+            "courses_dept": "math",
+            "courses_id": "541"
+        },
+        {
+            "courses_dept": "eece",
+            "courses_id": "541"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "549"
+        },
+        {
+            "courses_dept": "cnps",
+            "courses_id": "574"
+        },
+        {
+            "courses_dept": "cnps",
+            "courses_id": "574"
+        },
+        {
+            "courses_dept": "cnps",
+            "courses_id": "574"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "578"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "578"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "578"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "578"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "578"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "578"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "591"
+        },
+        {
+            "courses_dept": "nurs",
+            "courses_id": "591"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "596"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "596"
+        },
+        {
+            "courses_dept": "crwr",
+            "courses_id": "599"
+        },
+        {
+            "courses_dept": "crwr",
+            "courses_id": "599"
+        },
+        {
+            "courses_dept": "epse",
+            "courses_id": "606"
+        }
+    ]
+}

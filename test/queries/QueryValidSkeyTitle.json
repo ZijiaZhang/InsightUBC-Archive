@@ -1,0 +1,20 @@
+{
+    "title": "SELECT title = Hello",
+    "query": {
+        "WHERE": {
+            "IS": {
+                "courses_title": "Hello"
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_id",
+                "courses_year"
+            ],
+            "ORDER": "courses_year"
+        }
+    },
+    "isQueryValid": true,
+    "result": []
+}
+

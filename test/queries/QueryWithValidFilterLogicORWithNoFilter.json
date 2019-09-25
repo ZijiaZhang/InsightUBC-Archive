@@ -1,0 +1,18 @@
+{
+    "title": "select dept, avg where avg > 97 and avg < 100 ",
+    "query": {
+        "WHERE": {
+            "AND":[{"GT": {
+                "courses_avg": 97
+            }
+            },
+                {"OR":[]}]},
+        "OPTIONS": {
+            "COLUMNS": [
+                "courses_dept"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result":"InsightError"
+}

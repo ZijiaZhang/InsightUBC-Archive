@@ -1,0 +1,16 @@
+{
+    "title": "Invalid query with 0 feature Selected",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg":97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result": "InsightError"
+}
