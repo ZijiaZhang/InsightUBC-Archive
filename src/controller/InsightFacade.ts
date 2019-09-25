@@ -106,7 +106,9 @@ export default class InsightFacade implements IInsightFacade {
      * Return if the givenDataset is valid.
      */
     private static isDatasetValid(id: string, content: string , kind: InsightDatasetKind): boolean {
-        // TODO
+        if (id == null || id.includes("_") || id.match(/^\s*$/g)) {
+            return false;
+        }
         return true;
     }
 
