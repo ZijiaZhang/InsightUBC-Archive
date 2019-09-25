@@ -50,9 +50,16 @@ export class DataSetDataCourse {
     /**
      *
      * @param data the data that add to the dataSet
-     * Add data to DataSet.
+     *
+     * @return boolean
+     *
+     * return True if the success, False other wise.
+     * Add data to DataSet. If dataset is not loaded, return false.
      */
-    public addData(data: IDataRowCourse) {
+    public addData(data: IDataRowCourse): boolean {
+        if (!this.datasetLoaded) {
+            return false;
+        }
         this.dept.push(data.dept);
         this.id.push(data.id);
         this.instructor.push(data.instructor);
@@ -64,6 +71,7 @@ export class DataSetDataCourse {
         this.audit.push(data.audit);
         this.year.push(data.year);
         this.metaData.numRows += 1;
+        return true;
     }
 
     /**
@@ -80,6 +88,9 @@ export class DataSetDataCourse {
      */
     public loadDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
+            if ( this.datasetLoaded) {
+                return resolve("Dataset is Already Loaded");
+            }
             let fileData: string = fs.readFileSync(this.fileLocation).toString("base64");
             JSZip.loadAsync(fileData, {base64: true}).then(
                 (zipFile: JSZip) => {
@@ -114,7 +125,6 @@ export class DataSetDataCourse {
      * Will reject if error occurs.
      */
     public saveDataSet(): Promise<string> {
-
         return new Promise<string>( (resolve, reject) => {
             let jsonFile: string = JSON.stringify(this);
             let zip = new JSZip();
@@ -135,22 +145,26 @@ export class DataSetDataCourse {
      * Will save the data set and Unload the dataset.
      * @return Promise<string>
      *     Will reject if error occurs.
+     *     If dataset is already unloaded, resolve promise.
      */
     public unloadDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             this.saveDataSet().then((result: string) => {
-                    this.audit = [];
-                    this.avg = [];
-                    this.dept = [];
-                    this.fail = [];
-                    this.id = [];
-                    this.instructor = [];
-                    this.pass = [];
-                    this.title = [];
-                    this.uuid = [];
-                    this.year = [];
-                    this.datasetLoaded = false;
-                    resolve("Dataset unloaded");
+                if (!this.datasetLoaded) {
+                    return resolve("Dataset Already Unloaded");
+                }
+                this.audit = [];
+                this.avg = [];
+                this.dept = [];
+                this.fail = [];
+                this.id = [];
+                this.instructor = [];
+                this.pass = [];
+                this.title = [];
+                this.uuid = [];
+                this.year = [];
+                this.datasetLoaded = false;
+                resolve("Dataset unloaded");
                 }
             ).catch((err: any) => {
                 Log.error("Error unload Dataset");
