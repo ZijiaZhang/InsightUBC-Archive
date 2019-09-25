@@ -18,10 +18,10 @@ export default class InsightFacade implements IInsightFacade {
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
         return new Promise<string[]>( (resolve, reject) => {
             if (!(InsightFacade.isIdValid(id)) || id in this.dataSetMap) {
-                reject(new InsightError("the given Parameter is not valid"));
+                return reject(new InsightError("the given Parameter is not valid"));
             }
             // Create Database with name
-            let dataType: InsightDatasetKind = InsightDatasetKind.Courses;
+            let dataType: InsightDatasetKind = kind;
             if (dataType != null) {
                 this.dataSetMap[id] = new DataSetDataCourse(id, dataType);
             }
@@ -29,11 +29,11 @@ export default class InsightFacade implements IInsightFacade {
                 (zipFile: JSZip) => {
                     let validSectionCount = 0;
                     if (!("courses/" in zipFile.files)) {
-                        reject(new InsightError("No Courses found in Zip"));
+                        return reject(new InsightError("No Courses found in Zip"));
                     }
                     let totalNumberofDataSet = Object.keys(zipFile.files).length;
                     if (totalNumberofDataSet <= 0) {
-                        reject( new InsightError(" No File found in courses/"));
+                        return reject( new InsightError(" No File found in courses/"));
                     }
                     zipFile.forEach( (relativePath, file) => {
                         let names = relativePath.split("/");
@@ -42,7 +42,7 @@ export default class InsightFacade implements IInsightFacade {
                         }
                         if (file.dir) {
                             totalNumberofDataSet--;
-                            this.checkFinish(totalNumberofDataSet, validSectionCount, resolve, reject);
+                            this.checkFinish(id, totalNumberofDataSet, validSectionCount, resolve, reject);
                         } else {
                             file.async("text").then( (data) => {
                                 totalNumberofDataSet--;
@@ -53,26 +53,31 @@ export default class InsightFacade implements IInsightFacade {
                                         validSectionCount++;
                                     }
                                 }
-                                this.checkFinish(totalNumberofDataSet, validSectionCount, resolve, reject);
+                                this.checkFinish(id, totalNumberofDataSet, validSectionCount, resolve, reject);
                             }).catch( (reason) => {
-                                reject(new InsightError("Error Processing File"));
+                                return reject(new InsightError("Error Processing File"));
                             });
                         }
                     });
                 }
             ).catch((reason: any) => {
-                reject(new InsightError(reason));
+                delete this.dataSetMap[id];
+                return reject(new InsightError(reason));
             });
         });
     }
 
-    private checkFinish(totalNumberofDataSet: number, validFileCount: number,
+    private checkFinish(id: string, totalNumberofDataSet: number, validFileCount: number,
                         resolve: (x: string[]) => any, reject: (x: InsightError) => any) {
         if (totalNumberofDataSet <= 0) {
             if (validFileCount > 0) {
-                resolve(Object.keys(this.dataSetMap));
+                this.dataSetMap[id].unloadDataSet().then(
+                    (fileloc) => {
+                        return resolve(Object.keys(this.dataSetMap)); }
+                ).catch( (err) => {Log.error(err); });
             } else {
-                reject(new InsightError("No data Added"));
+                delete this.dataSetMap[id];
+                return reject(new InsightError("No data Added"));
             }
         }
     }
@@ -80,14 +85,14 @@ export default class InsightFacade implements IInsightFacade {
     public removeDataset(id: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             if (!InsightFacade.isIdValid(id)) {
-                reject("Invalid ID");
+                return reject(new InsightError("Invalid ID"));
             }
             if (!(id in this.dataSetMap)) {
-                reject(new NotFoundError("Id Not found"));
+                return reject(new NotFoundError("Id Not found"));
             }
 
             delete this.dataSetMap[id];
-            resolve(id);
+            return resolve(id);
         });
     }
 
@@ -114,7 +119,7 @@ export default class InsightFacade implements IInsightFacade {
      * Return if the givenDataset is valid.
      */
     private static isIdValid(id: string): boolean {
-        if (id == null || id.includes("_") || id.match(/^\s*$/g)) {
+        if (id == null || id.includes("_") || id ===  "" || id.match(/^\s*$/g)) {
             return false;
         }
         return true;

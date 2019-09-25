@@ -134,7 +134,8 @@ describe("InsightFacade Add/Remove Dataset", function () {
             if (err instanceof InsightError) {
                 const id2 = "courses";
                 const expected2: string[] = ["courses"];
-                insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses).then((result: string[]) => {
+                return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+                    .then((result: string[]) => {
                     expect(result).to.deep.equal(expected2);
                 }).catch((err2: any) => {
                     expect.fail(err2, expected, "Should not be rejected");
@@ -155,7 +156,8 @@ describe("InsightFacade Add/Remove Dataset", function () {
             if (err instanceof InsightError) {
                 const id2 = "courses";
                 const expected2: string[] = ["courses"];
-                insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses).then((result: string[]) => {
+                return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+                    .then((result: string[]) => {
                     expect(result).to.deep.equal(expected2);
                 }).catch((err2: any) => {
                     expect.fail(err2, expected, "Should not be rejected");
@@ -176,7 +178,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             if (err instanceof InsightError) {
                 const id2 = "courses";
                 const expected2: string[] = ["courses"];
-                insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+                return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
                     .then((result: string[]) => {
                         expect(result).to.deep.equal(expected2);
                     }).catch((err2: any) => {
@@ -197,7 +199,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             if (err instanceof InsightError) {
                 const id2 = "courses";
                 const expected2: string[] = ["courses"];
-                insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+                return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
                     .then((result: string[]) => {
                         expect(result).to.deep.equal(expected2);
                     }).catch((err2: any) => {
@@ -219,7 +221,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             if (err instanceof InsightError) {
                 const id2 = "courses";
                 const expected2: string[] = ["courses"];
-                insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+                return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
                     .then((result: string[]) => {
                         expect(result).to.deep.equal(expected2);
                     }).catch((err2: any) => {
@@ -270,7 +272,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 expect.fail(err, expected, "Should not be rejected.");
             })
             .then((r: string[]) => {
-                insightFacade.removeDataset(id)
+                return insightFacade.removeDataset(id)
                     .then((result: string) => {
                         expect(result).equal(expected);
                     })
@@ -293,7 +295,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 if (err instanceof NotFoundError) {
                     return insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses)
                         .then((result: string[]) => {
-                            expect(result).equal(expectedIds);
+                            expect(result).to.deep.equal(expectedIds);
                         })
                         .catch((result: string[]) => {
                             expect.fail(result, expected, "Should not be rejected.");
@@ -315,9 +317,9 @@ describe("InsightFacade Add/Remove Dataset", function () {
             })
             .catch((err: NotFoundError | InsightError | any) => {
                 if (err instanceof InsightError) {
-                    insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses)
+                    return insightFacade.addDataset(expected, datasets[expected], InsightDatasetKind.Courses)
                         .then((result: string[]) => {
-                            expect(result).equal(expectedIds);
+                            expect(result).to.deep.equal(expectedIds);
                         })
                         .catch((result: string[]) => {
                             expect.fail(result, expected, "Should not be rejected.");
@@ -337,15 +339,15 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 expect.fail(err, expected, "Should not be rejected.");
             })
             .then((r: string[]) => {
-                insightFacade.removeDataset("id")
+                return insightFacade.removeDataset("id")
                     .then((result: string) => {
                         expect.fail(result, expected, "Should be rejected.");
                     })
                     .catch((err: NotFoundError | InsightError | any) => {
                         if (err instanceof NotFoundError) {
-                            insightFacade.addDataset("id", datasets[id], InsightDatasetKind.Courses)
+                            return insightFacade.addDataset("id", datasets[id], InsightDatasetKind.Courses)
                                 .then((result: string[]) => {
-                                    expect(result).equal(expected);
+                                    expect(result).to.deep.equal(expected);
                                 });
                         } else {
                             expect.fail(err, expected, "Wrong Type");
@@ -356,21 +358,21 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
     it("Should not remove data because invalid id", function () {
         const id: string = "courses";
-        const expected: string = "courses";
+        const expected: string[] = ["courses", "id"];
         return insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses)
             .catch((err: InsightError | any) => {
                 expect.fail(err, expected, "Should not be rejected.");
             })
             .then((r: string[]) => {
-                insightFacade.removeDataset("__")
+                return insightFacade.removeDataset("__")
                     .then((result: string) => {
-                        expect(result).equal(expected);
+                        expect(result).to.deep.equal(expected);
                     })
                     .catch((err: NotFoundError | InsightError | any) => {
                         if (err instanceof InsightError) {
-                            insightFacade.addDataset("id", "id", InsightDatasetKind.Courses)
+                            return insightFacade.addDataset("id", datasets[id], InsightDatasetKind.Courses)
                                 .then((result: string[]) => {
-                                    expect(result).equal(expected);
+                                    expect(result).to.deep.equal(expected);
                                 });
                         }
                     });
@@ -388,8 +390,8 @@ describe("InsightFacade Add/Remove Dataset", function () {
         const id: string = "courses";
         const expected: string = "courses";
         return insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses).then((values: string[]) => {
-            insightFacade.listDatasets().then((value: InsightDataset[]) => {
-                expect(value.length).equal(0);
+            return insightFacade.listDatasets().then((value: InsightDataset[]) => {
+                expect(value.length).equal(1);
             }).catch((err: any) => expect.fail(err, expected, "Should not be rejected"));
         });
     });

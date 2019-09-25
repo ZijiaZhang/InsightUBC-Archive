@@ -1,4 +1,8 @@
 import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
+import * as JSZip from "jszip";
+import {stringify} from "querystring";
+import * as fs from "fs";
+import Log from "./Util";
 
 export interface IDataRowCourse {
     [key: string]: string|number;
@@ -26,7 +30,8 @@ export class DataSetDataCourse {
     private fail: number[] = [];
     private audit: number[] = [];
     private year: number[] = [];
-
+    private fileLocation: string = "";
+    private datasetLoaded = true;
     /**
      *
      * @param name
@@ -39,6 +44,7 @@ export class DataSetDataCourse {
         kind: kind,
         numRows: 0
     };
+        this.fileLocation = name + ".zip";
     }
 
     /**
@@ -60,7 +66,98 @@ export class DataSetDataCourse {
         this.metaData.numRows += 1;
     }
 
+    /**
+     * Get the metaData
+     */
     public getMetaData(): InsightDataset {
         return this.metaData;
     }
+
+    /**
+     * @return Promise<string>
+     * Will load the dataset from disk
+     * Will reject if error occurs.
+     */
+    public loadDataSet(): Promise<string> {
+        return new Promise<string>( (resolve, reject) => {
+            let fileData: string = fs.readFileSync(this.fileLocation).toString("base64");
+            JSZip.loadAsync(fileData, {base64: true}).then(
+                (zipFile: JSZip) => {
+                    zipFile.files["data.json"]
+                        .async("text").then(
+                        (data) => {
+                            try {
+                            let parsedJson = JSON.parse(data);
+                            this.audit = parsedJson.audit;
+                            this.avg = parsedJson.avg;
+                            this.dept = parsedJson.dept;
+                            this.fail = parsedJson.fail;
+                            this.id = parsedJson.id;
+                            this.instructor = parsedJson.instructor;
+                            this.pass = parsedJson.pass;
+                            this.title = parsedJson.title;
+                            this.uuid = parsedJson.uuid;
+                            this.year = parsedJson.year;
+                            this.datasetLoaded = true;
+                            resolve("Data loaded");
+                            } catch (e) {
+                                reject("Error Reading File");
+                            }
+                        }
+                    ); });
+        });
+    }
+
+    /**
+     * @return Promise<string>
+     * Will save the dataset to disk loaction of <dataset name>.zip
+     * Will reject if error occurs.
+     */
+    public saveDataSet(): Promise<string> {
+
+        return new Promise<string>( (resolve, reject) => {
+            let jsonFile: string = JSON.stringify(this);
+            let zip = new JSZip();
+            zip.file("data.json", jsonFile);
+            zip.generateNodeStream()
+                .pipe(fs.createWriteStream(this.fileLocation))
+                .on("finish", function () {
+                    // tslint:disable-next-line:no-console
+                    console.log("Saved");
+                    resolve("File Saved");
+                }).on("error", function () {
+                    reject("Cannot Save File");
+            });
+        });
+    }
+
+    /**
+     * Will save the data set and Unload the dataset.
+     * @return Promise<string>
+     *     Will reject if error occurs.
+     */
+    public unloadDataSet(): Promise<string> {
+        return new Promise<string>((resolve, reject) => {
+            this.saveDataSet().then((result: string) => {
+                    this.audit = [];
+                    this.avg = [];
+                    this.dept = [];
+                    this.fail = [];
+                    this.id = [];
+                    this.instructor = [];
+                    this.pass = [];
+                    this.title = [];
+                    this.uuid = [];
+                    this.year = [];
+                    this.datasetLoaded = false;
+                    resolve("Dataset unloaded");
+                }
+            ).catch((err: any) => {
+                Log.error("Error unload Dataset");
+                reject();
+            });
+        }
+    );
+    }
+
 }
