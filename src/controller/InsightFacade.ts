@@ -3,6 +3,8 @@ import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightError} from "
 import * as JSZip from "jszip";
 import {DataSetDataCourse} from "../DataSetDataCourse";
 import {JsonParser} from "../JsonParser";
+import {queryParser} from "restify";
+import {QueryParser} from "../QueryParser";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -10,13 +12,14 @@ import {JsonParser} from "../JsonParser";
  *
  */
 export default class InsightFacade implements IInsightFacade {
-    private dataSetMap: {[name: string]: DataSetDataCourse } = {};
+    private dataSetMap: { [name: string]: DataSetDataCourse } = {};
+
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-        return new Promise<string[]>( (resolve, reject) => {
+        return new Promise<string[]>((resolve, reject) => {
             if (!(InsightFacade.isDatasetValid(id, content, kind))) {
                 reject(new InsightError("the given Parameter is not valid"));
             }
@@ -33,9 +36,9 @@ export default class InsightFacade implements IInsightFacade {
                     }
                     let totalNumberofDataSet = Object.keys(zipFile.files).length;
                     if (totalNumberofDataSet <= 0) {
-                        reject( new InsightError(" No File found in courses/"));
+                        reject(new InsightError(" No File found in courses/"));
                     }
-                    zipFile.forEach( (relativePath, file) => {
+                    zipFile.forEach((relativePath, file) => {
                         let names = relativePath.split("/");
                         if (names[0] !== "courses") {
                             return;
@@ -44,7 +47,7 @@ export default class InsightFacade implements IInsightFacade {
                             totalNumberofDataSet--;
                             this.checkFinish(totalNumberofDataSet, validSectionCount, resolve, reject);
                         } else {
-                            file.async("text").then( (data) => {
+                            file.async("text").then((data) => {
                                 totalNumberofDataSet--;
                                 let dataInFile = JsonParser.parseData(data, InsightDatasetKind.Courses);
                                 if (dataInFile != null) {
@@ -54,7 +57,7 @@ export default class InsightFacade implements IInsightFacade {
                                     }
                                 }
                                 this.checkFinish(totalNumberofDataSet, validSectionCount, resolve, reject);
-                            }).catch( (reason) => {
+                            }).catch((reason) => {
                                 reject(new InsightError("Error Processing File"));
                             });
                         }
@@ -81,12 +84,22 @@ export default class InsightFacade implements IInsightFacade {
         return Promise.reject("Not implemented.");
     }
 
-    public performQuery(query: any): Promise <any[]> {
-        return Promise.reject("Not implemented.");
+    public performQuery(query: any): Promise<any[]> {
+        return new Promise<any[]>((resolve, reject) => {
+            if (InsightFacade.checkEBNF(query)) {
+                if (InsightFacade.checkSemantic(query)) {
+                    resolve(QueryParser.getQueryResult(query));
+                } else {
+                    reject(new InsightError("Query has semantic error"));
+                }
+            } else {
+                reject(new InsightError("Query Syntax Not Valid"));
+            }
+        });
     }
 
     public listDatasets(): Promise<InsightDataset[]> {
-        return new Promise<InsightDataset[]>( (resolve, reject) => {
+        return new Promise<InsightDataset[]>((resolve, reject) => {
                 let result: InsightDataset[] = [];
                 for (let data of Object.values(this.dataSetMap)) {
                     result.push(data.getMetaData());
@@ -105,11 +118,8 @@ export default class InsightFacade implements IInsightFacade {
      * @return boolean
      * Return if the givenDataset is valid.
      */
-    private static isDatasetValid(id: string, content: string , kind: InsightDatasetKind): boolean {
-        if (id == null || id.includes("_") || id.match(/^\s*$/g)) {
-            return false;
-        }
-        return true;
+    private static isDatasetValid(id: string, content: string, kind: InsightDatasetKind): boolean {
+        return !(id == null || id.includes("_") || id.match(/^\s*$/g));
     }
 
     /**
@@ -127,5 +137,144 @@ export default class InsightFacade implements IInsightFacade {
                 return null;
         }
     }
+    private static checkEBNF(inputquery: any): boolean {
+        let isSyntaxValid: boolean = true;
+        if (inputquery.hasOwnProperty("WHERE")) {
+            let where: object = inputquery["WHERE"];
+            // check that where clause can only have zero or one "FILTER", cannot have more than one
+            if (Object.keys(where).length === 1) {
+                return this.checkFilter(where);
+            } else if (Object.keys(where).length > 1) {
+                isSyntaxValid = false;
+            }
+        } else {
+            isSyntaxValid = false;
+        }
+        if (inputquery.hasOwnProperty("OPTIONS")) {
+            let options: any = inputquery["OPTIONS"];
+            // check that option clause must have one "COLUMNS"
+            // zero or one "ORDER", cannot have more than one "ORDER"
+            if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
+                isSyntaxValid = false;
+            }
+            if (options.hasOwnProperty("COLUMNS")) {
+                let column: string[] = inputquery["COLUMNS"];
+                if (column.length === 0) {
+                    isSyntaxValid = false;
+                } else {
+                    for (const columnKey of column) {
+                        if (!this.checkKeyExist(columnKey)) {
+                            isSyntaxValid = false;
+                        }
+                    }
+                    isSyntaxValid = true;
+                }
+            } else {
+                isSyntaxValid = false;
+            }
+            if (options.hasOwnProperty("ORDER")) {
+                const optionKey = options["ORDER"];
+                return this.checkKeyExist(optionKey);
+            }
+        } else {
+            isSyntaxValid = false;
+        }
+        return isSyntaxValid;
+    }
 
+    private static checkSemantic(inputquery: object): boolean {
+        let isSemanticCorrect: boolean = true;
+        if (!inputquery.hasOwnProperty("WHERE")) {
+            isSemanticCorrect = false;
+        }
+        if (!inputquery.hasOwnProperty("OPTIONS")) {
+            isSemanticCorrect = false;
+        }
+        if (!inputquery.hasOwnProperty("COLUMNS")) {
+            isSemanticCorrect = false;
+        }
+        return isSemanticCorrect;
+    }
+
+    private static checkFilter(whereClause: any): boolean {
+        const filterKeys: string[] = Object.keys(whereClause);
+        const filterKey = filterKeys[0];
+        let isFilterCorrect = true;
+        if (filterKey === "OR" || filterKey === "AND") {
+            const logicArray: object[] = whereClause[filterKey];
+            if (logicArray.length === 0) {
+                isFilterCorrect = false;
+            } else {
+                for (const logicObj of logicArray) {
+                    if (!this.checkFilter(logicObj)) {
+                        isFilterCorrect = false;
+                    }
+                }
+                isFilterCorrect = true;
+            }
+        } else if (filterKey === "LT" || filterKey === "GT" || filterKey === "EQ") {
+            const mComp: object = whereClause[filterKey];
+            if (Object.keys(mComp).length !== 1) {
+                isFilterCorrect = false;
+            }
+            if (!this.checkMKeyExist(Object.keys(mComp)[0])) {
+                isFilterCorrect = false;
+            }
+            if (typeof Object.values(mComp)[0] !== "number") {
+                isFilterCorrect = false;
+            }
+        } else if (filterKey === "IS") {
+            const sComp: object = whereClause[filterKey];
+            if (Object.keys(sComp).length !== 1) {
+                isFilterCorrect = false;
+            }
+            if (!this.checkSKeyExist((Object.keys(sComp)[0]))) {
+                isFilterCorrect = false;
+            }
+            if (!this.checkScompInputString(Object.values(sComp)[0])) {
+                isFilterCorrect = false;
+            }
+        } else if (filterKey === "NOT") {
+            const not: object = whereClause[filterKey];
+            if (Object.keys(not).length !== 1) {
+                isFilterCorrect = false;
+            } else {
+                isFilterCorrect = this.checkFilter(not);
+            }
+        } else {
+            isFilterCorrect = false;                      // Filter Key is Not one of those listed in EBNF
+        }
+        return isFilterCorrect;
+}
+
+    // Check whether the input key is a key in the courses dataset
+    // The given key must be one of the key in the courses dataset, otherwise we don't have the key
+    private static checkKeyExist(key: string): boolean {
+        return key === "courses_dept" || key === "courses_id" || key === "courses_instructor" || key === "courses_title"
+            || key === "courses_uuid" || key === "courses_avg" || key === "courses_pass" || key === "courses_fail"
+            || key === "courses_audit" || key === "courses_year";
+    }
+
+    private static checkMKeyExist(key: string): boolean {
+        return key === "courses_avg" || key === "courses_pass" || key === "courses_fail"
+            || key === "courses_audit" || key === "courses_year";
+    }
+
+    private static checkSKeyExist(key: string): boolean {
+        return key === "courses_dept" || key === "courses_id" || key === "courses_instructor" || key === "courses_title"
+            || key === "courses_uuid" ;
+    }
+
+    private static checkScompInputString(inputString: string): boolean {
+        if (inputString.length === 0) {
+            return true;
+        } else if (inputString === "*") {
+            return true;
+        } else if (inputString === "**") {
+            return true;
+        } else {
+            const inputStringArray: string[] = inputString.split("");
+            const inputStringLength: number = inputString.length;
+        }
+    }
 }
