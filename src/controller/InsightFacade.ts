@@ -268,13 +268,19 @@ export default class InsightFacade implements IInsightFacade {
     private static checkScompInputString(inputString: string): boolean {
         if (inputString.length === 0) {
             return true;
-        } else if (inputString === "*") {
+        } else if (inputString.length === 1) {
             return true;
-        } else if (inputString === "**") {
+        } else if (inputString.length === 2) {
             return true;
         } else {
             const inputStringArray: string[] = inputString.split("");
             const inputStringLength: number = inputString.length;
+            for (let i = 1; i < inputStringLength - 1; i++) {
+                if (inputStringArray[i] === "*") {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }
