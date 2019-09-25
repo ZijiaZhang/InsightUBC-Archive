@@ -86,34 +86,6 @@ export default class InsightFacade implements IInsightFacade {
         });
     }
 
-    /** *************************
-     * *****NO LONGER IN USE*****
-     * **************************
-     * @param id the id of the dataset
-     * @param totalNumberofDataSet the remaining of files of the dataset
-     * @param validFileCount number of valid section in the dataset
-     * @param resolve resolve Fonction
-     * @param reject reject fonction
-     *
-     * Will do nothing if not all files are processed. Otherwise:
-     * Will resolve if the valid number of sections is greater than 0;
-     * WIll reject if the valid number of section is 0
-     */
-    private checkFinish(id: string, totalNumberofDataSet: number, validFileCount: number,
-                        resolve: (x: string[]) => any, reject: (x: InsightError) => any) {
-        if (totalNumberofDataSet <= 0) {
-            if (validFileCount > 0) {
-                this.dataSetMap[id].unloadDataSet().then(
-                    (fileloc) => {
-                        return resolve(Object.keys(this.dataSetMap)); }
-                ).catch( (err) => {Log.error(err); });
-            } else {
-                delete this.dataSetMap[id];
-                return reject(new InsightError("No data Added"));
-            }
-        }
-    }
-
     public removeDataset(id: string): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             if (!InsightFacade.isIdValid(id)) {
