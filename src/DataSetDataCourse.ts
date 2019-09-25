@@ -132,8 +132,7 @@ export class DataSetDataCourse {
             zip.generateNodeStream()
                 .pipe(fs.createWriteStream(this.fileLocation))
                 .on("finish", function () {
-                    // tslint:disable-next-line:no-console
-                    console.log("Saved");
+                    Log.info("Saved");
                     resolve("File Saved");
                 }).on("error", function () {
                     reject("Cannot Save File");

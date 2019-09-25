@@ -47,7 +47,6 @@ export class JsonParser {
      * @return A list of DataRow
      */
     public static parseData(data: string, dataType: InsightDatasetKind): IDataRowCourse[]|null {
-        // TODO
         try {
             let rawData = JSON.parse(data);
             switch (dataType) {

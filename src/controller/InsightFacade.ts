@@ -28,16 +28,14 @@ export default class InsightFacade implements IInsightFacade {
             JSZip.loadAsync(content, {base64: true}).then(
                 (zipFile: JSZip) => {
                     let validSectionCount = 0;
-                    if (!("courses/" in zipFile.files)) {
-                        return reject(new InsightError("No Courses found in Zip"));
-                    }
+                    if (!("courses/" in zipFile.files)) {return reject(new InsightError("No Courses found in Zip")); }
                     let totalNumberofDataSet = Object.keys(zipFile.files).length;
                     if (totalNumberofDataSet <= 0) {
                         return reject( new InsightError(" No File found in 'courses/'"));
                     }
                     zipFile.forEach( (relativePath, file) => {
                         let names = relativePath.split("/");
-                        if (names[0] !== "courses") {return; }
+                        if (names[0] !== "courses") {totalNumberofDataSet--; return; }
                         if (file.dir) {
                             totalNumberofDataSet--;
                             this.checkFinish(id, totalNumberofDataSet, validSectionCount, resolve, reject);
@@ -55,6 +53,7 @@ export default class InsightFacade implements IInsightFacade {
                                 }
                                 this.checkFinish(id, totalNumberofDataSet, validSectionCount, resolve, reject);
                             }).catch( (reason) => {
+                                totalNumberofDataSet--;
                                 return reject(new InsightError("Error Processing File"));
                             });
                         }
