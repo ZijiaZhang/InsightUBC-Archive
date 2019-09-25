@@ -73,17 +73,14 @@ describe("InsightFacade Add/Remove Dataset", function () {
 
     });
 
-    it("Should add a Empty dataset", function () {
+    it("Should not add a Empty dataset", function () {
         const id: string = "coursesEmpty";
         const expected: string[] = [id];
         let testResult: Promise<string[]> = insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses);
         return testResult.then((result: string[]) => {
-            expect(result).to.deep.equal(expected);
-            insightFacade.listDatasets().then((results: InsightDataset[]) => {
-                expect(results[0].numRows).equal(0);
-            });
+            expect.fail(result, expected, "Should not have rejected");
         }).catch((err: any) => {
-            expect.fail(err, expected, "Should not have rejected");
+            expect(err).to.be.instanceOf(InsightError);
         });
     });
 
@@ -241,7 +238,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         const expected2: string[] = ["courses"];
         return insightFacade.addDataset(id1, datasets[id1], InsightDatasetKind.Courses).then((result: string[]) => {
             expect(result).to.deep.equal(expected1);
-            insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
+            return insightFacade.addDataset(id2, datasets[id2], InsightDatasetKind.Courses)
                 .then((result2: string[]) => {
                     expect.fail(result2, expected2, "Should be rejected.");
                 })
@@ -249,7 +246,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
                     if (err instanceof InsightError) {
                         const id3 = "ppp";
                         const expected3: string[] = ["courses", "ppp"];
-                        insightFacade.addDataset(id3, datasets[id2], InsightDatasetKind.Courses)
+                        return insightFacade.addDataset(id3, datasets[id2], InsightDatasetKind.Courses)
                             .then((result3: string[]) => {
                                 expect(result3).to.deep.equal(expected3);
                             })
@@ -294,7 +291,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
             })
             .catch((err: NotFoundError | InsightError | any) => {
                 if (err instanceof NotFoundError) {
-                    insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses)
+                    return insightFacade.addDataset(id, datasets[id], InsightDatasetKind.Courses)
                         .then((result: string[]) => {
                             expect(result).equal(expectedIds);
                         })

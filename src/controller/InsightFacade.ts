@@ -1,5 +1,5 @@
 import Log from "../Util";
-import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightError} from "./IInsightFacade";
+import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightError, NotFoundError} from "./IInsightFacade";
 import * as JSZip from "jszip";
 import {DataSetDataCourse} from "../DataSetDataCourse";
 import {JsonParser} from "../JsonParser";
@@ -17,7 +17,7 @@ export default class InsightFacade implements IInsightFacade {
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
         return new Promise<string[]>( (resolve, reject) => {
-            if (!(InsightFacade.isDatasetValid(id, content, kind))) {
+            if (!(InsightFacade.isIdValid(id)) || id in this.dataSetMap) {
                 reject(new InsightError("the given Parameter is not valid"));
             }
             // Create Database with name
@@ -78,7 +78,17 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public removeDataset(id: string): Promise<string> {
-        return Promise.reject("Not implemented.");
+        return new Promise<string>((resolve, reject) => {
+            if (!InsightFacade.isIdValid(id)) {
+                reject("Invalid ID");
+            }
+            if (!(id in this.dataSetMap)) {
+                reject(new NotFoundError("Id Not found"));
+            }
+
+            delete this.dataSetMap[id];
+            resolve(id);
+        });
     }
 
     public performQuery(query: any): Promise <any[]> {
@@ -99,13 +109,11 @@ export default class InsightFacade implements IInsightFacade {
     /**
      *
      * @param id  The id of the dataset being added. Follows the format /^[^_]+$/
-     * @param content  The base64 content of the dataset. This content should be in the form of a serialized zip file.
-     * @param kind  The kind of the dataset
      *
      * @return boolean
      * Return if the givenDataset is valid.
      */
-    private static isDatasetValid(id: string, content: string , kind: InsightDatasetKind): boolean {
+    private static isIdValid(id: string): boolean {
         if (id == null || id.includes("_") || id.match(/^\s*$/g)) {
             return false;
         }
