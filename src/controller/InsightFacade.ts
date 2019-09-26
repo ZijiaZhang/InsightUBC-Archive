@@ -5,6 +5,7 @@ import {DataSetDataCourse} from "../DataSetDataCourse";
 import {JsonParser} from "../JsonParser";
 import {QueryParser} from "../QueryParser";
 import {DataSet} from "../DataSet";
+import {Query} from "../Query";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -112,8 +113,8 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise<any[]>((resolve, reject) => {
             if (query === null || query === undefined) {
                 reject(new InsightError("Query is null or undefined"));
-            } else if (QueryParser.checkEBNF(query)) {
-                if (QueryParser.checkSemantic(query)) {
+            } else if (Query.checkEBNF(query)) {
+                if (Query.checkSemantic(query)) {
                     QueryParser.getQueryResult(query).then(
                         (result) => resolve(result) );
                 } else {
