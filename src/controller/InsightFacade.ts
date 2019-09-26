@@ -23,8 +23,7 @@ export default class InsightFacade implements IInsightFacade {
                 return reject(new InsightError("the given Parameter is not valid"));
             }
             // Create Database with name
-            let dataType: InsightDatasetKind = kind;
-            switch (dataType) {
+            switch (kind) {
                 case InsightDatasetKind.Courses:
                     this.dataSetMap[id] = new DataSetDataCourse(id);
                     break;
