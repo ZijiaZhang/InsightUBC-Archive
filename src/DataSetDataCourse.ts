@@ -144,7 +144,7 @@ export class DataSetDataCourse extends DataSet {
     public getData(column: string, comp: CompOperators,
                    value: string| number, not: boolean): IDataRowCourse[]|InsightError {
         if (!this.datasetLoaded) {return new InsightError("Dataset Not Loaded"); }
-        if (!(column in this.listEntries())) {return new InsightError("Column not found"); }
+        if (!this.listEntries().includes(column)) {return new InsightError("Column not found"); }
         let indexes: number[] = [];
         let data = this.get(column);
         if (data == null) {return new InsightError("Error Getting Data"); }
