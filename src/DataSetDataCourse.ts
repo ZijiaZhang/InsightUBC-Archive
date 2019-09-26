@@ -3,6 +3,7 @@ import * as JSZip from "jszip";
 import * as fs from "fs";
 import Log from "./Util";
 import {DataSet, IDataRow} from "./DataSet";
+import {CompOperators} from "./Query";
 
 export interface IDataRowCourse extends IDataRow {
     [key: string]: string|number;
@@ -98,7 +99,6 @@ export class DataSetDataCourse extends DataSet {
         });
     }
 
-
     public saveDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
             let jsonFile: string = JSON.stringify(this);
@@ -142,7 +142,7 @@ export class DataSetDataCourse extends DataSet {
     );
     }
 
-    public getData(): Promise<IDataRow[]> {
+    public getData(column: string, comp: CompOperators, not: boolean): Promise<IDataRowCourse[]> {
         return undefined;
     }
 

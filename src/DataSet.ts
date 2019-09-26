@@ -1,5 +1,6 @@
 import {InsightDataset} from "./controller/IInsightFacade";
 import {IDataRowCourse} from "./DataSetDataCourse";
+import {CompOperators} from "./Query";
 
 export interface IDataRow {
     rowNumber?: number;
@@ -8,7 +9,19 @@ export interface IDataRow {
 export abstract class DataSet {
     protected metaData: InsightDataset;
 
-    public abstract getData(): Promise<IDataRow[]>;
+    /**
+     *
+     * @param column  The name of requested column
+     * @param comp    The rule to the comparison.
+     * @param not     Not?
+     *
+     * @return Promise<IDataRow[]> Return the data queried.
+     *
+     * resolve when the query successfully executed.
+     * reject if there is any error.
+     *
+     */
+    public abstract getData(column: string, comp: CompOperators, not: boolean): Promise<IDataRow[]>;
 
     /**
      *
@@ -51,5 +64,5 @@ export abstract class DataSet {
      *     If dataset is already unloaded, resolve promise.
      */
 
-    public abstract unloadDataSet(): Promise<string>
+    public abstract unloadDataSet(): Promise<string>;
 }
