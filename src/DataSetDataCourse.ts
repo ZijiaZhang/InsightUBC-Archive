@@ -47,7 +47,6 @@ export class DataSetDataCourse extends DataSet {
         this.fileLocation = "data/" + name + ".zip";
     }
 
-
     public addData(data: IDataRowCourse): boolean {
         if (!this.datasetLoaded) {
             return false;
@@ -65,7 +64,6 @@ export class DataSetDataCourse extends DataSet {
         this.metaData.numRows += 1;
         return true;
     }
-
 
     public loadDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
@@ -116,7 +114,6 @@ export class DataSetDataCourse extends DataSet {
             });
         });
     }
-
 
     public unloadDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
