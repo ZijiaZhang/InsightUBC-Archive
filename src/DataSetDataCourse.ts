@@ -142,7 +142,8 @@ export class DataSetDataCourse extends DataSet {
     );
     }
 
-    public getData(column: string, comp: CompOperators, not: boolean): Promise<IDataRowCourse[]> {
+    public getData(column: string, comp: CompOperators,
+                   value: string| number, not: boolean): Promise<IDataRowCourse[]> {
         return undefined;
     }
 

@@ -11,8 +11,9 @@ export abstract class DataSet {
 
     /**
      *
-     * @param column  The name of requested column
+     * @param column  The name of restricted column
      * @param comp    The rule to the comparison.
+     * @param value   The value that is compared to.
      * @param not     Not?
      *
      * @return Promise<IDataRow[]> Return the data queried.
@@ -21,7 +22,8 @@ export abstract class DataSet {
      * reject if there is any error.
      *
      */
-    public abstract getData(column: string, comp: CompOperators, not: boolean): Promise<IDataRow[]>;
+    public abstract getData(column: string, comp: CompOperators,
+                            value: number| string , not: boolean): Promise<IDataRow[]>;
 
     /**
      *
