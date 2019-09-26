@@ -71,9 +71,9 @@ export class DataSetDataCourse extends DataSet {
                 return resolve("Dataset is Already Loaded");
             }
             let fileData: string = fs.readFileSync(this.fileLocation).toString("base64");
-            JSZip.loadAsync(fileData, {base64: true}).then(
+            return JSZip.loadAsync(fileData, {base64: true}).then(
                 (zipFile: JSZip) => {
-                    zipFile.files["data.json"]
+                    return zipFile.files["data.json"]
                         .async("text").then(
                         (data) => {
                             try {
@@ -116,7 +116,7 @@ export class DataSetDataCourse extends DataSet {
 
     public unloadDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
-            this.saveDataSet().then((result: string) => {
+            return this.saveDataSet().then((result: string) => {
                 if (!this.datasetLoaded) {
                     return resolve("Dataset Already Unloaded");
                 }

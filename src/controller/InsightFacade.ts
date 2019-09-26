@@ -13,6 +13,7 @@ import {DataSet} from "../DataSet";
  */
 export default class InsightFacade implements IInsightFacade {
     private dataSetMap: { [name: string]: DataSet } = {};
+    private currentActiveDataset: string|null = null;
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
     }
@@ -32,7 +33,7 @@ export default class InsightFacade implements IInsightFacade {
                 default:
                     return reject(new InsightError("No such Type"));
             }
-            JSZip.loadAsync(content, {base64: true}).then(
+            return JSZip.loadAsync(content, {base64: true}).then(
                 (zipFile: JSZip) => {
                     if (!("courses/" in zipFile.files)) {return reject(new InsightError("No Courses found in Zip")); }
                     let allPromise: Array<Promise<string>> = [];
@@ -44,7 +45,7 @@ export default class InsightFacade implements IInsightFacade {
                         }
                     });
                     if (allPromise.length <= 0) {return reject(new InsightError("No file Found in 'courses/'")); }
-                    this.handleAllFiles(allPromise, id, resolve, reject);
+                    return this.handleAllFiles(allPromise, id, resolve, reject);
                 }
             ).catch((reason: any) => {
                 delete this.dataSetMap[id];
@@ -67,7 +68,7 @@ export default class InsightFacade implements IInsightFacade {
     private handleAllFiles(allPromise: Array<Promise<string>>, id: string,
                            resolve: (x: string[]) => any, reject: (x: InsightError) => any) {
         let validSectionCount = 0;
-        Promise.all(allPromise).then((datas) => {
+        return Promise.all(allPromise).then((datas) => {
             for (let data of datas) {
                 let dataInFile = JsonParser.parseData(data, InsightDatasetKind.Courses);
                 if (dataInFile != null) {
@@ -82,7 +83,7 @@ export default class InsightFacade implements IInsightFacade {
             if (validSectionCount <= 0) {
                 return reject(new InsightError("No Section Valid"));
             }
-            this.dataSetMap[id].unloadDataSet()
+            return this.dataSetMap[id].unloadDataSet()
                 .then((fileloc) => resolve(Object.keys(this.dataSetMap)))
                 .catch((err) => {
                     Log.error(err);
@@ -160,5 +161,52 @@ export default class InsightFacade implements IInsightFacade {
             default:
                 return null;
         }
+    }
+
+    /**
+     * Switch the active dataset
+     * @param name The name of the target dataset.
+     * @return Promise<string>
+     *     resolve on successful switch.
+     *     Reject otherwise.
+     */
+    private switchDataSet(name: string): Promise<string> {
+        return new Promise<string>( (resolve, reject) => {
+            if (this.currentActiveDataset === name) {resolve("Dataset Already Loaded"); }
+            if (!(name in this.dataSetMap)) {reject("Dataset Not Found"); }
+            if (this.currentActiveDataset != null) {
+                this.dataSetMap[this.currentActiveDataset].unloadDataSet().then(
+                    (result) => {
+                        return this.activeDataSet(name).then(
+                            (result2) =>  resolve("Dataset Switched Successfully.")
+                        ).catch( (err) => reject( new InsightError(err)));
+                    }).catch( (err) => reject(new InsightError(err)));
+            } else {
+                return this.activeDataSet(name).then(
+                    (result2) =>  resolve("Dataset Switched Successfully.")
+                ).catch( (err) => reject( new InsightError(err)));
+            }
+    });
+    }
+
+    /**
+     * Active a dataset and set it to current.
+     * @param name The name of the target dataset.
+     * @return Promise<string>
+     *     resolve if activated Successfully.
+     *     Reject otherwise.
+     */
+
+    private activeDataSet(name: string): Promise<string> {
+        return new Promise<string>( (resolve, reject) => {
+            if (this.currentActiveDataset === name) {resolve("Dataset Already Loaded"); }
+            if (!(name in this.dataSetMap)) {reject("Dataset Not Found"); }
+            this.dataSetMap[name].loadDataSet().then((result) => {
+                this.currentActiveDataset = name;
+                return resolve("Dataset Loaded"); })
+                .catch((err) => {
+                    this.currentActiveDataset = null;
+                    return reject( new InsightError("Error When Loading Dataset")); } );
+        });
     }
 }
