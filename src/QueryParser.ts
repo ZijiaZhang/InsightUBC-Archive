@@ -4,7 +4,8 @@ import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
 
 export class QueryParser {
     public static getQueryResult(query: string): Promise<any[]> {
-        return new Promise<InsightDataset[]>((resolve, reject) => {
+        return new Promise<any[]>((resolve, reject) => {
+            resolve(["test", "test2"]);
             }
         );
     }

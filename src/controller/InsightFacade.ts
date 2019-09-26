@@ -90,7 +90,8 @@ export default class InsightFacade implements IInsightFacade {
                 reject(new InsightError("Query is null or undefined"));
             } else if (InsightFacade.checkEBNF(query)) {
                 if (InsightFacade.checkSemantic(query)) {
-                    resolve(QueryParser.getQueryResult(query));
+                    QueryParser.getQueryResult(query).then(
+                        (result) => resolve(result) );
                 } else {
                     reject(new InsightError("Query has semantic error"));
                 }
@@ -189,15 +190,19 @@ export default class InsightFacade implements IInsightFacade {
         if (inputquery.hasOwnProperty("OPTIONS")) {
             const options: any = inputquery["OPTIONS"];
             if (options.hasOwnProperty("COLUMNS")) {
-                const column: string[] = inputquery["COLUMNS"];
+                const column: string[] = options["COLUMNS"];
                 if (options.hasOwnProperty("ORDER")) {
                     const orderKey = options["ORDER"];
+                    Log.trace(inputquery);
                     if (!column.includes(orderKey)) {
                         isSemanticCorrect = false;
                     }
                 }
             }
         }
+        // if (!this.checkReferenceDSValid(inputquery)) {
+        //     isSemanticCorrect = false;
+        // }
         return isSemanticCorrect;
     }
 
