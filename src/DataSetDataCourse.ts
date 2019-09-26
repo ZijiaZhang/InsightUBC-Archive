@@ -1,4 +1,4 @@
-import {InsightDatasetKind} from "./controller/IInsightFacade";
+import {InsightDatasetKind, InsightError} from "./controller/IInsightFacade";
 import * as JSZip from "jszip";
 import * as fs from "fs";
 import Log from "./Util";
@@ -32,7 +32,6 @@ export class DataSetDataCourse extends DataSet {
     private audit: number[] = [];
     private year: number[] = [];
     private fileLocation: string = "";
-    private datasetLoaded = true;
     /**
      *
      * @param name
@@ -72,9 +71,9 @@ export class DataSetDataCourse extends DataSet {
                 return resolve("Dataset is Already Loaded");
             }
             let fileData: string = fs.readFileSync(this.fileLocation).toString("base64");
-            JSZip.loadAsync(fileData, {base64: true}).then(
+            return JSZip.loadAsync(fileData, {base64: true}).then(
                 (zipFile: JSZip) => {
-                    zipFile.files["data.json"]
+                    return zipFile.files["data.json"]
                         .async("text").then(
                         (data) => {
                             try {
@@ -117,7 +116,7 @@ export class DataSetDataCourse extends DataSet {
 
     public unloadDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
-            this.saveDataSet().then((result: string) => {
+            return this.saveDataSet().then((result: string) => {
                 if (!this.datasetLoaded) {
                     return resolve("Dataset Already Unloaded");
                 }
@@ -143,8 +142,64 @@ export class DataSetDataCourse extends DataSet {
     }
 
     public getData(column: string, comp: CompOperators,
-                   value: string| number, not: boolean): Promise<IDataRowCourse[]> {
-        return undefined;
+                   value: string| number, not: boolean): IDataRowCourse[]|InsightError {
+        if (!this.datasetLoaded) {return new InsightError("Dataset Not Loaded"); }
+        if (!this.listEntries().includes(column)) {return new InsightError("Column not found"); }
+        let indexes: number[] = [];
+        let data = this.get(column);
+        if (data == null) {return new InsightError("Error Getting Data"); }
+        let compare;
+        switch (comp) {
+            case CompOperators.EQ: compare = (x: any, y: any) => x === y; break;
+            case CompOperators.GT: compare = (x: any, y: any) => x > y; break;
+            case CompOperators.LT: compare = (x: any, y: any) => x < y; break;
+            case CompOperators.IS: compare = (x: any, y: any) => x === y; break;
+        }
+        for (let index = 0; index < data.length; index++) {
+            if (compare(data[index], value)) {
+                indexes.push(index);
+            }
+        }
+        return this.getAll(indexes);
+    }
+
+    public listEntries(): string[] {
+        return [ "dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
+    }
+
+    protected get(column: string): string[] | number[] | null {
+        switch (column) {
+            case "dept": return this.dept;
+            case "id": return this.id;
+            case "instructor": return this.instructor;
+            case "title": return this.title;
+            case "uuid": return this.uuid;
+            case "avg": return this.avg;
+            case "pass": return this.pass;
+            case "fail": return this.fail;
+            case "audit": return this.audit;
+            case "year": return this.year;
+            default: return null;
+        }
+    }
+
+    protected getAll(indexes: number[]): IDataRowCourse[] {
+        let results: IDataRowCourse[] = [];
+        for (let index of indexes) {
+            results.push( {
+                dept: this.dept[index],
+                id: this.id[index],
+                instructor: this.instructor[index],
+                title: this.title[index],
+                uuid: this.uuid[index],
+                avg: this.avg[index],
+                pass: this.pass[index],
+                fail: this.fail[index],
+                audit: this.audit[index],
+                year: this.year[index]
+            });
+        }
+        return results;
     }
 
 }

@@ -1,4 +1,4 @@
-import {InsightDataset} from "./controller/IInsightFacade";
+import {InsightDataset, InsightError} from "./controller/IInsightFacade";
 import {IDataRowCourse} from "./DataSetDataCourse";
 import {CompOperators} from "./Query";
 
@@ -8,7 +8,7 @@ export interface IDataRow {
 
 export abstract class DataSet {
     protected metaData: InsightDataset;
-
+    protected datasetLoaded = true;
     /**
      *
      * @param column  The name of restricted column
@@ -16,14 +16,14 @@ export abstract class DataSet {
      * @param value   The value that is compared to.
      * @param not     Not?
      *
-     * @return Promise<IDataRow[]> Return the data queried.
+     * @return IDataRow[]| InsightError Return the data queried.
      *
-     * resolve when the query successfully executed.
-     * reject if there is any error.
+     * return a list of DataRow when the query successfully executed.
+     * return InsightError  if there is any error or dataSet is not loaded.
      *
      */
     public abstract getData(column: string, comp: CompOperators,
-                            value: number| string , not: boolean): Promise<IDataRow[]>;
+                            value: number| string , not: boolean): IDataRow[] | InsightError;
 
     /**
      *
@@ -67,4 +67,24 @@ export abstract class DataSet {
      */
 
     public abstract unloadDataSet(): Promise<string>;
+
+    /**
+     * Will return all entries of Dataset.
+     */
+    public abstract listEntries(): string[];
+
+    /**
+     * Return the data of given column.
+     * @param column  the name of the column.
+     *
+     * @return string[]|number[] | null
+     * Will retuen null if the column does not exist.
+     */
+    protected abstract get(column: string): string[]|number[] | null;
+
+    /**
+     * Returns all data with given indexes
+     * @param indexes The required index
+     */
+    protected abstract getAll(indexes: number[]): IDataRowCourse[];
 }
