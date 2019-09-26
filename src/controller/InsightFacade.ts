@@ -3,6 +3,7 @@ import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightError, NotFou
 import * as JSZip from "jszip";
 import {DataSetDataCourse} from "../DataSetDataCourse";
 import {JsonParser} from "../JsonParser";
+import {DataSet} from "../DataSet";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -10,7 +11,7 @@ import {JsonParser} from "../JsonParser";
  *
  */
 export default class InsightFacade implements IInsightFacade {
-    private dataSetMap: {[name: string]: DataSetDataCourse } = {};
+    private dataSetMap: {[name: string]: DataSet } = {};
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
     }
@@ -22,8 +23,14 @@ export default class InsightFacade implements IInsightFacade {
             }
             // Create Database with name
             let dataType: InsightDatasetKind = kind;
-            if (dataType != null) {
-                this.dataSetMap[id] = new DataSetDataCourse(id, dataType);
+            switch (dataType) {
+                case InsightDatasetKind.Courses:
+                    this.dataSetMap[id] = new DataSetDataCourse(id);
+                    break;
+                case InsightDatasetKind.Rooms:
+                    return reject(new InsightError("Room not Implemented yet"));
+                default:
+                    return reject(new InsightError("No such Type"));
             }
             JSZip.loadAsync(content, {base64: true}).then(
                 (zipFile: JSZip) => {

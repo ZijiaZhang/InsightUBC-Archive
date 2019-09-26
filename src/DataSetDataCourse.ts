@@ -1,10 +1,10 @@
-import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
+import {InsightDatasetKind} from "./controller/IInsightFacade";
 import * as JSZip from "jszip";
-import {stringify} from "querystring";
 import * as fs from "fs";
 import Log from "./Util";
+import {DataSet, IDataRow} from "./DataSet";
 
-export interface IDataRowCourse {
+export interface IDataRowCourse extends IDataRow {
     [key: string]: string|number;
     dept: string;
      id: string;
@@ -18,8 +18,8 @@ export interface IDataRowCourse {
      year: number;
 }
 
-export class DataSetDataCourse {
-    private metaData: InsightDataset;
+export class DataSetDataCourse extends DataSet {
+
     private dept: string[] = [];
     private id: string[] = [];
     private instructor: string[] = [];
@@ -35,27 +35,19 @@ export class DataSetDataCourse {
     /**
      *
      * @param name
-     * @param kind
-     * Initialize Insight Dataset using name, kind.
+     * Initialize Insight Dataset using name.
      */
-    constructor(name: string, kind: InsightDatasetKind) {
+    constructor(name: string) {
+        super();
         this.metaData = {
             id: name,
-        kind: kind,
+        kind: InsightDatasetKind.Courses,
         numRows: 0
     };
         this.fileLocation = "data/" + name + ".zip";
     }
 
-    /**
-     *
-     * @param data the data that add to the dataSet
-     *
-     * @return boolean
-     *
-     * return True if the success, False other wise.
-     * Add data to DataSet. If dataset is not loaded, return false.
-     */
+
     public addData(data: IDataRowCourse): boolean {
         if (!this.datasetLoaded) {
             return false;
@@ -74,18 +66,7 @@ export class DataSetDataCourse {
         return true;
     }
 
-    /**
-     * Get the metaData
-     */
-    public getMetaData(): InsightDataset {
-        return this.metaData;
-    }
 
-    /**
-     * @return Promise<string>
-     * Will load the dataset from disk
-     * Will reject if error occurs.
-     */
     public loadDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
             if ( this.datasetLoaded) {
@@ -119,11 +100,7 @@ export class DataSetDataCourse {
         });
     }
 
-    /**
-     * @return Promise<string>
-     * Will save the dataset to disk loaction of <dataset name>.zip
-     * Will reject if error occurs.
-     */
+
     public saveDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
             let jsonFile: string = JSON.stringify(this);
@@ -140,12 +117,7 @@ export class DataSetDataCourse {
         });
     }
 
-    /**
-     * Will save the data set and Unload the dataset.
-     * @return Promise<string>
-     *     Will reject if error occurs.
-     *     If dataset is already unloaded, resolve promise.
-     */
+
     public unloadDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             this.saveDataSet().then((result: string) => {
@@ -171,6 +143,10 @@ export class DataSetDataCourse {
             });
         }
     );
+    }
+
+    public getData(): Promise<IDataRow[]> {
+        return undefined;
     }
 
 }
