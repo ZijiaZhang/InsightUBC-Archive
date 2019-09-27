@@ -1,5 +1,5 @@
 {
-    "title": "Invalid value type in LT, should be number",
+    "title": "Result Too big",
     "query": {
         "WHERE": {
             "IS": {
