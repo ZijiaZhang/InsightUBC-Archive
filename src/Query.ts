@@ -17,45 +17,27 @@ export class Query {
 
     public static checkEBNF(inputquery: any): boolean {
         let isSyntaxValid: boolean = true;
-        if (inputquery.hasOwnProperty("WHERE")) {
-            const where: object = inputquery["WHERE"];
-            // check that where clause can only have zero or one "FILTER", cannot have more than one
-            if (Object.keys(where).length === 1) {
-                return this.checkFilter(where);
-            } else if (Object.keys(where).length > 1) {
-                isSyntaxValid = false;
+        if (!inputquery.hasOwnProperty("WHERE")) { return false; }
+        if (!inputquery.hasOwnProperty("OPTIONS")) { return false; }
+        const where: object = inputquery["WHERE"];
+        // check that where clause can only have zero or one "FILTER", cannot have more than one
+        if (Object.keys(where).length > 1) {return false; }
+        if (Object.keys(where).length === 1) { isSyntaxValid = isSyntaxValid && this.checkFilter(where); }
+        const options: any = inputquery["OPTIONS"];
+        // check that option clause must have one "COLUMNS"
+        // zero or one "ORDER", cannot have more than one "ORDER"
+        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {return false; }
+        if (!options.hasOwnProperty("COLUMNS")) { return false; }
+        const column: string[] = options["COLUMNS"];
+        if (column.length === 0) { return false; }
+        for (const columnKey of column) {
+            if (!this.checkKeyExist(columnKey)) {
+                return false;
             }
-        } else {
-            isSyntaxValid = false;
         }
-        if (inputquery.hasOwnProperty("OPTIONS")) {
-            const options: any = inputquery["OPTIONS"];
-            // check that option clause must have one "COLUMNS"
-            // zero or one "ORDER", cannot have more than one "ORDER"
-            if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
-                isSyntaxValid = false;
-            }
-            if (options.hasOwnProperty("COLUMNS")) {
-                const column: string[] = inputquery["COLUMNS"];
-                if (column.length === 0) {
-                    isSyntaxValid = false;
-                } else {
-                    for (const columnKey of column) {
-                        if (!this.checkKeyExist(columnKey)) {
-                            isSyntaxValid = false;
-                        }
-                    }
-                    isSyntaxValid = true;
-                }
-            } else {
-                isSyntaxValid = false;
-            }
-            if (options.hasOwnProperty("ORDER")) {
-                const orderKey = options["ORDER"];
-                return this.checkKeyExist(orderKey);
-            }
-        } else {
-            isSyntaxValid = false;
+        if (options.hasOwnProperty("ORDER")) {
+            const orderKey = options["ORDER"];
+            isSyntaxValid = isSyntaxValid && this.checkKeyExist(orderKey);
         }
         return isSyntaxValid;
     }

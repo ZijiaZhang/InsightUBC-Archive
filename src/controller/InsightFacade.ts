@@ -142,7 +142,7 @@ export default class InsightFacade implements IInsightFacade {
      * @param id  The id of the dataset being added. Follows the format /^[^_]+$/
      *
      * @return boolean
-     * Return if the givenDataset is valid.
+     * Return if the given Dataset id is valid.
      */
     private static isIdValid(id: string): boolean {
         return !(id == null || id.includes("_") || id ===  "" || id.match(/^\s*$/g)) ;
