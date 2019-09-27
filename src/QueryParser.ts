@@ -6,13 +6,7 @@ import InsightFacade from "./controller/InsightFacade";
 export class QueryParser {
     private static queryResult: object[] = [];
     private static beforeSelectResult: IDataRowCourse[] = [];
-    private static DSofthisQuery: string;
-    private GTkey: string = null;
-    private LTKey: string = null;
-    private EQKey: string = null;
-    private ISKey: string = null;
-    private columnKey: string[] = [];
-    private orderKey: string = null;
+    private static DatasetID: string;
     private static insightFacade: InsightFacade = new InsightFacade();
     private static datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
 
@@ -20,9 +14,9 @@ export class QueryParser {
         return new Promise<any[]>((resolve, reject) => {
             let temp = Query.getDataSetFromQuery(query);
             if (typeof temp === "string") {
-                this.DSofthisQuery = temp;
+                this.DatasetID = temp;
             }
-            this.insightFacade.switchDataSet(this.DSofthisQuery).then((result) => {
+            this.insightFacade.switchDataSet(this.DatasetID).then((result) => {
                 this.parseQuery(query);
                 //
                 if (this.queryResult.length > 5000) {

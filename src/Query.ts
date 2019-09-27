@@ -14,30 +14,82 @@ export enum LogicalOperators {
 }
 
 export class Query {
+    private static GTKey: string = null;
+    private static GTvalue: number = null;
+    private static LTKey: string = null;
+    private static LTvalue: number = null;
+    private static EQKey: string = null;
+    private static EQvalue: number = null;
+    private static ISKey: string = null;
+    private static ISvalue: string = null;
+    private static columnKeys: string[] = [];
+    private static orderKey: string = null;
 
+    public static get(column: string): string | number | string[] | null {
+        switch (column) {
+            case "GT":
+                return this.GTKey;
+            case "GTvalue":
+                return this.GTvalue;
+            case "LT":
+                return this.LTKey;
+            case "LTvalue":
+                return this.LTvalue;
+            case "EQ":
+                return this.EQKey;
+            case "EQvalue":
+                return this.EQvalue;
+            case "IS":
+                return this.ISKey;
+            case "ISvalue":
+                return this.ISvalue;
+            case "columnKeys":
+                return this.columnKeys;
+            case "orderKey":
+                return this.orderKey;
+            default:
+                return null;
+        }
+    }
+
+    // check that where clause can only have zero or one "FILTER", cannot have more than one
+    // check that option clause must have one "COLUMNS"
+    // zero or one "ORDER", cannot have more than one "ORDER"
     public static checkEBNF(inputquery: any): boolean {
         let isSyntaxValid: boolean = true;
-        if (!inputquery.hasOwnProperty("WHERE")) { return false; }
-        if (!inputquery.hasOwnProperty("OPTIONS")) { return false; }
+        if (!inputquery.hasOwnProperty("WHERE")) {
+            return false;
+        }
+        if (!inputquery.hasOwnProperty("OPTIONS")) {
+            return false;
+        }
         const where: object = inputquery["WHERE"];
-        // check that where clause can only have zero or one "FILTER", cannot have more than one
-        if (Object.keys(where).length > 1) {return false; }
-        if (Object.keys(where).length === 1) { isSyntaxValid = isSyntaxValid && this.checkFilter(where); }
+        if (Object.keys(where).length > 1) {
+            return false;
+        }
+        if (Object.keys(where).length === 1) {
+            isSyntaxValid = isSyntaxValid && this.checkFilter(where);
+        }
         const options: any = inputquery["OPTIONS"];
-        // check that option clause must have one "COLUMNS"
-        // zero or one "ORDER", cannot have more than one "ORDER"
-        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {return false; }
-        if (!options.hasOwnProperty("COLUMNS")) { return false; }
+        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
+            return false;
+        }
+        if (!options.hasOwnProperty("COLUMNS")) {
+            return false;
+        }
         const column: string[] = options["COLUMNS"];
-        if (column.length === 0) { return false; }
+        if (column.length === 0) {
+            return false;
+        }
         for (const columnKey of column) {
+            this.columnKeys.push(columnKey);
             if (!this.checkKeyExist(columnKey)) {
                 return false;
             }
         }
         if (options.hasOwnProperty("ORDER")) {
-            const orderKey = options["ORDER"];
-            isSyntaxValid = isSyntaxValid && this.checkKeyExist(orderKey);
+            this.orderKey = options["ORDER"];
+            isSyntaxValid = isSyntaxValid && this.checkKeyExist(this.orderKey);
         }
         return isSyntaxValid;
     }
@@ -69,48 +121,59 @@ export class Query {
         if (filterKey === "OR" || filterKey === "AND") {
             const logicArray: object[] = whereClause[filterKey];
             if (logicArray.length === 0) {
-                isFilterCorrect = false;
+                return false;
             } else {
                 for (const logicObj of logicArray) {
-                    if (!this.checkFilter(logicObj)) {
-                        isFilterCorrect = false;
+                    if (!(isFilterCorrect && this.checkFilter(logicObj))) {
+                        return false;
                     }
                 }
-                isFilterCorrect = true;
             }
         } else if (filterKey === "LT" || filterKey === "GT" || filterKey === "EQ") {
-            const mComp: object = whereClause[filterKey];
-            if (Object.keys(mComp).length !== 1) {
-                isFilterCorrect = false;
-            }
-            if (!this.checkMKeyExist(Object.keys(mComp)[0])) {
-                isFilterCorrect = false;
-            }
-            if (typeof Object.values(mComp)[0] !== "number") {
-                isFilterCorrect = false;
-            }
+            const mCompBody: object = whereClause[filterKey];
+            if (Object.keys(mCompBody).length !== 1) {return false; }
+            if (!this.checkMKeyExist(Object.keys(mCompBody)[0])) {return false; }
+            if (typeof Object.values(mCompBody)[0] !== "number") {return false; }
+            this.helpAddKeyandVal(filterKey, Object.keys(mCompBody)[0], Object.values(mCompBody)[0]);
         } else if (filterKey === "IS") {
-            const sComp: object = whereClause[filterKey];
-            if (Object.keys(sComp).length !== 1) {
-                isFilterCorrect = false;
-            }
-            if (!this.checkSKeyExist((Object.keys(sComp)[0]))) {
-                isFilterCorrect = false;
-            }
-            if (!this.checkScompInputString(Object.values(sComp)[0])) {
-                isFilterCorrect = false;
-            }
+            const sCompBody: object = whereClause[filterKey];
+            if (Object.keys(sCompBody).length !== 1) {return false; }
+            if (!this.checkSKeyExist((Object.keys(sCompBody)[0]))) {return false; }
+            if (!this.checkScompInputString(Object.values(sCompBody)[0])) {return false; }
+            this.helpAddIsKeyAndVal(Object.keys(sCompBody)[0], Object.values(sCompBody)[0]);
         } else if (filterKey === "NOT") {
             const not: object = whereClause[filterKey];
             if (Object.keys(not).length !== 1) {
-                isFilterCorrect = false;
+                return false;
             } else {
-                isFilterCorrect = this.checkFilter(not);
+                isFilterCorrect = isFilterCorrect && this.checkFilter(not);
             }
         } else {
-            isFilterCorrect = false;                      // Filter Key is Not one of those listed in EBNF
+            return false;                      // Filter Key is Not one of those listed in EBNF
         }
         return isFilterCorrect;
+    }
+
+    private static helpAddKeyandVal(filterKey: string, mCompKey: string, mCompVal: number) {
+        switch (filterKey) {
+            case "LT":
+                this.LTKey = mCompKey;
+                this.LTvalue = mCompVal;
+                break;
+            case "GT":
+                this.GTKey = mCompKey;
+                this.GTvalue = mCompVal;
+                break;
+            case "EQ":
+                this.EQKey = mCompKey;
+                this.EQvalue = mCompVal;
+                break;
+        }
+    }
+
+    private static helpAddIsKeyAndVal(iskey: string, isval: string) {
+        this.ISKey = iskey;
+        this.ISvalue = isval;
     }
 
 // Check whether the input key is a key in the courses dataset
@@ -156,7 +219,13 @@ export class Query {
 
     public static getDataSetFromQuery(inputquery: any): string | boolean {
         let allDSinQuery: string[] = [];
-        const allKeyInQuery: string[] = this.findAllKeyInQuery(inputquery);
+        let allKeyInQuery: string[] = [];
+        allKeyInQuery.push(this.LTKey);
+        allKeyInQuery.push(this.GTKey);
+        allKeyInQuery.push(this.EQKey);
+        allKeyInQuery.push(this.ISKey);
+        allKeyInQuery.push(this.orderKey);
+        allKeyInQuery = allKeyInQuery.concat(this.columnKeys);
         for (let i = 0; i < allKeyInQuery.length - 1; i++) {
             allDSinQuery.push(allKeyInQuery[i].split("_")[0]);
         }
@@ -168,85 +237,4 @@ export class Query {
         }
         return DS;
     }
-
-    private static findAllKeyInQuery(input: any): string[] {
-        let allKeyInQuery: string[];
-        let allKeyInFilter: string[] = [];
-        let allKeyInOption: string[] = [];
-        if (input.hasOwnProperty("WHERE")) {
-            const where: object = input["WHERE"];
-            if (Object.keys(where).length === 1) {
-                allKeyInFilter = this.findAllKeyInFilter(where);
-            }
-        }
-        if (input.hasOwnProperty("OPTIONS")) {
-            const options: any = input["OPTIONS"];
-            allKeyInOption = this.findAllKeyInOption(options);
-        }
-        return allKeyInQuery = allKeyInFilter.concat(allKeyInOption);
-    }
-
-    private static findAllKeyInFilter(input: any): string[] {
-        let allKeyInFilter: string[] = [];
-        const filterKeys: string[] = Object.keys(input);
-        const filterKey = filterKeys[0];
-        if (filterKey === "LT" || filterKey === "GT" || filterKey === "EQ" || filterKey === "IS") {
-            const Comp: object = input[filterKey];
-            const key: string[] = Object.keys(Comp);
-            for (let i = 0; i < key.length - 1; i++) {
-                allKeyInFilter.push(key[i]);
-            }
-        } else if (filterKey === "OR" || filterKey === "AND") {
-            const logicArray: object[] = input[filterKey];
-            for (let i = 0; i < logicArray.length - 1; i++) {
-                this.findAllKeyInFilter(logicArray[i]);
-            }
-        } else if (filterKey === "NOT") {
-            const not: object = input[filterKey];
-            this.findAllKeyInFilter(not);
-        }
-        return allKeyInFilter;
-    }
-
-    private static findAllKeyInOption(input: any): string[] {
-        let allKeyInOption: string[] = [];
-        if (input.hasOwnProperty("COLUMNS")) {
-            const column: string[] = input["COLUMNS"];
-            for (let i = 0; i < column.length - 1; i++) {
-                allKeyInOption.push(column[i]);
-            }
-        }
-        if (input.hasOwnProperty("ORDER")) {
-            allKeyInOption.push(input["ORDER"]);
-        }
-        return allKeyInOption;
-    }
 }
-// private static getDataSetFromQuery(inputquery: any): string | boolean {
-//     let allDSinQuery: string[] = [];
-//     let allKeyInFilter: string[] = [];
-//     let allKeyInOption: string[] = [];
-//     if (inputquery.hasOwnProperty("WHERE")) {
-//         const where: object = inputquery["WHERE"];
-//         if (Object.keys(where).length === 1) {
-//             allKeyInFilter = this.findAllKeyInFilter(where);
-//         }
-//     }
-//     if (inputquery.hasOwnProperty("OPTIONS")) {
-//         const options: any = inputquery["OPTIONS"];
-//         allKeyInOption = this.findAllKeyInOption(options);
-//     }
-//     for (let i = 0; i < allKeyInFilter.length - 1; i++) {
-//         allDSinQuery.push(allKeyInFilter[i].split("_")[0]);
-//     }
-//     for (let i = 0; i < allKeyInOption.length - 1; i++) {
-//         allDSinQuery.push(allKeyInOption[i].split("_")[0]);
-//     }
-//     const DS = allDSinQuery[0];
-//     for (let i = 0; i < allDSinQuery.length - 1; i++) {
-//         if (allDSinQuery[i] !== DS) {
-//             return false;
-//         }
-//     }
-//     return DS;
-// }
