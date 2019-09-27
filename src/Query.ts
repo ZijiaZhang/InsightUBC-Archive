@@ -204,7 +204,7 @@ export class Query {
         } else {
             const inputStringArray: string[] = inputString.split("");
             const inputStringLength: number = inputString.length;
-            for (let i = 1; i < inputStringLength; i++) {
+            for (let i = 1; i < inputStringLength - 1; i++) {
                 if (inputStringArray[i] === "*") {
                     return false;
                 }
