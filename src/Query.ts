@@ -14,39 +14,53 @@ export enum LogicalOperators {
 }
 
 export class Query {
-    private static GTKey: string = null;
-    private static GTvalue: number = null;
-    private static LTKey: string = null;
-    private static LTvalue: number = null;
-    private static EQKey: string = null;
-    private static EQvalue: number = null;
-    private static ISKey: string = null;
-    private static ISvalue: string = null;
+    private static GTKey: string[] = null;
+    private static GTvalue: number[] = null;
+    private static LTKey: string[] = null;
+    private static LTvalue: number[] = null;
+    private static EQKey: string[] = null;
+    private static EQvalue: number[] = null;
+    private static ISKey: string[] = null;
+    private static ISvalue: string[] = null;
     private static columnKeys: string[] = [];
     private static orderKey: string = null;
 
-    public static get(column: string): string | number | string[] | null {
+    public static getKey(column: string, index: number): string| null {
         switch (column) {
             case "GT":
-                return this.GTKey;
-            case "GTvalue":
-                return this.GTvalue;
+                return this.GTKey[index];
             case "LT":
-                return this.LTKey;
-            case "LTvalue":
-                return this.LTvalue;
+                return this.LTKey[index];
             case "EQ":
-                return this.EQKey;
-            case "EQvalue":
-                return this.EQvalue;
+                return this.EQKey[index];
             case "IS":
-                return this.ISKey;
-            case "ISvalue":
-                return this.ISvalue;
-            case "columnKeys":
+                return this.ISKey[index];
+            case "ORDER":
+                return this.orderKey[index];
+            default:
+                return null;
+        }
+    }
+
+    public static getVal(column: string, index: number): string | number| null {
+        switch (column) {
+            case "GT":
+                return this.GTvalue[index];
+            case "LT":
+                return this.LTvalue[index];
+            case "EQ":
+                return this.EQvalue[index];
+            case "IS":
+                return this.ISvalue[index];
+            default:
+                return null;
+        }
+    }
+
+    public static getColumnKey(column: string): string[] | null {
+        switch (column) {
+            case "COLUMNS":
                 return this.columnKeys;
-            case "orderKey":
-                return this.orderKey;
             default:
                 return null;
         }
@@ -81,7 +95,7 @@ export class Query {
         if (column.length === 0) {
             return false;
         }
-        for (const columnKey of column) {
+        for (let columnKey of column) {
             this.columnKeys.push(columnKey);
             if (!this.checkKeyExist(columnKey)) {
                 return false;
@@ -123,7 +137,7 @@ export class Query {
             if (logicArray.length === 0) {
                 return false;
             } else {
-                for (const logicObj of logicArray) {
+                for (let logicObj of logicArray) {
                     if (!(isFilterCorrect && this.checkFilter(logicObj))) {
                         return false;
                     }
@@ -157,23 +171,23 @@ export class Query {
     private static helpAddKeyandVal(filterKey: string, mCompKey: string, mCompVal: number) {
         switch (filterKey) {
             case "LT":
-                this.LTKey = mCompKey;
-                this.LTvalue = mCompVal;
+                this.LTKey.push(mCompKey);
+                this.LTvalue.push(mCompVal);
                 break;
             case "GT":
-                this.GTKey = mCompKey;
-                this.GTvalue = mCompVal;
+                this.GTKey.push(mCompKey);
+                this.GTvalue.push(mCompVal);
                 break;
             case "EQ":
-                this.EQKey = mCompKey;
-                this.EQvalue = mCompVal;
+                this.EQKey.push(mCompKey);
+                this.EQvalue.push(mCompVal);
                 break;
         }
     }
 
     private static helpAddIsKeyAndVal(iskey: string, isval: string) {
-        this.ISKey = iskey;
-        this.ISvalue = isval;
+        this.ISKey.push(iskey);
+        this.ISvalue.push(isval);
     }
 
 // Check whether the input key is a key in the courses dataset
@@ -220,17 +234,17 @@ export class Query {
     public static getDataSetFromQuery(inputquery: any): string | boolean {
         let allDSinQuery: string[] = [];
         let allKeyInQuery: string[] = [];
-        allKeyInQuery.push(this.LTKey);
-        allKeyInQuery.push(this.GTKey);
-        allKeyInQuery.push(this.EQKey);
-        allKeyInQuery.push(this.ISKey);
+        allKeyInQuery.concat(this.LTKey);
+        allKeyInQuery.concat(this.GTKey);
+        allKeyInQuery.concat(this.EQKey);
+        allKeyInQuery.concat(this.ISKey);
         allKeyInQuery.push(this.orderKey);
         allKeyInQuery = allKeyInQuery.concat(this.columnKeys);
-        for (const key of allKeyInQuery) {
+        for (let key of allKeyInQuery) {
             allDSinQuery.push(key.split("_")[0]);
         }
         const DS = allDSinQuery[0];
-        for (const DSid of allDSinQuery) {
+        for (let DSid of allDSinQuery) {
             if (DSid !== DS) {
                 return false;
             }
