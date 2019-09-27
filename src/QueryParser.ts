@@ -31,10 +31,15 @@ export class QueryParser {
 
     private static findCandidate(queryBody: any): IDataRowCourse[] {
         let protoResult: IDataRowCourse[] = [];
-        const whereKey: string = Object.keys(queryBody)[0];
+        let whereKey: string = null;
+        if (Object.keys(queryBody).length !== 0) {
+            whereKey = Object.keys(queryBody)[0];
+        }
         let indexOfKeyVal: number = 0;
         let numberOfNot: number = 0;
-        if (whereKey === "LT" || whereKey === "GT" || whereKey === "EQ" || whereKey === "IS") {
+        if (whereKey === null) {
+            // return all ?????????????????????????
+        } else if (whereKey === "LT" || whereKey === "GT" || whereKey === "EQ" || whereKey === "IS") {
             if (numberOfNot % 2 === 0) {
                 let result: any = this.datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
                     CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), false);
