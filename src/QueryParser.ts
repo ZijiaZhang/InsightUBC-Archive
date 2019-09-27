@@ -9,16 +9,6 @@ export class QueryParser {
     private static DatasetID: string;
     private static insightFacade: InsightFacade = new InsightFacade();
     private static datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
-    private static GTKey: string = null;
-    private static GTvalue: number = null;
-    private static LTKey: string = null;
-    private static LTvalue: number = null;
-    private static EQKey: string = null;
-    private static EQvalue: number = null;
-    private static ISKey: string = null;
-    private static ISvalue: string = null;
-    private static columnKeys: string[] = [];
-    private static orderKey: string = null;
 
     public static getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
