@@ -122,6 +122,10 @@ export class JsonParser {
                 dataRow[this.getRequiredFieldCourses()[field]] = "" + jsonData[field];
             }
         }
+
+        if (jsonData.hasOwnProperty("Section") && jsonData["Section"] === "overall") {
+            dataRow.year = 1900;
+        }
         return dataRow;
     }
 
