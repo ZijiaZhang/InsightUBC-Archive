@@ -156,7 +156,7 @@ export class DataSetDataCourse extends DataSet {
             case CompOperators.IS: compare = (x: any, y: any) => x === y; break;
         }
         for (let index = 0; index < data.length; index++) {
-            if (compare(data[index], value)) {
+            if (not !== compare(data[index], value)) {
                 indexes.push(index);
             }
         }

@@ -215,4 +215,17 @@ describe("Dataset Test", function () {
             }
         ).catch( (err) => expect.fail("Should not catch"));
     });
+
+    it("should Query Dataset avg NOT LT", function () {
+        return dataset.loadDataSet().then(
+            () => {
+                let result = dataset.getData("avg", CompOperators.LT, 97, true);
+                if (result instanceof Array) {
+                    expect(result.length).equal(52);
+                } else {
+                    expect.fail("Wrong Value");
+                }
+            }
+        ).catch( (err) => expect.fail("Should not catch"));
+    });
 });
