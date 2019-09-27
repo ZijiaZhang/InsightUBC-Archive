@@ -172,7 +172,7 @@ export class Query {
         return typeof this.getDataSetFromQuery(inputquery) === "string";
     }
 
-    private static getDataSetFromQuery(inputquery: any): string | boolean {
+    public static getDataSetFromQuery(inputquery: any): string | boolean {
         let allDSinQuery: string[] = [];
         const allKeyInQuery: string[] = this.findAllKeyInQuery(inputquery);
         for (let i = 0; i < allKeyInQuery.length - 1; i++) {

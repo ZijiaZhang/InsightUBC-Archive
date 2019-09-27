@@ -115,8 +115,11 @@ export default class InsightFacade implements IInsightFacade {
                 reject(new InsightError("Query is null or undefined"));
             } else if (Query.checkEBNF(query)) {
                 if (Query.checkSemantic(query)) {
-                    QueryParser.getQueryResult(query).then(
-                        (result) => resolve(result) );
+                    QueryParser.getQueryResult(query).then((result) => {
+                        resolve(result);
+                    }).catch((err) => {
+                        reject(err);
+                    });
                 } else {
                     reject(new InsightError("Query has semantic error"));
                 }
@@ -171,7 +174,7 @@ export default class InsightFacade implements IInsightFacade {
      *     resolve on successful switch.
      *     Reject otherwise.
      */
-    private switchDataSet(name: string): Promise<string> {
+    public switchDataSet(name: string): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
             if (this.currentActiveDataset === name) {resolve("Dataset Already Loaded"); }
             if (!(name in this.dataSetMap)) {reject("Dataset Not Found"); }
