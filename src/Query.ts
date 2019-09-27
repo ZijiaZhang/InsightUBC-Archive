@@ -204,7 +204,7 @@ export class Query {
         } else {
             const inputStringArray: string[] = inputString.split("");
             const inputStringLength: number = inputString.length;
-            for (let i = 1; i < inputStringLength - 1; i++) {
+            for (let i = 1; i < inputStringLength; i++) {
                 if (inputStringArray[i] === "*") {
                     return false;
                 }
@@ -226,12 +226,12 @@ export class Query {
         allKeyInQuery.push(this.ISKey);
         allKeyInQuery.push(this.orderKey);
         allKeyInQuery = allKeyInQuery.concat(this.columnKeys);
-        for (let i = 0; i < allKeyInQuery.length - 1; i++) {
-            allDSinQuery.push(allKeyInQuery[i].split("_")[0]);
+        for (const key of allKeyInQuery) {
+            allDSinQuery.push(key.split("_")[0]);
         }
         const DS = allDSinQuery[0];
-        for (let i = 0; i < allDSinQuery.length - 1; i++) {
-            if (allDSinQuery[i] !== DS) {
+        for (const DSid of allDSinQuery) {
+            if (DSid !== DS) {
                 return false;
             }
         }

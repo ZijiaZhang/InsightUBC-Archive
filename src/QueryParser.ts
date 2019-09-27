@@ -5,12 +5,12 @@ import InsightFacade from "./controller/InsightFacade";
 
 export class QueryParser {
     private static queryResult: object[] = [];
-    private static beforeSelectResult: IDataRowCourse[] = [];
+    private static protoResult: IDataRowCourse[] = [];
     private static DatasetID: string;
     private static insightFacade: InsightFacade = new InsightFacade();
     private static datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
 
-    public static getQueryResult(query: string): Promise<any[]> {
+    public static getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
             let temp = Query.getDataSetFromQuery(query);
             if (typeof temp === "string") {
@@ -18,7 +18,6 @@ export class QueryParser {
             }
             this.insightFacade.switchDataSet(this.DatasetID).then((result) => {
                 this.parseQuery(query);
-                //
                 if (this.queryResult.length > 5000) {
                     reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
                 } else {
