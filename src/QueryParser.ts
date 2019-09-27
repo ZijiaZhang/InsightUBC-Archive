@@ -18,10 +18,10 @@ export class QueryParser {
             }
             this.insightFacade.switchDataSet(this.DatasetID).then((result) => {
                 this.candidate = this.findCandidate(query["WHERE"]);
-                this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
-                if (this.queryResult.length > 5000) {
+                if (this.candidate.length > 5000) {
                     reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
                 } else {
+                    this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
                     resolve(this.queryResult);
                 }
             });
@@ -79,14 +79,15 @@ export class QueryParser {
                 for (let property of Object.keys(candidate)) {
                     if (! (column.includes(property))) {
                         delete candidate[property];
+                        this.queryResult.push(candidate);
                     }
                 }
             }
         }
         if (queryOptions.hasOwnProperty("ORDER")) {
-            this.orderBy(candidateResult, queryOptions["ORDER"]);
+            this.orderBy(this.queryResult, queryOptions["ORDER"]);
         }
-        return QueryParser.queryResult;
+        return this.queryResult;
     }
 
     // reference: stackOverflow:
@@ -115,7 +116,7 @@ export class QueryParser {
     }
 
     // By default, will order in ascending order.
-    private static orderBy(candidateResult: IDataRowCourse[], orderKey: string) {
+    private static orderBy(queryResult: object[], orderKey: string) {
 //
     }
 }
