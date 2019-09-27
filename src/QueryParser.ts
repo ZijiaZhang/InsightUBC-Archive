@@ -27,8 +27,8 @@ export class QueryParser {
                 this.DatasetID = temp;
             }
             this.insightFacade.switchDataSet(this.DatasetID).then((result) => {
-                this.findCandidate(query["WHERE"]);
-                this.selectFieldandOrder(query["OPTIONS"]);
+                this.candidate = this.findCandidate(query["WHERE"]);
+                this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
                 if (this.queryResult.length > 5000) {
                     reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
                 } else {
@@ -82,11 +82,25 @@ export class QueryParser {
         return protoResult;
     }
 
-    private static selectFieldandOrder(protoReulst: IDataRowCourse[]): object[] {
+    private static selectFieldandOrder(candidateResult: IDataRowCourse[], queryOptions: any): object[] {
+        if (queryOptions.hasOwnProperty("COLUMNS")) {
+            const column: string[] = queryOptions["COLUMNS"];
+            for (let candidate of candidateResult) {
+                for (let property of Object.keys(candidate)) {
+                    if (! (column.includes(property))) {
+                        delete candidate[property];
+                    }
+                }
+            }
+        }
+        if (queryOptions.hasOwnProperty("ORDER")) {
+            this.orderBy(candidateResult, queryOptions["ORDER"]);
+        }
         return QueryParser.queryResult;
     }
 
-    // reference: stackOverflow
+    // reference: stackOverflow:
+    // https://stackoverflow.com/questions/16227197/compute-intersection-of-two-arrays-in-javascript
     private static findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
         let tempArr;
         if (array2.length > array1.length) {
@@ -101,11 +115,17 @@ export class QueryParser {
         });
     }
 
-    // reference: stackOverflow
+    // reference: stackOverflow:https:
+    // stackoverflow.com/questions/48370587/how-can-i-uniquely-union-two-array-of-objects
     private static findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
         let res = array2.concat(array1).filter(function (o) {
             return this[o.a] ? false : this[o.a] = true;
         }, {});
         return res;
+    }
+
+    // By default, will order in ascending order.
+    private static orderBy(candidateResult: IDataRowCourse[], orderKey: string) {
+//
     }
 }

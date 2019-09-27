@@ -35,8 +35,8 @@ export class Query {
                 return this.EQKey[index];
             case "IS":
                 return this.ISKey[index];
-            case "ORDER":
-                return this.orderKey[index];
+            // case "ORDER":
+            //     return this.orderKey[index];
             default:
                 return null;
         }
@@ -57,14 +57,14 @@ export class Query {
         }
     }
 
-    public static getColumnKey(column: string): string[] | null {
-        switch (column) {
-            case "COLUMNS":
-                return this.columnKeys;
-            default:
-                return null;
-        }
-    }
+    // public static getColumnKey(column: string): string[] | null {
+    //     switch (column) {
+    //         case "COLUMNS":
+    //             return this.columnKeys;
+    //         default:
+    //             return null;
+    //     }
+    // }
 
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
