@@ -24,6 +24,8 @@ export class QueryParser {
                     this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
                     resolve(this.queryResult);
                 }
+            }).catch((err) => {
+                reject(new InsightError("Reference non-exist dataset"));
             });
             }
         );
@@ -114,14 +116,32 @@ export class QueryParser {
     // reference: stackOverflow:https:
     // stackoverflow.com/questions/48370587/how-can-i-uniquely-union-two-array-of-objects
     private static findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
-        let res = array2.concat(array1).filter(function (o) {
+        return array2.concat(array1).filter(function (o) {
             return this[o.a] ? false : this[o.a] = true;
         }, {});
-        return res;
     }
 
     // By default, will order in ascending order.
     private static orderBy(queryResult: object[], orderKey: string) {
-//
+        if (orderKey === "courses_avg" || orderKey === "courses_pass" || orderKey === "courses_fail"
+            || orderKey === "courses_audit" || orderKey === "courses_year") {
+            queryResult.sort(function (a: any, b: any) {
+                return a[orderKey] - b[orderKey];
+            });
+        } else if (orderKey === "courses_dept" || orderKey === "courses_instructor" || orderKey === "courses_title") {
+            queryResult.sort(function (a: any, b: any) {
+                if (a[orderKey].toLowerCase() < b[orderKey].toLowerCase()) {
+                    return -1;
+                } else if (a[orderKey].toLowerCase() > b[orderKey].toLowerCase()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+        } else if (orderKey === "courses_id" || orderKey === "courses_uuid") {
+            queryResult.sort(function (a: any, b: any) {
+                return Number(a[orderKey]) - Number(b[orderKey]);
+            });
+        }
     }
 }
