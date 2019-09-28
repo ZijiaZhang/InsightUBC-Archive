@@ -3,11 +3,11 @@ import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
 import {CompOperators, Query} from "./Query";
 
 export class QueryParser {
-    private static queryResult: object[] = [];
-    private static candidate: IDataRowCourse[] = [];
+    private queryResult: object[] = [];
+    private candidate: IDataRowCourse[] = [];
  //   private static DatasetID: string;
 
-    public static getQueryResult(query: any): Promise<any[]> {
+    public getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
             this.candidate = this.findCandidate(query["WHERE"]);
             if (this.candidate.length > 5000) {
@@ -20,48 +20,49 @@ export class QueryParser {
         );
     }
 
-    private static findCandidate(queryBody: any): IDataRowCourse[] {
+    private findCandidate(queryBody: any): IDataRowCourse[] {
+        let query: Query = new Query();
         let protoResult: IDataRowCourse[] = [];
-        let whereKey: string = null;
+        let operator: string = null;
         if (Object.keys(queryBody).length !== 0) {
-            whereKey = Object.keys(queryBody)[0];
+            operator = Object.keys(queryBody)[0];
         }
         let indexOfKeyVal: number = 0;
         let numberOfNot: number = 0;
         let datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
-        if (whereKey === null) {
-            protoResult.concat(datasetCourse.getAllCourses());
-            this.candidate.concat(datasetCourse.getAllCourses());
-        } else if (whereKey === "LT" || whereKey === "GT" || whereKey === "EQ" || whereKey === "IS") {
+        if (operator === null) {
+            protoResult = protoResult.concat(datasetCourse.getAllCourses());
+            this.candidate = this.candidate.concat(datasetCourse.getAllCourses());
+        } else if (operator === "LT" || operator === "GT" || operator === "EQ" || operator === "IS") {
             if (numberOfNot % 2 === 0) {
-                let result: any = datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
-                    CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), false);
+                let result: any = datasetCourse.getData(query.getKey(operator, indexOfKeyVal),
+                    CompOperators[operator], query.getVal(operator, indexOfKeyVal), false);
                 if (!(result instanceof InsightError)) {
-                    protoResult.concat(result);
-                    this.candidate.concat(result);
+                    protoResult = protoResult.concat(result);
+                    this.candidate = this.candidate.concat(result);
                 }
             } else {
-                let result: any = datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
-                    CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), true);
+                let result: any = datasetCourse.getData(query.getKey(operator, indexOfKeyVal),
+                    CompOperators[operator], query.getVal(operator, indexOfKeyVal), true);
                 if (!(result instanceof InsightError)) {
-                    protoResult.concat(result);
-                    this.candidate.concat(result);
+                    protoResult = protoResult.concat(result);
+                    this.candidate = this.candidate.concat(result);
                 }
             }
             indexOfKeyVal++;
-        } else if (whereKey === "AND") {
+        } else if (operator === "AND") {
             let andClause: object[] = Object.values(queryBody);
             for (let obj of andClause) {
                 this.candidate = this.findIntersection(this.candidate, this.findCandidate(obj));
                 protoResult = this.findIntersection(this.candidate, this.findCandidate(obj));
             }
-        } else if (whereKey === "OR") {
+        } else if (operator === "OR") {
             let andClause: object[] = Object.values(queryBody);
             for (let obj of andClause) {
                 this.candidate = this.findUnion(this.candidate, this.findCandidate(obj));
                 protoResult = this.findUnion(this.candidate, this.findCandidate(obj));
             }
-        } else if (whereKey === "NOT") {
+        } else if (operator === "NOT") {
             numberOfNot++;
             let obj: object = Object.values(queryBody);
             protoResult = this.findCandidate(obj);
@@ -70,7 +71,7 @@ export class QueryParser {
         return protoResult;
     }
 
-    private static selectFieldandOrder(candidateResult: IDataRowCourse[], queryOptions: any): object[] {
+    private selectFieldandOrder(candidateResult: IDataRowCourse[], queryOptions: any): object[] {
         if (queryOptions.hasOwnProperty("COLUMNS")) {
             const column: string[] = queryOptions["COLUMNS"];
             for (let candidate of candidateResult) {
@@ -90,7 +91,7 @@ export class QueryParser {
 
     // reference: stackOverflow:
     // https://stackoverflow.com/questions/16227197/compute-intersection-of-two-arrays-in-javascript
-    private static findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
+    private findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
         let tempArr;
         if (array2.length > array1.length) {
             tempArr = array2;
@@ -106,14 +107,14 @@ export class QueryParser {
 
     // reference: stackOverflow:https:
     // stackoverflow.com/questions/48370587/how-can-i-uniquely-union-two-array-of-objects
-    private static findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
+    private findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
         return array2.concat(array1).filter(function (o) {
             return this[o.a] ? false : this[o.a] = true;
         }, {});
     }
 
     // By default, will order in ascending order.
-    private static orderBy(queryResult: object[], orderKey: string) {
+    private orderBy(queryResult: object[], orderKey: string) {
         if (orderKey === "courses_avg" || orderKey === "courses_pass" || orderKey === "courses_fail"
             || orderKey === "courses_audit" || orderKey === "courses_year") {
             queryResult.sort(function (a: any, b: any) {

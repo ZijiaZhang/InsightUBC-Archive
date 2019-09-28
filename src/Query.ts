@@ -14,18 +14,18 @@ export enum LogicalOperators {
 }
 
 export class Query {
-    private static GTKey: string[] = [];
-    private static GTvalue: number[] = [];
-    private static LTKey: string[] = [];
-    private static LTvalue: number[] = [];
-    private static EQKey: string[] = [];
-    private static EQvalue: number[] = [];
-    private static ISKey: string[] = [];
-    private static ISvalue: string[] = [];
-    private static columnKeys: string[] = [];
-    private static orderKey: string = null;
+    private GTKey: string[] = [];
+    private GTvalue: number[] = [];
+    private LTKey: string[] = [];
+    private LTvalue: number[] = [];
+    private EQKey: string[] = [];
+    private EQvalue: number[] = [];
+    private ISKey: string[] = [];
+    private ISvalue: string[] = [];
+    private columnKeys: string[] = [];
+    private orderKey: string = null;
 
-    public static getKey(column: string, index: number): string| null {
+    public getKey(column: string, index: number): string| null {
         switch (column) {
             case "GT":
                 return this.GTKey[index];
@@ -42,7 +42,7 @@ export class Query {
         }
     }
 
-    public static getVal(column: string, index: number): string | number| null {
+    public getVal(column: string, index: number): string | number| null {
         switch (column) {
             case "GT":
                 return this.GTvalue[index];
@@ -69,7 +69,7 @@ export class Query {
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
     // zero or one "ORDER", cannot have more than one "ORDER"
-    public static checkEBNF(inputquery: any): boolean {
+    public checkEBNF(inputquery: any): boolean {
         let isSyntaxValid: boolean = true;
         if (!inputquery.hasOwnProperty("WHERE")) {
             return false;
@@ -108,27 +108,23 @@ export class Query {
         return isSyntaxValid;
     }
 
-    public static checkSemantic(inputquery: any): boolean {
+    public checkSemantic(inputquery: any): boolean {
         let isSemanticCorrect: boolean = true;
         if (inputquery.hasOwnProperty("OPTIONS")) {
             const options: any = inputquery["OPTIONS"];
-            if (options.hasOwnProperty("COLUMNS")) {
-                const column: string[] = options["COLUMNS"];
-                if (options.hasOwnProperty("ORDER")) {
-                    const orderKey = options["ORDER"];
-                    if (!column.includes(orderKey)) {
-                        return false;
-                    }
+            if (options.hasOwnProperty("COLUMNS") && options.hasOwnProperty("ORDER")) {
+                if (!(options["COLUMNS"].includes(options["ORDER"]))) {
+                    return false;
                 }
             }
         }
         if (!this.checkReferenceDSValid(inputquery)) {
-            isSemanticCorrect = false;
+            return false;
         }
         return isSemanticCorrect;
     }
 
-    private static checkFilter(whereClause: any): boolean {
+    private checkFilter(whereClause: any): boolean {
         const filterKeys: string[] = Object.keys(whereClause);
         const filterKey = filterKeys[0];
         let isFilterCorrect = true;
@@ -168,7 +164,7 @@ export class Query {
         return isFilterCorrect;
     }
 
-    private static helpAddKeyandVal(filterKey: string, mCompKey: string, mCompVal: number) {
+    private helpAddKeyandVal(filterKey: string, mCompKey: string, mCompVal: number) {
         switch (filterKey) {
             case "LT":
                 this.LTKey.push(mCompKey);
@@ -185,30 +181,30 @@ export class Query {
         }
     }
 
-    private static helpAddIsKeyAndVal(iskey: string, isval: string) {
+    private helpAddIsKeyAndVal(iskey: string, isval: string) {
         this.ISKey.push(iskey);
         this.ISvalue.push(isval);
     }
 
 // Check whether the input key is a key in the courses dataset
 // The given key must be one of the key in the courses dataset, otherwise we don't have the key
-    private static checkKeyExist(key: string): boolean {
+    private checkKeyExist(key: string): boolean {
         return key === "courses_dept" || key === "courses_id" || key === "courses_instructor" || key === "courses_title"
             || key === "courses_uuid" || key === "courses_avg" || key === "courses_pass" || key === "courses_fail"
             || key === "courses_audit" || key === "courses_year";
     }
 
-    private static checkMKeyExist(key: string): boolean {
+    private checkMKeyExist(key: string): boolean {
         return key === "courses_avg" || key === "courses_pass" || key === "courses_fail"
             || key === "courses_audit" || key === "courses_year";
     }
 
-    private static checkSKeyExist(key: string): boolean {
+    private checkSKeyExist(key: string): boolean {
         return key === "courses_dept" || key === "courses_id" || key === "courses_instructor" || key === "courses_title"
             || key === "courses_uuid";
     }
 
-    private static checkScompInputString(inputString: string): boolean {
+    private checkScompInputString(inputString: string): boolean {
         if (inputString.length === 0) {
             return true;
         } else if (inputString.length === 1) {
@@ -227,11 +223,11 @@ export class Query {
         }
     }
 
-    private static checkReferenceDSValid(inputquery: any): boolean {
+    private checkReferenceDSValid(inputquery: any): boolean {
         return typeof this.getDataSetFromQuery(inputquery) === "string";
     }
 
-    public static getDataSetFromQuery(inputquery: any): string | boolean {
+    public getDataSetFromQuery(inputquery: any): string | boolean {
         let allDSinQuery: string[] = [];
         let allKeyInQuery: string[] = [];
         allKeyInQuery = allKeyInQuery.concat(this.LTKey);
