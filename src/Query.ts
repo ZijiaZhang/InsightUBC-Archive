@@ -28,14 +28,6 @@ export class Query {
     private columnKeys: string[] = [];
     private orderKey: string = null;
 
-    // public static getColumnKey(column: string): string[] | null {
-    //     switch (column) {
-    //         case "COLUMNS":
-    //             return this.columnKeys;
-    //         default:
-    //             return null;
-    //     }
-    // }
     constructor(queryObject: any) {
         this.queryObject = queryObject;
     }
@@ -278,8 +270,10 @@ export class Query {
             }
             if (statement[filterKey] instanceof Array) {
                 let childResult = this.statementToLogic(statement[filterKey]) as LogicElement[];
-                return new ComplexLogic(LogicalOperators.AND, childResult);
-
+                switch (filterKey) {
+                    case "AND": return new ComplexLogic(LogicalOperators.AND, childResult);
+                    case "OR" : return new ComplexLogic(LogicalOperators.OR, childResult);
+                }
             } else {
                 let comp = CompOperators.GT;
                 switch (filterKey) {

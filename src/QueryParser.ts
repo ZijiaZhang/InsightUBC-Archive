@@ -43,11 +43,11 @@ export class QueryParser {
                     for (let obj of logic.elements) { result = this.findIntersection(result, this.findCandidate(obj)); }
                     return result;
                 case LogicalOperators.OR:
-                    for (let obj of logic.elements) { result = this.findIntersection(result, this.findCandidate(obj)); }
+                    for (let obj of logic.elements) { result = this.findUnion(result, this.findCandidate(obj)); }
                     return result;
             }
         } else if (logic instanceof NotLogic) {
-            return [];
+            return this.findComplement(this.findCandidate(logic.element), this.database.getAllData());
         }
     }
 
@@ -78,8 +78,6 @@ export class QueryParser {
         return this.queryResult;
     }
 
-    // reference: stackOverflow:
-    // https://stackoverflow.com/questions/16227197/compute-intersection-of-two-arrays-in-javascript
     private findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
         let result: IDataRowCourse[] = [];
         for (let course of array1) {
@@ -97,12 +95,20 @@ export class QueryParser {
         return false;
     }
 
-    // reference: stackOverflow:https:
-    // stackoverflow.com/questions/48370587/how-can-i-uniquely-union-two-array-of-objects
     private findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
-        return array2.concat(array1).filter(function (o) {
-            return this[o.a] ? false : this[o.a] = true;
-        }, {});
+        let result: IDataRowCourse[] = array1;
+        for (let course of array2) {
+            if (!this.findCourse(array1, course)) { result.push(course); }
+        }
+        return result;
+    }
+
+    private findComplement(array1: IDataRowCourse[], all: IDataRowCourse[]): IDataRowCourse[] {
+        let result: IDataRowCourse[] = [];
+        for (let course of all) {
+            if (!this.findCourse(array1, course)) { result.push(course); }
+        }
+        return result;
     }
 
     // By default, will order in ascending order.
