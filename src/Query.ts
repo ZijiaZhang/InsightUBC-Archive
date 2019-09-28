@@ -31,38 +31,6 @@ export class Query {
     constructor(queryObject: any) {
         this.queryObject = queryObject;
     }
-
-    public getKey(column: string, index: number): string| null {
-        switch (column) {
-            case "GT":
-                return this.GTKey[index];
-            case "LT":
-                return this.LTKey[index];
-            case "EQ":
-                return this.EQKey[index];
-            case "IS":
-                return this.ISKey[index];
-            // case "ORDER":
-            //     return this.orderKey[index];
-            default:
-                return null;
-        }
-    }
-
-    public getVal(column: string, index: number): string | number| null {
-        switch (column) {
-            case "GT":
-                return this.GTvalue[index];
-            case "LT":
-                return this.LTvalue[index];
-            case "EQ":
-                return this.EQvalue[index];
-            case "IS":
-                return this.ISvalue[index];
-            default:
-                return null;
-        }
-    }
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
     // zero or one "ORDER", cannot have more than one "ORDER"
