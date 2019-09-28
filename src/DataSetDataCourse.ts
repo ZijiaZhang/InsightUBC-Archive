@@ -202,4 +202,23 @@ export class DataSetDataCourse extends DataSet {
         return results;
     }
 
+    public getAllCourses(): IDataRowCourse[] {
+        let results: IDataRowCourse[] = [];
+        for (let i = 0; i < this.dept.length; i++) {
+            results.push( {
+                dept: this.dept[i],
+                id: this.id[i],
+                instructor: this.instructor[i],
+                title: this.title[i],
+                uuid: this.uuid[i],
+                avg: this.avg[i],
+                pass: this.pass[i],
+                fail: this.fail[i],
+                audit: this.audit[i],
+                year: this.year[i]
+            });
+        }
+        return results;
+    }
+
 }

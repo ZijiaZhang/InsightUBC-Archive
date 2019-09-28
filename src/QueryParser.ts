@@ -30,21 +30,22 @@ export class QueryParser {
         let numberOfNot: number = 0;
         let datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
         if (whereKey === null) {
-            // return all ?????????????????????????
+            protoResult.concat(datasetCourse.getAllCourses());
+            this.candidate.concat(datasetCourse.getAllCourses());
         } else if (whereKey === "LT" || whereKey === "GT" || whereKey === "EQ" || whereKey === "IS") {
             if (numberOfNot % 2 === 0) {
                 let result: any = datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
                     CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), false);
                 if (!(result instanceof InsightError)) {
-                    protoResult.push(result);
-                    this.candidate.push(result);
+                    protoResult.concat(result);
+                    this.candidate.concat(result);
                 }
             } else {
                 let result: any = datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
                     CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), true);
                 if (!(result instanceof InsightError)) {
-                    protoResult.push(result);
-                    this.candidate.push(result);
+                    protoResult.concat(result);
+                    this.candidate.concat(result);
                 }
             }
             indexOfKeyVal++;

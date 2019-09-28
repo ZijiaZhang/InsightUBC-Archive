@@ -2,7 +2,7 @@
     "title": "Valid Query With Locic AND",
     "query": {
         "WHERE": {
-            "NO": [
+            "NOT": [
                 {
                     "GT": {
                         "courses_avg": 97
