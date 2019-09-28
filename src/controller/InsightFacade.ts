@@ -113,18 +113,25 @@ export default class InsightFacade implements IInsightFacade {
         return new Promise<any[]>((resolve, reject) => {
             if (query === null || query === undefined) {
                 reject(new InsightError("Query is null or undefined"));
-            } else if (Query.checkEBNF(query)) {
-                if (Query.checkSemantic(query)) {
-                    QueryParser.getQueryResult(query).then((result) => {
-                        resolve(result);
+            } else if (!Query.checkEBNF(query)) {
+                reject(new InsightError("Query Syntax Not Valid"));
+            } else if (!Query.checkSemantic(query)) {
+                reject(new InsightError("Query has semantic error"));
+            } else {
+                let datasetID;
+                let temp = Query.getDataSetFromQuery(query);
+                if (typeof temp === "string") {
+                    datasetID = temp;
+                }
+                return this.switchDataSet(datasetID).then((result) => {
+                   return  QueryParser.getQueryResult(query).then((result2) => {
+                        resolve(result2);
                     }).catch((err) => {
                         reject(err);
                     });
-                } else {
-                    reject(new InsightError("Query has semantic error"));
-                }
-            } else {
-                reject(new InsightError("Query Syntax Not Valid"));
+                }).catch((err) => {
+                    reject(new InsightError("Reference non-exist dataset"));
+                });
             }
         });
     }

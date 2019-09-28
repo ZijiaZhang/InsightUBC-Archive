@@ -117,7 +117,7 @@ export class Query {
                 if (options.hasOwnProperty("ORDER")) {
                     const orderKey = options["ORDER"];
                     if (!column.includes(orderKey)) {
-                        isSemanticCorrect = false;
+                        return false;
                     }
                 }
             }

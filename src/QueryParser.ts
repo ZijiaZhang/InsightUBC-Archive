@@ -6,27 +6,17 @@ import InsightFacade from "./controller/InsightFacade";
 export class QueryParser {
     private static queryResult: object[] = [];
     private static candidate: IDataRowCourse[] = [];
-    private static DatasetID: string;
-    private static insightFacade: InsightFacade = new InsightFacade();
-    private static datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
+ //   private static DatasetID: string;
 
     public static getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            let temp = Query.getDataSetFromQuery(query);
-            if (typeof temp === "string") {
-                this.DatasetID = temp;
-            }
-            this.insightFacade.switchDataSet(this.DatasetID).then((result) => {
-                this.candidate = this.findCandidate(query["WHERE"]);
-                if (this.candidate.length > 5000) {
-                    reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
-                } else {
-                    this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
-                    resolve(this.queryResult);
+            this.candidate = this.findCandidate(query["WHERE"]);
+            if (this.candidate.length > 5000) {
+                reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
+            } else {
+                this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
+                resolve(this.queryResult);
                 }
-            }).catch((err) => {
-                reject(new InsightError("Reference non-exist dataset"));
-            });
             }
         );
     }
@@ -39,18 +29,19 @@ export class QueryParser {
         }
         let indexOfKeyVal: number = 0;
         let numberOfNot: number = 0;
+        let datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
         if (whereKey === null) {
             // return all ?????????????????????????
         } else if (whereKey === "LT" || whereKey === "GT" || whereKey === "EQ" || whereKey === "IS") {
             if (numberOfNot % 2 === 0) {
-                let result: any = this.datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
+                let result: any = datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
                     CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), false);
                 if (!(result instanceof InsightError)) {
                     protoResult.push(result);
                     this.candidate.push(result);
                 }
             } else {
-                let result: any = this.datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
+                let result: any = datasetCourse.getData(Query.getKey(whereKey, indexOfKeyVal),
                     CompOperators[whereKey], Query.getVal(whereKey, indexOfKeyVal), true);
                 if (!(result instanceof InsightError)) {
                     protoResult.push(result);
@@ -145,3 +136,25 @@ export class QueryParser {
         }
     }
 }
+
+// public static getQueryResult(query: any): Promise<any[]> {
+//     return new Promise<any[]>((resolve, reject) => {
+            // let temp = Query.getDataSetFromQuery(query);
+            // let insightFacade: InsightFacade;
+            // if (typeof temp === "string") {
+            //     this.DatasetID = temp;
+            // }
+            // return insightFacade.switchDataSet(this.DatasetID).then((result) => {
+            // this.candidate = this.findCandidate(query["WHERE"]);
+            // if (this.candidate.length > 5000) {
+            //     reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
+            // } else {
+            //     this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
+            //     resolve(this.queryResult);
+            // }
+            // }).catch((err) => {
+            //     reject(new InsightError("Reference non-exist dataset"));
+//             });
+//         }
+//     );
+// }
