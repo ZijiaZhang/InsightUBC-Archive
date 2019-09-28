@@ -19,8 +19,8 @@ export default class TestUtil {
                 } else {
                     expect(response).to.be.instanceOf(InsightError);
                 }
+                done();
             }
-            done();
         } catch (e) {
             done(e);
         }

@@ -87,4 +87,6 @@ export abstract class DataSet {
      * @param indexes The required index
      */
     protected abstract getAll(indexes: number[]): IDataRowCourse[];
+
+    public abstract getAllData(): IDataRow[];
 }

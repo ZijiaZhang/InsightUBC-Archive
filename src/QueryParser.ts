@@ -1,15 +1,24 @@
 import {DataSetDataCourse, IDataRowCourse} from "./DataSetDataCourse";
 import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
-import {CompOperators, Query} from "./Query";
+import {CompOperators, LogicalOperators, Query} from "./Query";
+import {DataSet} from "./DataSet";
+import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 
 export class QueryParser {
     private queryResult: object[] = [];
     private candidate: IDataRowCourse[] = [];
+    public query: Query;
+    public database: DataSetDataCourse;
+
+    constructor(query: Query, database: DataSetDataCourse) {
+        this.query = query;
+        this.database = database;
+    }
  //   private static DatasetID: string;
 
     public getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            this.candidate = this.findCandidate(query["WHERE"], 0, 0);
+            this.candidate = this.findCandidate(this.query.Locgic);
             if (this.candidate.length > 5000) {
                 reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
             } else {
@@ -20,69 +29,47 @@ export class QueryParser {
         );
     }
 
-    private findCandidate(queryBody: any, indexOfKeyVal: number, numberOfNot: number): IDataRowCourse[] {
-        let query: Query = new Query();
-        let protoResult: IDataRowCourse[] = [];
+    private findCandidate(logic: LogicElement): IDataRowCourse[] {
         let operator: string = null;
-        if (Object.keys(queryBody).length !== 0) {
-            operator = Object.keys(queryBody)[0];
+        if (logic instanceof BasicLogic) {
+            let result: any = this.database.getData(logic.key,
+                logic.comp, logic.value, false);
+            return !(result instanceof InsightError) ? result : [];
+        } else if (logic instanceof ComplexLogic) {
+            let result: IDataRowCourse[] = [];
+            switch (logic.logicalOperator) {
+                case LogicalOperators.AND:
+                    result = this.database.getAllData();
+                    for (let obj of logic.elements) { result = this.findIntersection(result, this.findCandidate(obj)); }
+                    return result;
+                case LogicalOperators.OR:
+                    for (let obj of logic.elements) { result = this.findIntersection(result, this.findCandidate(obj)); }
+                    return result;
+            }
+        } else if (logic instanceof NotLogic) {
+            return [];
         }
-        // let indexOfKeyVal: number = 0;
-        // let numberOfNot: number = 0;
-        let datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
-        if (operator === null) {
-            protoResult = protoResult.concat(datasetCourse.getAllCourses());
-            this.candidate = this.candidate.concat(datasetCourse.getAllCourses());
-        } else if (operator === "LT" || operator === "GT" || operator === "EQ" || operator === "IS") {
-            if (numberOfNot % 2 === 0) {
-                let result: any = datasetCourse.getData(query.getKey(operator, indexOfKeyVal),
-                    CompOperators[operator], query.getVal(operator, indexOfKeyVal), false);
-                if (!(result instanceof InsightError)) {
-                    protoResult = protoResult.concat(result);
-                    this.candidate = this.candidate.concat(result);
-                }
-            } else {
-                let result: any = datasetCourse.getData(query.getKey(operator, indexOfKeyVal),
-                    CompOperators[operator], query.getVal(operator, indexOfKeyVal), true);
-                if (!(result instanceof InsightError)) {
-                    protoResult = protoResult.concat(result);
-                    this.candidate = this.candidate.concat(result);
-                }
-            }
-            indexOfKeyVal++;
-        } else if (operator === "AND") {
-            let andClause: object[] = Object.values(queryBody);
-            for (let obj of andClause) {
-                this.candidate = this.findIntersection(this.candidate,
-                    this.findCandidate(obj, indexOfKeyVal, numberOfNot));
-                protoResult = this.findIntersection(this.candidate,
-                    this.findCandidate(obj, indexOfKeyVal, numberOfNot));
-            }
-        } else if (operator === "OR") {
-            let andClause: object[] = Object.values(queryBody);
-            for (let obj of andClause) {
-                this.candidate = this.findUnion(this.candidate, this.findCandidate(obj, indexOfKeyVal, numberOfNot));
-                protoResult = this.findUnion(this.candidate, this.findCandidate(obj, indexOfKeyVal, numberOfNot));
-            }
-        } else if (operator === "NOT") {
-            numberOfNot++;
-            let obj: object = Object.values(queryBody);
-            protoResult = this.findCandidate(obj, indexOfKeyVal, numberOfNot);
-            this.candidate = this.findCandidate(obj, indexOfKeyVal, numberOfNot);
-        }
-        return protoResult;
     }
 
     private selectFieldandOrder(candidateResult: IDataRowCourse[], queryOptions: any): object[] {
+        let result = [];
         if (queryOptions.hasOwnProperty("COLUMNS")) {
             const column: string[] = queryOptions["COLUMNS"];
+            const databaseID = column[0].split("_")[0];
+            for ( let i = 0; i < column.length; i++) {
+                column[i] = column[i].split("_")[1];
+            }
             for (let candidate of candidateResult) {
                 for (let property of Object.keys(candidate)) {
                     if (! (column.includes(property))) {
                         delete candidate[property];
-                        this.queryResult.push(candidate);
                     }
                 }
+                let obj: any = {};
+                for (let i of Object.keys(candidate)) {
+                    obj[databaseID + "_" + i] = candidate[i];
+                }
+                this.queryResult.push(obj);
             }
         }
         if (queryOptions.hasOwnProperty("ORDER")) {
@@ -94,17 +81,20 @@ export class QueryParser {
     // reference: stackOverflow:
     // https://stackoverflow.com/questions/16227197/compute-intersection-of-two-arrays-in-javascript
     private findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
-        let tempArr;
-        if (array2.length > array1.length) {
-            tempArr = array2;
-            array2 = array1;
-            array1 = tempArr;
+        let result: IDataRowCourse[] = [];
+        for (let course of array1) {
+            if (this.findCourse(array2, course)) { result.push(course); }
         }
-        return array1.filter(function (e) {
-            return array2.indexOf(e) > -1;
-        }).filter(function (e, i, c) { // extra step to remove duplicates
-                return c.indexOf(e) === i;
-        });
+        return result;
+    }
+
+    private findCourse( array2: IDataRowCourse[], course: IDataRowCourse): boolean {
+        for (let course2 of array2) {
+            if (course2.uuid === course.uuid) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // reference: stackOverflow:https:

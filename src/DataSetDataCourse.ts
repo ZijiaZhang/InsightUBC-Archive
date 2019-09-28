@@ -202,7 +202,7 @@ export class DataSetDataCourse extends DataSet {
         return results;
     }
 
-    public getAllCourses(): IDataRowCourse[] {
+    public getAllData(): IDataRowCourse[] {
         let results: IDataRowCourse[] = [];
         for (let i = 0; i < this.dept.length; i++) {
             results.push( {

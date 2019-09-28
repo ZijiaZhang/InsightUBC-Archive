@@ -1,6 +1,7 @@
 import Log from "./Util";
 import {IDataRowCourse} from "./DataSetDataCourse";
 import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
+import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 
 export enum CompOperators {
     GT ,
@@ -22,8 +23,22 @@ export class Query {
     private EQvalue: number[] = [];
     private ISKey: string[] = [];
     private ISvalue: string[] = [];
+    private queryObject: any;
+    public Locgic: LogicElement| null;
     private columnKeys: string[] = [];
     private orderKey: string = null;
+
+    // public static getColumnKey(column: string): string[] | null {
+    //     switch (column) {
+    //         case "COLUMNS":
+    //             return this.columnKeys;
+    //         default:
+    //             return null;
+    //     }
+    // }
+    constructor(queryObject: any) {
+        this.queryObject = queryObject;
+    }
 
     public getKey(column: string, index: number): string| null {
         switch (column) {
@@ -56,35 +71,25 @@ export class Query {
                 return null;
         }
     }
-
-    // public static getColumnKey(column: string): string[] | null {
-    //     switch (column) {
-    //         case "COLUMNS":
-    //             return this.columnKeys;
-    //         default:
-    //             return null;
-    //     }
-    // }
-
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
     // zero or one "ORDER", cannot have more than one "ORDER"
-    public checkEBNF(inputquery: any): boolean {
+    public checkEBNF(): boolean {
         let isSyntaxValid: boolean = true;
-        if (!inputquery.hasOwnProperty("WHERE")) {
+        if (!this.queryObject.hasOwnProperty("WHERE")) {
             return false;
         }
-        if (!inputquery.hasOwnProperty("OPTIONS")) {
+        if (!this.queryObject.hasOwnProperty("OPTIONS")) {
             return false;
         }
-        const where: object = inputquery["WHERE"];
+        const where: object = this.queryObject["WHERE"];
         if (Object.keys(where).length > 1) {
             return false;
         }
         if (Object.keys(where).length === 1) {
             isSyntaxValid = isSyntaxValid && this.checkFilter(where);
         }
-        const options: any = inputquery["OPTIONS"];
+        const options: any = this.queryObject["OPTIONS"];
         if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
             return false;
         }
@@ -108,17 +113,17 @@ export class Query {
         return isSyntaxValid;
     }
 
-    public checkSemantic(inputquery: any): boolean {
+    public checkSemantic(): boolean {
         let isSemanticCorrect: boolean = true;
-        if (inputquery.hasOwnProperty("OPTIONS")) {
-            const options: any = inputquery["OPTIONS"];
+        if (this.queryObject.hasOwnProperty("OPTIONS")) {
+            const options: any = this.queryObject["OPTIONS"];
             if (options.hasOwnProperty("COLUMNS") && options.hasOwnProperty("ORDER")) {
                 if (!(options["COLUMNS"].includes(options["ORDER"]))) {
                     return false;
                 }
             }
         }
-        if (!this.checkReferenceDSValid(inputquery)) {
+        if (!this.checkReferenceDSValid(this.queryObject)) {
             return false;
         }
         return isSemanticCorrect;
@@ -246,5 +251,48 @@ export class Query {
             }
         }
         return DS;
+    }
+
+    public parseLogic() {
+        let logicStatements = this.queryObject["WHERE"];
+        let parsedLogic = Query.statementToLogic(logicStatements);
+        if ( parsedLogic instanceof LogicElement) {
+            this.Locgic = parsedLogic;
+        }
+    }
+
+    public static statementToLogic(statement: any): LogicElement| LogicElement[] {
+        if (statement instanceof Array) {
+            let result: LogicElement[] = [];
+            for (let e of statement) {
+                let elem = this.statementToLogic(e);
+                if (elem instanceof LogicElement) {
+                    result.push(elem);
+                }
+            }
+            return result;
+        } else {
+            let filterKey = Object.keys(statement)[0];
+            if (filterKey === "NOT") {
+                return new NotLogic(this.statementToLogic(statement[filterKey]) as LogicElement);
+            }
+            if (statement[filterKey] instanceof Array) {
+                let childResult = this.statementToLogic(statement[filterKey]) as LogicElement[];
+                return new ComplexLogic(LogicalOperators.AND, childResult);
+
+            } else {
+                let comp = CompOperators.GT;
+                switch (filterKey) {
+                    case "GT": comp = CompOperators.GT; break;
+                    case "LT": comp = CompOperators.LT; break;
+                    case "EQ": comp = CompOperators.EQ; break;
+                    case "IS": comp = CompOperators.IS; break;
+                }
+                let key = Object.keys(statement[filterKey])[0].split("_")[1];
+                let val = Object.values(statement[filterKey])[0] as string|number;
+                return new BasicLogic(comp, key, val);
+
+            }
+        }
     }
 }
