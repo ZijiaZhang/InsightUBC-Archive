@@ -234,11 +234,11 @@ export class Query {
     public static getDataSetFromQuery(inputquery: any): string | boolean {
         let allDSinQuery: string[] = [];
         let allKeyInQuery: string[] = [];
-        allKeyInQuery.concat(this.LTKey);
-        allKeyInQuery.concat(this.GTKey);
-        allKeyInQuery.concat(this.EQKey);
-        allKeyInQuery.concat(this.ISKey);
-        allKeyInQuery.push(this.orderKey);
+        allKeyInQuery = allKeyInQuery.concat(this.LTKey);
+        allKeyInQuery = allKeyInQuery.concat(this.GTKey);
+        allKeyInQuery = allKeyInQuery.concat(this.EQKey);
+        allKeyInQuery = allKeyInQuery.concat(this.ISKey);
+        if (this.orderKey != null) { allKeyInQuery.push(this.orderKey); }
         allKeyInQuery = allKeyInQuery.concat(this.columnKeys);
         for (let key of allKeyInQuery) {
             allDSinQuery.push(key.split("_")[0]);
