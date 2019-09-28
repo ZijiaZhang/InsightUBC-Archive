@@ -104,6 +104,7 @@ export class QueryParser {
     }
 
     private findComplement(array1: IDataRowCourse[], all: IDataRowCourse[]): IDataRowCourse[] {
+        return [];
         let result: IDataRowCourse[] = [];
         for (let course of all) {
             if (!this.findCourse(array1, course)) { result.push(course); }
