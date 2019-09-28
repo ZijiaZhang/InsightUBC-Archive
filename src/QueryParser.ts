@@ -9,7 +9,7 @@ export class QueryParser {
 
     public getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            this.candidate = this.findCandidate(query["WHERE"]);
+            this.candidate = this.findCandidate(query["WHERE"], 0, 0);
             if (this.candidate.length > 5000) {
                 reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
             } else {
@@ -20,15 +20,15 @@ export class QueryParser {
         );
     }
 
-    private findCandidate(queryBody: any): IDataRowCourse[] {
+    private findCandidate(queryBody: any, indexOfKeyVal: number, numberOfNot: number): IDataRowCourse[] {
         let query: Query = new Query();
         let protoResult: IDataRowCourse[] = [];
         let operator: string = null;
         if (Object.keys(queryBody).length !== 0) {
             operator = Object.keys(queryBody)[0];
         }
-        let indexOfKeyVal: number = 0;
-        let numberOfNot: number = 0;
+        // let indexOfKeyVal: number = 0;
+        // let numberOfNot: number = 0;
         let datasetCourse: DataSetDataCourse = new DataSetDataCourse("courses");
         if (operator === null) {
             protoResult = protoResult.concat(datasetCourse.getAllCourses());
@@ -53,20 +53,22 @@ export class QueryParser {
         } else if (operator === "AND") {
             let andClause: object[] = Object.values(queryBody);
             for (let obj of andClause) {
-                this.candidate = this.findIntersection(this.candidate, this.findCandidate(obj));
-                protoResult = this.findIntersection(this.candidate, this.findCandidate(obj));
+                this.candidate = this.findIntersection(this.candidate,
+                    this.findCandidate(obj, indexOfKeyVal, numberOfNot));
+                protoResult = this.findIntersection(this.candidate,
+                    this.findCandidate(obj, indexOfKeyVal, numberOfNot));
             }
         } else if (operator === "OR") {
             let andClause: object[] = Object.values(queryBody);
             for (let obj of andClause) {
-                this.candidate = this.findUnion(this.candidate, this.findCandidate(obj));
-                protoResult = this.findUnion(this.candidate, this.findCandidate(obj));
+                this.candidate = this.findUnion(this.candidate, this.findCandidate(obj, indexOfKeyVal, numberOfNot));
+                protoResult = this.findUnion(this.candidate, this.findCandidate(obj, indexOfKeyVal, numberOfNot));
             }
         } else if (operator === "NOT") {
             numberOfNot++;
             let obj: object = Object.values(queryBody);
-            protoResult = this.findCandidate(obj);
-            this.candidate = this.findCandidate(obj);
+            protoResult = this.findCandidate(obj, indexOfKeyVal, numberOfNot);
+            this.candidate = this.findCandidate(obj, indexOfKeyVal, numberOfNot);
         }
         return protoResult;
     }
