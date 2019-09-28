@@ -66,6 +66,13 @@ export class Query {
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
     // zero or one "ORDER", cannot have more than one "ORDER"
+
+    /**
+     * Check that if the query object matches EBNF.
+     * @return boolean
+     * return true if the queryObject follows definition of EBNF,
+     * return false otherwise.
+     */
     public checkEBNF(): boolean {
         let isSyntaxValid: boolean = true;
         if (!this.queryObject.hasOwnProperty("WHERE")) {
@@ -105,6 +112,12 @@ export class Query {
         return isSyntaxValid;
     }
 
+    /**
+     * Check that if the query object is semantically correct.
+     * @return boolean
+     * return true if the queryObject have the Order column in Columns, and all query are referencing the same Dataset
+     * return false otherwise.
+     */
     public checkSemantic(): boolean {
         let isSemanticCorrect: boolean = true;
         if (this.queryObject.hasOwnProperty("OPTIONS")) {
@@ -121,6 +134,13 @@ export class Query {
         return isSemanticCorrect;
     }
 
+    /**
+     * Check that if the Where clause is correct.
+     * @param whereClause
+     * @return boolean
+     * return true if the Where clause is correct, and collect all keys and vals.
+     * return false otherwise.
+     */
     private checkFilter(whereClause: any): boolean {
         const filterKeys: string[] = Object.keys(whereClause);
         const filterKey = filterKeys[0];
@@ -161,6 +181,12 @@ export class Query {
         return isFilterCorrect;
     }
 
+    /**
+     * Add key and value to the list with filter key "GT" ,"LS" , "EQ".
+     * @param filterKey The Keyword of the relationship
+     * @param mCompKey The column name.
+     * @param mCompVal The value of the contraint.
+     */
     private helpAddKeyandVal(filterKey: string, mCompKey: string, mCompVal: number) {
         switch (filterKey) {
             case "LT":
@@ -178,6 +204,11 @@ export class Query {
         }
     }
 
+    /**
+     * Add key and value to the list with filter "IS"
+     * @param iskey the column name
+     * @param isval the vale of the constraint.
+     */
     private helpAddIsKeyAndVal(iskey: string, isval: string) {
         this.ISKey.push(iskey);
         this.ISvalue.push(isval);
