@@ -79,6 +79,7 @@ export class QueryParser {
     }
 
     private findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
+        return [];
         let result: IDataRowCourse[] = [];
         for (let course of array1) {
             if (this.findCourse(array2, course)) { result.push(course); }
@@ -96,6 +97,7 @@ export class QueryParser {
     }
 
     private findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
+        return [];
         let result: IDataRowCourse[] = array1;
         for (let course of array2) {
             if (!this.findCourse(array1, course)) { result.push(course); }

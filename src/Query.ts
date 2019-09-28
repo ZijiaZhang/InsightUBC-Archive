@@ -273,6 +273,7 @@ export class Query {
                 switch (filterKey) {
                     case "AND": return new ComplexLogic(LogicalOperators.AND, childResult);
                     case "OR" : return new ComplexLogic(LogicalOperators.OR, childResult);
+                    default: return new ComplexLogic(LogicalOperators.AND, childResult);
                 }
             } else {
                 let comp = CompOperators.GT;
