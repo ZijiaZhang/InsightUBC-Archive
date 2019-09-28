@@ -23,9 +23,9 @@ export class Query {
     private EQvalue: number[] = [];
     private ISKey: string[] = [];
     private ISvalue: string[] = [];
-    private queryObject: any;
+    public queryObject: any;
     public Locgic: LogicElement| null;
-    private columnKeys: string[] = [];
+    public columnKeys: string[] = [];
     private orderKey: string = null;
 
     constructor(queryObject: any) {

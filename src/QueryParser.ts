@@ -21,8 +21,8 @@ export class QueryParser {
         return new Promise<any[]>((resolve, reject) => {
                let result = this.findCandidate(this.query.Locgic);
                if (result instanceof Array) {
-                    this.queryResult = this.selectFieldandOrder(result, query["OPTIONS"]);
-                    resolve(this.queryResult);
+                    // this.queryResult = this.selectFieldandOrder(result, query["OPTIONS"]);
+                    resolve(result);
                 } else {
                    reject(result);
                }
@@ -30,7 +30,7 @@ export class QueryParser {
         );
     }
 
-    private findCandidate(Locgic: LogicElement): IDataRowCourse[]| ResultTooLargeError {
+    private findCandidate(Locgic: LogicElement): any[]| ResultTooLargeError {
         let allResult = this.database.getAllData();
         if (Locgic == null) {
             if (allResult.length > 5000) {
@@ -40,9 +40,23 @@ export class QueryParser {
         }
         let result = [];
         let size = 0;
+        const column: string[] = this.query.queryObject.OPTIONS.COLUMNS;
+        const databaseID = column[0].split("_")[0];
+        for (let i = 0; i < column.length; i++) {
+            column[i] = column[i].split("_")[1];
+        }
         for (let course of allResult) {
             if (this.determineCandidate(Locgic, course)) {
-                result.push(course);
+                for (let property of Object.keys(course)) {
+                    if (!(column.includes(property))) {
+                        delete course[property];
+                    }
+                }
+                let obj: any = {};
+                for (let i of Object.keys(course)) {
+                    obj[databaseID + "_" + i] = course[i];
+                }
+                result.push(obj);
                 size++;
                 if (size > 5000) {
                     return new ResultTooLargeError("Result of this query exceeds maximum length");
