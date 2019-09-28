@@ -14,14 +14,14 @@ export enum LogicalOperators {
 }
 
 export class Query {
-    private static GTKey: string[] = null;
-    private static GTvalue: number[] = null;
-    private static LTKey: string[] = null;
-    private static LTvalue: number[] = null;
-    private static EQKey: string[] = null;
-    private static EQvalue: number[] = null;
-    private static ISKey: string[] = null;
-    private static ISvalue: string[] = null;
+    private static GTKey: string[] = [];
+    private static GTvalue: number[] = [];
+    private static LTKey: string[] = [];
+    private static LTvalue: number[] = [];
+    private static EQKey: string[] = [];
+    private static EQvalue: number[] = [];
+    private static ISKey: string[] = [];
+    private static ISvalue: string[] = [];
     private static columnKeys: string[] = [];
     private static orderKey: string = null;
 

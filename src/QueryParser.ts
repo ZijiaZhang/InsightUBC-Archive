@@ -1,7 +1,6 @@
 import {DataSetDataCourse, IDataRowCourse} from "./DataSetDataCourse";
 import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
 import {CompOperators, Query} from "./Query";
-import InsightFacade from "./controller/InsightFacade";
 
 export class QueryParser {
     private static queryResult: object[] = [];
