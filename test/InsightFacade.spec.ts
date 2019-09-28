@@ -404,21 +404,29 @@ describe("InsightFacade Add/Remove Dataset", function () {
         return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
                 "        \"WHERE\": {\n" +
-                "            \"GT\": {\n" +
-                "                \"courses_avg\":97\n" +
-                "            }\n" +
+                "            \"AND\": [\n" +
+                "                {\n" +
+                "                    \"IS\": {\n" +
+                "                        \"courses_id\": \"**\"\n" +
+                "                    }\n" +
+                "                },\n" +
+                "                {\n" +
+                "                    \"GT\": {\n" +
+                "                        \"courses_avg\": 97\n" +
+                "                    }\n" +
+                "                }\n" +
+                "            ]\n" +
                 "        },\n" +
                 "        \"OPTIONS\": {\n" +
                 "            \"COLUMNS\": [\n" +
                 "                \"courses_dept\",\n" +
-                "                \"courses_avg\"\n" +
+                "                \"courses_id\"\n" +
                 "            ],\n" +
-                "            \"ORDER\": \"courses_avg\"\n" +
+                "            \"ORDER\": \"courses_id\"\n" +
                 "        }\n" +
                 "    }")).then( (result) => {
                     expect(result.length).equal(49);
             }).catch((err) => {
-                Log.error(err);
                 expect.fail("Should not be rejected.");
             });
         });

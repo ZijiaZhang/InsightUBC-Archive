@@ -22,7 +22,7 @@ export default class TestUtil {
                 done();
             }
         } catch (e) {
-            done(e);
+            done("Error");
         }
     }
 
