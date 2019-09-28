@@ -264,6 +264,9 @@ export class Query {
             }
             return result;
         } else {
+            if (Object.keys(statement).length === 0) {
+                return null;
+            }
             let filterKey = Object.keys(statement)[0];
             if (filterKey === "NOT") {
                 return new NotLogic(this.statementToLogic(statement[filterKey]) as LogicElement);

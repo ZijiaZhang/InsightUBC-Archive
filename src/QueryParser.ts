@@ -14,40 +14,78 @@ export class QueryParser {
         this.query = query;
         this.database = database;
     }
- //   private static DatasetID: string;
+
+    //   private static DatasetID: string;
 
     public getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            this.candidate = this.findCandidate(this.query.Locgic);
-            if (this.candidate.length > 5000) {
-                reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
-            } else {
-                this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
-                resolve(this.queryResult);
+                this.candidate = this.findCandidate(this.query.Locgic);
+                if (this.candidate.length > 5000) {
+                    reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
+                } else {
+                    this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
+                    resolve(this.queryResult);
                 }
             }
         );
     }
 
-    private findCandidate(logic: LogicElement): IDataRowCourse[] {
+    private findCandidate(Locgic: LogicElement): IDataRowCourse[] {
+        let allResult = this.database.getAllData();
+        if (Locgic == null) { return allResult; }
+        let result = [];
+        for (let course of allResult) {
+            if (this.determineCandidate(Locgic, course)) {
+                result.push(course);
+            }
+        }
+        return result;
+    }
+
+    private determineCandidate(logic: LogicElement, course: IDataRowCourse): boolean {
         let operator: string = null;
         if (logic instanceof BasicLogic) {
-            let result: any = this.database.getData(logic.key,
-                logic.comp, logic.value, false);
-            return !(result instanceof InsightError) ? result : [];
+            let compare;
+            switch (logic.comp) {
+                case CompOperators.EQ: compare = (x: any, y: any) => x === y; break;
+                case CompOperators.GT: compare = (x: any, y: any) => x > y; break;
+                case CompOperators.LT: compare = (x: any, y: any) => x < y; break;
+                case CompOperators.IS:
+                    compare = (x: any, y: any) => {
+                        let value: string = x as string;
+                        let match: string = y as string;
+                        if (match === "*") {return true; }
+                        if (match.startsWith("*") && match.endsWith("*")) {
+                            let matchStr = match.substring(1, match.length - 1);
+                            return value.indexOf(matchStr) !== -1;
+                        } else if (match.startsWith("*")) {
+                            return value.endsWith(match.substring(1));
+                        } else if (match.endsWith("*")) {
+                            return value.startsWith(match.substring(0, match.length - 1 ));
+                        } else {
+                            return value === match;
+                        }
+                    };
+                    break;
+            }
+            return compare(course[logic.key], logic.value);
         } else if (logic instanceof ComplexLogic) {
-            let result: IDataRowCourse[] = [];
+            let result: boolean = false;
             switch (logic.logicalOperator) {
                 case LogicalOperators.AND:
-                    result = this.database.getAllData();
-                    for (let obj of logic.elements) { result = this.findIntersection(result, this.findCandidate(obj)); }
+                    result = true;
+                    for (let obj of logic.elements) {
+                        result = result && this.determineCandidate(obj, course);
+                    }
                     return result;
                 case LogicalOperators.OR:
-                    for (let obj of logic.elements) { result = this.findUnion(result, this.findCandidate(obj)); }
+                    for (let obj of logic.elements) {
+                        result = result || this.determineCandidate(obj, course);
+                    }
                     return result;
             }
         } else if (logic instanceof NotLogic) {
-            return this.findComplement(this.findCandidate(logic.element), this.database.getAllData());
+            return !this.determineCandidate(logic.element, course);
         }
     }
 
@@ -56,12 +94,12 @@ export class QueryParser {
         if (queryOptions.hasOwnProperty("COLUMNS")) {
             const column: string[] = queryOptions["COLUMNS"];
             const databaseID = column[0].split("_")[0];
-            for ( let i = 0; i < column.length; i++) {
+            for (let i = 0; i < column.length; i++) {
                 column[i] = column[i].split("_")[1];
             }
             for (let candidate of candidateResult) {
                 for (let property of Object.keys(candidate)) {
-                    if (! (column.includes(property))) {
+                    if (!(column.includes(property))) {
                         delete candidate[property];
                     }
                 }
@@ -76,42 +114,6 @@ export class QueryParser {
             this.orderBy(this.queryResult, queryOptions["ORDER"]);
         }
         return this.queryResult;
-    }
-
-    private findIntersection(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
-        return [];
-        let result: IDataRowCourse[] = [];
-        for (let course of array1) {
-            if (this.findCourse(array2, course)) { result.push(course); }
-        }
-        return result;
-    }
-
-    private findCourse( array2: IDataRowCourse[], course: IDataRowCourse): boolean {
-        for (let course2 of array2) {
-            if (course2.uuid === course.uuid) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private findUnion(array1: IDataRowCourse[], array2: IDataRowCourse[]): IDataRowCourse[] {
-        return [];
-        let result: IDataRowCourse[] = array1;
-        for (let course of array2) {
-            if (!this.findCourse(array1, course)) { result.push(course); }
-        }
-        return result;
-    }
-
-    private findComplement(array1: IDataRowCourse[], all: IDataRowCourse[]): IDataRowCourse[] {
-        return [];
-        let result: IDataRowCourse[] = [];
-        for (let course of all) {
-            if (!this.findCourse(array1, course)) { result.push(course); }
-        }
-        return result;
     }
 
     // By default, will order in ascending order.
@@ -137,6 +139,7 @@ export class QueryParser {
             });
         }
     }
+
 }
 
 // public static getQueryResult(query: any): Promise<any[]> {
