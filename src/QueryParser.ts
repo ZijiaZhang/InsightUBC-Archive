@@ -128,26 +128,27 @@ export class QueryParser {
 
     // By default, will order in ascending order.
     private orderBy(queryResult: object[], orderKey: string) {
-        if (orderKey === "courses_avg" || orderKey === "courses_pass" || orderKey === "courses_fail"
-            || orderKey === "courses_audit" || orderKey === "courses_year") {
-            queryResult.sort(function (a: any, b: any) {
-                return a[orderKey] - b[orderKey];
-            });
-        } else if (orderKey === "courses_dept" || orderKey === "courses_instructor" || orderKey === "courses_title") {
-            queryResult.sort(function (a: any, b: any) {
-                if (a[orderKey].toLowerCase() < b[orderKey].toLowerCase()) {
-                    return -1;
-                } else if (a[orderKey].toLowerCase() > b[orderKey].toLowerCase()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-        } else if (orderKey === "courses_id" || orderKey === "courses_uuid") {
-            queryResult.sort(function (a: any, b: any) {
-                return Number(a[orderKey]) - Number(b[orderKey]);
-            });
-        }
+        // if (orderKey === "courses_avg" || orderKey === "courses_pass" || orderKey === "courses_fail"
+        //     || orderKey === "courses_audit" || orderKey === "courses_year") {
+        //     queryResult.sort(function (a: any, b: any) {
+        //         return a[orderKey] - b[orderKey];
+        //     });
+        // } else if (orderKey === "courses_dept" || orderKey === "courses_instructor" ||
+        // orderKey === "courses_title") {
+        //     queryResult.sort(function (a: any, b: any) {
+        //         if (a[orderKey].toLowerCase() < b[orderKey].toLowerCase()) {
+        //             return -1;
+        //         } else if (a[orderKey].toLowerCase() > b[orderKey].toLowerCase()) {
+        //             return 1;
+        //         } else {
+        //             return 0;
+        //         }
+        //     });
+        // } else if (orderKey === "courses_id" || orderKey === "courses_uuid") {
+        //     queryResult.sort(function (a: any, b: any) {
+        //         return Number(a[orderKey]) - Number(b[orderKey]);
+        //     });
+        // }
     }
 
 }
