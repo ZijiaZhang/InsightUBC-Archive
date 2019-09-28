@@ -19,24 +19,34 @@ export class QueryParser {
 
     public getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-                this.candidate = this.findCandidate(this.query.Locgic);
-                if (this.candidate.length > 5000) {
-                    reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
-                } else {
-                    this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
+               let result = this.findCandidate(this.query.Locgic);
+               if (result instanceof Array) {
+                    this.queryResult = this.selectFieldandOrder(result, query["OPTIONS"]);
                     resolve(this.queryResult);
-                }
+                } else {
+                   reject(result);
+               }
             }
         );
     }
 
-    private findCandidate(Locgic: LogicElement): IDataRowCourse[] {
+    private findCandidate(Locgic: LogicElement): IDataRowCourse[]| ResultTooLargeError {
         let allResult = this.database.getAllData();
-        if (Locgic == null) { return allResult; }
+        if (Locgic == null) {
+            if (allResult.length > 5000) {
+                return new ResultTooLargeError("Result of this query exceeds maximum length");
+            }
+            return allResult;
+        }
         let result = [];
+        let size = 0;
         for (let course of allResult) {
             if (this.determineCandidate(Locgic, course)) {
                 result.push(course);
+                size++;
+                if (size > 5000) {
+                    return new ResultTooLargeError("Result of this query exceeds maximum length");
+                }
             }
         }
         return result;
