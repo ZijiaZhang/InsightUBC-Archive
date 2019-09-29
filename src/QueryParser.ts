@@ -40,7 +40,8 @@ export class QueryParser {
         }
         let result = [];
         let size = 0;
-        const column: string[] = this.query.queryObject.OPTIONS.COLUMNS;
+        let queryOptions: any = this.query.queryObject.OPTIONS;
+        const column: string[] = queryOptions.COLUMNS;
         const databaseID = column[0].split("_")[0];
         for (let i = 0; i < column.length; i++) {
             column[i] = column[i].split("_")[1];
@@ -62,6 +63,9 @@ export class QueryParser {
                     return new ResultTooLargeError("Result of this query exceeds maximum length");
                 }
             }
+        }
+        if (queryOptions.hasOwnProperty("ORDER")) {
+            this.orderBy(result, queryOptions["ORDER"]);
         }
         return result;
     }
