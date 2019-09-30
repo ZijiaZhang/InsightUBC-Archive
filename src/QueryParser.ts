@@ -117,42 +117,14 @@ export class QueryParser {
         }
     }
 
-    private selectFieldandOrder(candidateResult: IDataRowCourse[], queryOptions: any): object[] {
-        let result = [];
-        if (queryOptions.hasOwnProperty("COLUMNS")) {
-            const column: string[] = queryOptions["COLUMNS"];
-            const databaseID = column[0].split("_")[0];
-            for (let i = 0; i < column.length; i++) {
-                column[i] = column[i].split("_")[1];
-            }
-            for (let candidate of candidateResult) {
-                for (let property of Object.keys(candidate)) {
-                    if (!(column.includes(property))) {
-                        delete candidate[property];
-                    }
-                }
-                let obj: any = {};
-                for (let i of Object.keys(candidate)) {
-                    obj[databaseID + "_" + i] = candidate[i];
-                }
-                this.queryResult.push(obj);
-            }
-        }
-        if (queryOptions.hasOwnProperty("ORDER")) {
-            this.orderBy(this.queryResult, queryOptions["ORDER"]);
-        }
-        return this.queryResult;
-    }
-
     // By default, will order in ascending order.
     private orderBy(queryResult: object[], orderKey: string) {
-        if (orderKey === "courses_avg" || orderKey === "courses_pass" || orderKey === "courses_fail"
-            || orderKey === "courses_audit" || orderKey === "courses_year") {
+        let orderType: string = orderKey.split("_")[1];
+        if (["avg", "pass", "fail", "fail", "audit", "year"].includes(orderType)) {
             queryResult.sort(function (a: any, b: any) {
                 return a[orderKey] - b[orderKey];
             });
-        } else if (orderKey === "courses_dept" || orderKey === "courses_instructor" ||
-        orderKey === "courses_title") {
+        } else if (["dept", "instructor", "title", "id", "uuid"].includes(orderType)) {
             queryResult.sort(function (a: any, b: any) {
                 if (a[orderKey].toLowerCase() < b[orderKey].toLowerCase()) {
                     return -1;
@@ -162,33 +134,7 @@ export class QueryParser {
                     return 0;
                 }
             });
-        } else if (orderKey === "courses_id" || orderKey === "courses_uuid") {
-            queryResult.sort(function (a: any, b: any) {
-                return Number(a[orderKey]) - Number(b[orderKey]);
-            });
         }
     }
 
 }
-
-// public static getQueryResult(query: any): Promise<any[]> {
-//     return new Promise<any[]>((resolve, reject) => {
-            // let temp = Query.getDataSetFromQuery(query);
-            // let insightFacade: InsightFacade;
-            // if (typeof temp === "string") {
-            //     this.DatasetID = temp;
-            // }
-            // return insightFacade.switchDataSet(this.DatasetID).then((result) => {
-            // this.candidate = this.findCandidate(query["WHERE"]);
-            // if (this.candidate.length > 5000) {
-            //     reject(new ResultTooLargeError("Result of this query exceeds maximum length"));
-            // } else {
-            //     this.queryResult = this.selectFieldandOrder(this.candidate, query["OPTIONS"]);
-            //     resolve(this.queryResult);
-            // }
-            // }).catch((err) => {
-            //     reject(new InsightError("Reference non-exist dataset"));
-//             });
-//         }
-//     );
-// }
