@@ -401,28 +401,28 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     it(" Should Perform Simple Query", function () {
-        return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses).then( () => {
+        return insightFacade.addDataset("courses23", datasets["courses"], InsightDatasetKind.Courses).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
                 "        \"WHERE\": {\n" +
                 "            \"AND\": [\n" +
                 "                {\n" +
                 "                    \"IS\": {\n" +
-                "                        \"courses_id\": \"**\"\n" +
+                "                        \"courses23_id\": \"**\"\n" +
                 "                    }\n" +
                 "                },\n" +
                 "                {\n" +
                 "                    \"GT\": {\n" +
-                "                        \"courses_avg\": 97\n" +
+                "                        \"courses23_avg\": 97\n" +
                 "                    }\n" +
                 "                }\n" +
                 "            ]\n" +
                 "        },\n" +
                 "        \"OPTIONS\": {\n" +
                 "            \"COLUMNS\": [\n" +
-                "                \"courses_dept\",\n" +
-                "                \"courses_id\"\n" +
+                "                \"courses23_dept\",\n" +
+                "                \"courses23_id\"\n" +
                 "            ],\n" +
-                "            \"ORDER\": \"courses_id\"\n" +
+                "            \"ORDER\": \"courses23_id\"\n" +
                 "        }\n" +
                 "    }")).then( (result) => {
                     expect(result.length).equal(49);

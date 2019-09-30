@@ -119,22 +119,15 @@ export class QueryParser {
 
     // By default, will order in ascending order.
     private orderBy(queryResult: object[], orderKey: string) {
-        let orderType: string = orderKey.split("_")[1];
-        if (["avg", "pass", "fail", "fail", "audit", "year"].includes(orderType)) {
             queryResult.sort(function (a: any, b: any) {
-                return a[orderKey] - b[orderKey];
-            });
-        } else if (["dept", "instructor", "title", "id", "uuid"].includes(orderType)) {
-            queryResult.sort(function (a: any, b: any) {
-                if (a[orderKey].toLowerCase() < b[orderKey].toLowerCase()) {
+                if (a[orderKey] < b[orderKey]) {
                     return -1;
-                } else if (a[orderKey].toLowerCase() > b[orderKey].toLowerCase()) {
+                } else if (a[orderKey] > b[orderKey]) {
                     return 1;
                 } else {
                     return 0;
                 }
             });
-        }
     }
 
 }

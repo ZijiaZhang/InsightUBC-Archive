@@ -2,6 +2,7 @@ import Log from "./Util";
 import {IDataRowCourse} from "./DataSetDataCourse";
 import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
+import {JsonParser} from "./JsonParser";
 
 export enum CompOperators {
     GT ,
@@ -185,19 +186,21 @@ export class Query {
 // Check whether the input key is a key in the courses dataset
 // The given key must be one of the key in the courses dataset, otherwise we don't have the key
     private checkKeyExist(key: string): boolean {
-        return key === "courses_dept" || key === "courses_id" || key === "courses_instructor" || key === "courses_title"
-            || key === "courses_uuid" || key === "courses_avg" || key === "courses_pass" || key === "courses_fail"
-            || key === "courses_audit" || key === "courses_year";
+        if (typeof key !== "string" || !key.match(/^[^_^\s]+_[^_^\s]+$/g)) {return false; }
+        let keyType: string = key.split("_")[1];
+        return Object.values(JsonParser.getRequiredFieldCourses()).includes(keyType);
     }
 
     private checkMKeyExist(key: string): boolean {
-        return key === "courses_avg" || key === "courses_pass" || key === "courses_fail"
-            || key === "courses_audit" || key === "courses_year";
+        if (typeof key !== "string" || !key.match(/^[^_^\s]+_[^_^\s]+$/g)) {return false; }
+        let keyType: string = key.split("_")[1];
+        return ["avg" , "pass" , "fail", "audit", "year"].includes(keyType);
     }
 
     private checkSKeyExist(key: string): boolean {
-        return key === "courses_dept" || key === "courses_id" || key === "courses_instructor" || key === "courses_title"
-            || key === "courses_uuid";
+        if (typeof key !== "string" || !key.match(/^[^_^\s]+_[^_^\s]+$/g)) {return false; }
+        let keyType: string = key.split("_")[1];
+        return ["dept", "id", "instructor", "title", "uuid"].includes(keyType);
     }
 
     private checkScompInputString(inputString: string): boolean {
