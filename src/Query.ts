@@ -76,6 +76,9 @@ export class Query {
         }
         if (options.hasOwnProperty("ORDER")) {
             this.orderKey = options["ORDER"];
+            if (typeof this.orderKey !== "string") {
+                return false;
+            }
             isSyntaxValid = isSyntaxValid && this.checkKeyExist(this.orderKey);
         }
         return isSyntaxValid;
