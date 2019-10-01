@@ -44,42 +44,28 @@ export class Query {
      */
     public checkEBNF(): boolean {
         let isSyntaxValid: boolean = true;
-        if (!this.queryObject.hasOwnProperty("WHERE")) {
-            return false;
-        }
-        if (!this.queryObject.hasOwnProperty("OPTIONS")) {
-            return false;
-        }
+        if (!this.queryObject.hasOwnProperty("WHERE")) {return false; }
+        if (!this.queryObject.hasOwnProperty("OPTIONS")) {return false; }
         const where: object = this.queryObject["WHERE"];
-        if (Object.keys(where).length > 1) {
-            return false;
-        }
-        if (Object.keys(where).length === 1) {
-            isSyntaxValid = isSyntaxValid && this.checkFilter(where);
-        }
+        if (Object.keys(where).length > 1) {return false; }
+        if (Object.keys(where).length === 1) {isSyntaxValid = isSyntaxValid && this.checkFilter(where); }
         const options: any = this.queryObject["OPTIONS"];
-        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
-            return false;
-        }
-        if (!options.hasOwnProperty("COLUMNS")) {
-            return false;
-        }
+        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {return false; }
+        if (!options.hasOwnProperty("COLUMNS")) {return false; }
         const column: string[] = options["COLUMNS"];
-        if (column.length === 0) {
-            return false;
-        }
+        if (column.length === 0) {return false; }
         for (let columnKey of column) {
             this.columnKeys.push(columnKey);
-            if (!this.checkKeyExist(columnKey)) {
-                return false;
-            }
+            if (!this.checkKeyExist(columnKey)) {return false; }
         }
-        if (options.hasOwnProperty("ORDER")) {
-            this.orderKey = options["ORDER"];
-            if (typeof this.orderKey !== "string") {
+        if (Object.keys(options).length === 2) {
+            if (options.hasOwnProperty("ORDER")) {
+                this.orderKey = options["ORDER"];
+                if (typeof this.orderKey !== "string") {return false; }
+                isSyntaxValid = isSyntaxValid && this.checkKeyExist(this.orderKey);
+            } else {
                 return false;
             }
-            isSyntaxValid = isSyntaxValid && this.checkKeyExist(this.orderKey);
         }
         return isSyntaxValid;
     }
@@ -100,9 +86,7 @@ export class Query {
                 }
             }
         }
-        if (!this.checkReferenceDSValid(this.queryObject)) {
-            return false;
-        }
+        if (!this.checkReferenceDSValid(this.queryObject)) {return false; }
         return isSemanticCorrect;
     }
 
@@ -125,9 +109,7 @@ export class Query {
                 return false;
             } else {
                 for (let logicObj of logicArray) {
-                    if (!(isFilterCorrect && this.checkFilter(logicObj))) {
-                        return false;
-                    }
+                    if (!(isFilterCorrect && this.checkFilter(logicObj))) {return false; }
                 }
             }
         } else if (filterKey === "LT" || filterKey === "GT" || filterKey === "EQ") {
@@ -191,19 +173,19 @@ export class Query {
 // Check whether the input key is a key in the courses dataset
 // The given key must be one of the key in the courses dataset, otherwise we don't have the key
     private checkKeyExist(key: string): boolean {
-        if (typeof key !== "string" || !key.match(/^[^_^\s]+_[^_^\s]+$/g)) {return false; }
+        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {return false; }
         let keyType: string = key.split("_")[1];
         return Object.values(JsonParser.getRequiredFieldCourses()).includes(keyType);
     }
 
     private checkMKeyExist(key: string): boolean {
-        if (typeof key !== "string" || !key.match(/^[^_^\s]+_[^_^\s]+$/g)) {return false; }
+        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {return false; }
         let keyType: string = key.split("_")[1];
         return ["avg" , "pass" , "fail", "audit", "year"].includes(keyType);
     }
 
     private checkSKeyExist(key: string): boolean {
-        if (typeof key !== "string" || !key.match(/^[^_^\s]+_[^_^\s]+$/g)) {return false; }
+        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {return false; }
         let keyType: string = key.split("_")[1];
         return ["dept", "id", "instructor", "title", "uuid"].includes(keyType);
     }

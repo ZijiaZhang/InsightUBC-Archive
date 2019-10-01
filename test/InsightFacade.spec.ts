@@ -403,28 +403,28 @@ describe("InsightFacade Add/Remove Dataset", function () {
     it(" Should Perform Simple Query", function () {
         return insightFacade.addDataset("courses23", datasets["courses"], InsightDatasetKind.Courses).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
-                "        \"WHERE\": {\n" +
-                "            \"AND\": [\n" +
-                "                {\n" +
-                "                    \"IS\": {\n" +
-                "                        \"courses23_id\": \"**\"\n" +
-                "                    }\n" +
-                "                },\n" +
-                "                {\n" +
-                "                    \"GT\": {\n" +
-                "                        \"courses23_avg\": 97\n" +
-                "                    }\n" +
-                "                }\n" +
-                "            ]\n" +
-                "        },\n" +
-                "        \"OPTIONS\": {\n" +
-                "            \"COLUMNS\": [\n" +
-                "                \"courses23_dept\",\n" +
-                "                \"courses23_id\"\n" +
-                "            ],\n" +
-                "            \"ORDER\": \"courses23_id\"\n" +
+                "  \"WHERE\": {\n" +
+                "    \"AND\": [\n" +
+                "      {\n" +
+                "        \"IS\": {\n" +
+                "          \"courses_id\": \"100\"\n" +
                 "        }\n" +
-                "    }")).then( (result) => {
+                "      },\n" +
+                "      {\n" +
+                "        \"EQ\": {\n" +
+                "          \"courses_year\": 2016\n" +
+                "        }\n" +
+                "      }\n" +
+                "    ]\n" +
+                "  },\n" +
+                "  \"OPTIONS\": {\n" +
+                "    \"COLUMNS\": [\n" +
+                "      \"courses_id\",\n" +
+                "      \"courses_year\"\n" +
+                "    ],\n" +
+                "    \"sfsdfsd\": \"courses_year\"\n" +
+                "  }\n" +
+                "}")).then( (result) => {
                     expect(result.length).equal(49);
             }).catch((err) => {
                 expect.fail("Should not be rejected.");
