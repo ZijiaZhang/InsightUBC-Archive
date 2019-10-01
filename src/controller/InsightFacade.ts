@@ -194,6 +194,7 @@ export default class InsightFacade implements IInsightFacade {
             if (this.currentActiveDataset != null) {
                 this.dataSetMap[this.currentActiveDataset].unloadDataSet().then(
                     (result) => {
+                        this.currentActiveDataset = null;
                         return this.activeDataSet(name).then(
                             (result2) =>  resolve("Dataset Switched Successfully.")
                         ).catch( (err) => reject( new InsightError(err)));
