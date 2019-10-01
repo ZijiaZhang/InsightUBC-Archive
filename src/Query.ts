@@ -116,7 +116,9 @@ export class Query {
         let isFilterCorrect = true;
         if (filterKey === "OR" || filterKey === "AND") {
             const logicArray: object[] = whereClause[filterKey];
-            if (logicArray.length === 0) {
+            if (!(logicArray instanceof Array)) {
+                return false;
+            } else if (logicArray.length === 0) {
                 return false;
             } else {
                 for (let logicObj of logicArray) {
