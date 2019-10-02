@@ -118,16 +118,34 @@ export class QueryParser {
     }
 
     // By default, will order in ascending order.
+    // private orderBy(queryResult: object[], orderKey: string) {
+    //         queryResult.sort(function (a: any, b: any) {
+    //             if (a[orderKey] < b[orderKey]) {
+    //                 return -1;
+    //             } else if (a[orderKey] > b[orderKey]) {
+    //                 return 1;
+    //             } else {
+    //                 return 0;
+    //             }
+    //         });
+    // }
     private orderBy(queryResult: object[], orderKey: string) {
+        if (orderKey === "courses_avg" || orderKey === "courses_pass" || orderKey === "courses_fail"
+            || orderKey === "courses_audit" || orderKey === "courses_year") {
             queryResult.sort(function (a: any, b: any) {
-                if (a[orderKey] < b[orderKey]) {
+                return a[orderKey] - b[orderKey];
+            });
+        } else if (orderKey === "courses_dept" || orderKey === "courses_instructor" || orderKey === "courses_title"
+            || orderKey === "courses_id" || orderKey === "courses_uuid") {
+            queryResult.sort(function (a: any, b: any) {
+                if (a[orderKey].toLowerCase() < b[orderKey].toLowerCase()) {
                     return -1;
-                } else if (a[orderKey] > b[orderKey]) {
+                } else if (a[orderKey].toLowerCase() > b[orderKey].toLowerCase()) {
                     return 1;
                 } else {
                     return 0;
                 }
             });
+        }
     }
-
 }
