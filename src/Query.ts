@@ -51,7 +51,7 @@ export class Query {
         if (Object.keys(where).length === 1) {isSyntaxValid = isSyntaxValid && this.checkFilter(where); }
         const options: any = this.queryObject["OPTIONS"];
         if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {return false; }
-        if (!options.hasOwnProperty("COLUMNS")) {return false; }
+        if (!options.hasOwnProperty("COLUMNS") || !(options["COLUMNS"] instanceof Array)) {return false; }
         const column: string[] = options["COLUMNS"];
         if (column.length === 0) {return false; }
         for (let columnKey of column) {
