@@ -401,21 +401,30 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     it(" Should Perform Simple Query", function () {
-        return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses).then( () => {
+        return insightFacade.addDataset("courses.a", datasets["courses"], InsightDatasetKind.Courses).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
-                "        \"WHERE\": {\n" +
-                "            \"IS\": {\n" +
-                "                \"courses_avg\":97\n" +
-                "            }\n" +
-                "        },\n" +
-                "        \"OPTIONS\": {\n" +
-                "            \"COLUMNS\": [\n" +
-                "                \"courses_dept\",\n" +
-                "                \"courses_avg\"\n" +
-                "            ],\n" +
-                "            \"ORDER\": \"courses_avg\"\n" +
-                "        }\n" +
-                "    }")).then( (result) => {
+                "  \"WHERE\": {\n" +
+                "    \"IS\": {\n" +
+                "      \"courses.a_instructor\": \"*  *\"\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"OPTIONS\": {\n" +
+                "    \"COLUMNS\": [\n" +
+                "      \"courses.a_dept\",\n" +
+                "      \"courses.a_id\",\n" +
+                "      \"courses.a_avg\",\n" +
+                "      \"courses.a_instructor\",\n" +
+                "      \"courses.a_title\",\n" +
+                "      \"courses.a_pass\",\n" +
+                "      \"courses.a_fail\",\n" +
+                "      \"courses.a_audit\",\n" +
+                "      \"courses.a_uuid\",\n" +
+                "      \"courses.a_uuid\",\n" +
+                "      \"courses.a_year\"\n" +
+                "    ],\n" +
+                "    \"ORDER\": \"courses.a_uuid\"\n" +
+                "  }\n" +
+                "}")).then( (result) => {
                     expect(result.length).equal(49);
             }).catch((err) => {
                 expect.fail("Should not be rejected.");
