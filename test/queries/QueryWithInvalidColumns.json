@@ -1,0 +1,15 @@
+{
+    "title": "Invalid Column Type",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "courses_avg": 97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": 8
+        }
+    },
+    "isQueryValid": false,
+    "result":"InsightError"
+}

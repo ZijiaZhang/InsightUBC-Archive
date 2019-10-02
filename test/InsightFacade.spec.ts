@@ -401,7 +401,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     it(" Should Perform Simple Query", function () {
-        return insightFacade.addDataset("courses23", datasets["courses"], InsightDatasetKind.Courses).then( () => {
+        return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
                 "        \"WHERE\": {\n" +
                 "            \"IS\": {\n" +

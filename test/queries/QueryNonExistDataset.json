@@ -1,0 +1,17 @@
+{
+    "title": "Non Exist Dataset",
+    "query": {
+        "WHERE": {
+            "GT": {
+                "cc_avg": 97
+            }
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "cc_avg"
+            ]
+        }
+    },
+    "isQueryValid": false,
+    "result":"InsightError"
+}
