@@ -44,7 +44,7 @@ export class Query {
      */
     public checkEBNF(): boolean {
         let isSyntaxValid: boolean = true;
-        if (Object.keys(this.queryObject).length !== 2) {return false; }
+        // if (Object.keys(this.queryObject).length !== 2) {return false; }
         if (!this.queryObject.hasOwnProperty("WHERE")) {return false; }
         if (!this.queryObject.hasOwnProperty("OPTIONS")) {return false; }
         const where: object = this.queryObject["WHERE"];
