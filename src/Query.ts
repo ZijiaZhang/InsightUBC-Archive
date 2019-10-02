@@ -122,6 +122,7 @@ export class Query {
             const sCompBody: object = whereClause[filterKey];
             if (Object.keys(sCompBody).length !== 1) {return false; }
             if (!this.checkSKeyExist((Object.keys(sCompBody)[0]))) {return false; }
+            if (typeof Object.values(sCompBody)[0] !== "string") {return false; }
             if (!this.checkScompInputString(Object.values(sCompBody)[0])) {return false; }
             this.helpAddIsKeyAndVal(Object.keys(sCompBody)[0], Object.values(sCompBody)[0]);
         } else if (filterKey === "NOT") {

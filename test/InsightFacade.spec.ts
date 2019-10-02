@@ -403,28 +403,19 @@ describe("InsightFacade Add/Remove Dataset", function () {
     it(" Should Perform Simple Query", function () {
         return insightFacade.addDataset("courses23", datasets["courses"], InsightDatasetKind.Courses).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
-                "  \"WHERE\": {\n" +
-                "    \"AND\": [\n" +
-                "      {\n" +
-                "        \"IS\": {\n" +
-                "          \"courses_id\": \"100\"\n" +
+                "        \"WHERE\": {\n" +
+                "            \"IS\": {\n" +
+                "                \"courses_avg\":97\n" +
+                "            }\n" +
+                "        },\n" +
+                "        \"OPTIONS\": {\n" +
+                "            \"COLUMNS\": [\n" +
+                "                \"courses_dept\",\n" +
+                "                \"courses_avg\"\n" +
+                "            ],\n" +
+                "            \"ORDER\": \"courses_avg\"\n" +
                 "        }\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"EQ\": {\n" +
-                "          \"courses_year\": 2016\n" +
-                "        }\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  \"OPTIONS\": {\n" +
-                "    \"COLUMNS\": [\n" +
-                "      \"courses_id\",\n" +
-                "      \"courses_year\"\n" +
-                "    ],\n" +
-                "    \"sfsdfsd\": \"courses_year\"\n" +
-                "  }\n" +
-                "}")).then( (result) => {
+                "    }")).then( (result) => {
                     expect(result.length).equal(49);
             }).catch((err) => {
                 expect.fail("Should not be rejected.");
