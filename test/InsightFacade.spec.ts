@@ -410,7 +410,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 "        },\n" +
                 "        \"OPTIONS\": {\n" +
                 "            \"COLUMNS\": [\n" +
-                "                \"125432\",\n" +
+                "               \"courses_dept\",\n" +
                 "                \"courses_avg\"\n" +
                 "            ],\n" +
                 "            \"ORDER\": \"courses_avg\"\n" +
