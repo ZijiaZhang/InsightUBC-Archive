@@ -68,6 +68,11 @@ export class Query {
         return (this.checkWhere(whereClause) || Object.keys(whereClause).length === 0) && this.checkOptions(options);
     }
 
+    /**
+     * Check if options is valid
+     * @param options The object of option section
+     * Return true if it is valid.
+     */
     private checkOptions(options: any): boolean {
         if (Object.keys(options).length > 2) {return false; }
         if (!options.hasOwnProperty("COLUMNS")) {return false; }
@@ -86,6 +91,11 @@ export class Query {
         return true;
     }
 
+    /**
+     * Check if Where Clause is valid
+     * @param whereClause The where clause of the query. REQUIRES none EMPTY where.
+     * Return true if the where is valid.
+     */
     private checkWhere(whereClause: any): boolean {
         if (Object.keys(whereClause).length !== 1) {
             return false;
