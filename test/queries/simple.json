@@ -8,7 +8,7 @@
         },
         "OPTIONS": {
             "COLUMNS": [
-                "courses_dept",
+                8,
                 "courses_avg"
             ],
             "ORDER": "courses_avg"
