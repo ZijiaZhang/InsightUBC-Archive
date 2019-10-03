@@ -1,0 +1,18 @@
+{
+    "title": "select dept, avg ",
+    "query": {
+        "WHERE": {
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "coursesSmall_dept",
+                "coursesSmall_avg"
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[
+        { "coursesSmall_dept": "aanb", "coursesSmall_avg": 87.83 },
+        { "coursesSmall_dept": "aanb", "coursesSmall_avg": 87.83 }
+    ]
+}
