@@ -189,8 +189,8 @@ export default class InsightFacade implements IInsightFacade {
      */
     public switchDataSet(name: string): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
-            if (this.currentActiveDataset === name) {resolve("Dataset Already Loaded"); }
-            if (!(name in this.dataSetMap)) {reject("Dataset Not Found"); }
+            if (this.currentActiveDataset === name) {return resolve("Dataset Already Loaded"); }
+            if (!(name in this.dataSetMap)) {return reject("Dataset Not Found"); }
             if (this.currentActiveDataset != null) {
                 this.dataSetMap[this.currentActiveDataset].unloadDataSet().then(
                     (result) => {
