@@ -36,7 +36,17 @@ export class QueryParser {
             if (allResult.length > 5000) {
                 return new ResultTooLargeError("Result of this query exceeds maximum length");
             }
-            return allResult;
+            let r = [];
+            let columns = this.query.queryObject.OPTIONS.COLUMNS;
+            let id = columns[0].split("_")[0];
+            for (let i = 0; i < columns.length; i++) {
+                columns[i] = columns[i].split("_")[1];
+            }
+            for (let course of allResult) {
+                let obj = this.refactorCourse(course, columns, id);
+                r.push(obj);
+            }
+            return r;
         }
         let result = [];
         let size = 0;
@@ -48,15 +58,7 @@ export class QueryParser {
         }
         for (let course of allResult) {
             if (this.determineCandidate(Locgic, course)) {
-                for (let property of Object.keys(course)) {
-                    if (!(column.includes(property))) {
-                        delete course[property];
-                    }
-                }
-                let obj: any = {};
-                for (let i of Object.keys(course)) {
-                    obj[databaseID + "_" + i] = course[i];
-                }
+                let obj = this.refactorCourse(course, column, databaseID);
                 result.push(obj);
                 size++;
                 if (size > 5000) {
@@ -68,6 +70,19 @@ export class QueryParser {
             this.orderBy(result, queryOptions["ORDER"]);
         }
         return result;
+    }
+
+    private refactorCourse(course: any, column: string[], databaseID: string) {
+        for (let property of Object.keys(course)) {
+            if (!(column.includes(property))) {
+                delete course[property];
+            }
+        }
+        let obj: any = {};
+        for (let i of Object.keys(course)) {
+            obj[databaseID + "_" + i] = course[i];
+        }
+        return obj;
     }
 
     private determineCandidate(logic: LogicElement, course: IDataRowCourse): boolean {
