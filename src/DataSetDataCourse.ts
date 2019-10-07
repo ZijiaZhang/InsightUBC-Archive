@@ -44,7 +44,7 @@ export class DataSetDataCourse extends DataSet {
         kind: InsightDatasetKind.Courses,
         numRows: 0
     };
-        this.fileLocation = "data/" + name + ".zip";
+        this.fileLocation = "data/" + name + ".json";
     }
 
     public addData(data: IDataRowCourse): boolean {
@@ -70,47 +70,36 @@ export class DataSetDataCourse extends DataSet {
             if ( this.datasetLoaded) {
                 return resolve("Dataset is Already Loaded");
             }
-            let fileData: string = fs.readFileSync(this.fileLocation).toString("base64");
-            return JSZip.loadAsync(fileData, {base64: true}).then(
-                (zipFile: JSZip) => {
-                    return zipFile.files["data.json"]
-                        .async("text").then(
-                        (data) => {
-                            try {
-                            let parsedJson = JSON.parse(data);
-                            this.audit = parsedJson.audit;
-                            this.avg = parsedJson.avg;
-                            this.dept = parsedJson.dept;
-                            this.fail = parsedJson.fail;
-                            this.id = parsedJson.id;
-                            this.instructor = parsedJson.instructor;
-                            this.pass = parsedJson.pass;
-                            this.title = parsedJson.title;
-                            this.uuid = parsedJson.uuid;
-                            this.year = parsedJson.year;
-                            this.datasetLoaded = true;
-                            resolve("Data loaded");
-                            } catch (e) {
-                                reject("Error Reading File");
-                            }
-                        }
-                    ); });
+            let fileData: string = fs.readFileSync(this.fileLocation).toString();
+            try {
+                let parsedJson = JSON.parse(fileData);
+                this.audit = parsedJson.audit;
+                this.avg = parsedJson.avg;
+                this.dept = parsedJson.dept;
+                this.fail = parsedJson.fail;
+                this.id = parsedJson.id;
+                this.instructor = parsedJson.instructor;
+                this.pass = parsedJson.pass;
+                this.title = parsedJson.title;
+                this.uuid = parsedJson.uuid;
+                this.year = parsedJson.year;
+                this.datasetLoaded = true;
+                resolve("Data loaded");
+            } catch (e) {
+                reject("Error Reading File");
+            }
         });
     }
 
     public saveDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
             let jsonFile: string = JSON.stringify(this); // Transform the JSON Object to string.
-            let zip = new JSZip();
-            zip.file("data.json", jsonFile); // Save JSOn File in data.json
-            zip.generateNodeStream()  // Generate Archive With Node.js template from JSZip API.
-                .pipe(fs.createWriteStream(this.fileLocation)) // Save to file Location
-                .on("finish", function () {
-                    Log.info("Saved");
-                    resolve("File Saved"); // If finish, will resolve.
-                }).on("error", function () {
-                    reject("Cannot Save File"); // If error, will reject
-            });
+            try {
+                fs.writeFileSync(this.fileLocation, jsonFile);
+                resolve("File Saved");
+            } catch (e) {
+                reject("Error Saving File");
+            }
         });
     }
 

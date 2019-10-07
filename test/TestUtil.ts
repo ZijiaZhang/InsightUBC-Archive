@@ -22,8 +22,15 @@ export default class TestUtil {
                 done();
             }
         } catch (e) {
-            Log.error(e);
-            done("error");
+            if (test.isQueryValid) {
+                if (response.length === test.result.length) {
+                    done(new Error("Error but length Same"));
+                } else {
+                    done(new Error("Error"));
+                }
+            } else {
+                done(new Error("Error"));
+            }
         }
     }
 
