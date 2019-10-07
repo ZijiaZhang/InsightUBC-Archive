@@ -70,8 +70,8 @@ export class DataSetDataCourse extends DataSet {
             if ( this.datasetLoaded) {
                 return resolve("Dataset is Already Loaded");
             }
-            let fileData: string = fs.readFileSync(this.fileLocation).toString();
             try {
+                let fileData: string = fs.readFileSync(this.fileLocation).toString();
                 let parsedJson = JSON.parse(fileData);
                 this.audit = parsedJson.audit;
                 this.avg = parsedJson.avg;
