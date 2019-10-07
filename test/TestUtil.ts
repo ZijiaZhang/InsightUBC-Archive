@@ -22,8 +22,8 @@ export default class TestUtil {
                 done();
             }
         } catch (e) {
-            // Log.error(e);
-            done(e);
+            Log.error(e);
+            done("error");
         }
     }
 
