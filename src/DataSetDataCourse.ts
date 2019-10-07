@@ -100,16 +100,16 @@ export class DataSetDataCourse extends DataSet {
 
     public saveDataSet(): Promise<string> {
         return new Promise<string>( (resolve, reject) => {
-            let jsonFile: string = JSON.stringify(this);
+            let jsonFile: string = JSON.stringify(this); // Transform the JSON Object to string.
             let zip = new JSZip();
-            zip.file("data.json", jsonFile);
-            zip.generateNodeStream()
-                .pipe(fs.createWriteStream(this.fileLocation))
+            zip.file("data.json", jsonFile); // Save JSOn File in data.json
+            zip.generateNodeStream()  // Generate Archive With Node.js template from JSZip API.
+                .pipe(fs.createWriteStream(this.fileLocation)) // Save to file Location
                 .on("finish", function () {
                     Log.info("Saved");
-                    resolve("File Saved");
+                    resolve("File Saved"); // If finish, will resolve.
                 }).on("error", function () {
-                    reject("Cannot Save File");
+                    reject("Cannot Save File"); // If error, will reject
             });
         });
     }

@@ -40,16 +40,16 @@ export default class InsightFacade implements IInsightFacade {
                     let allPromise: Array<Promise<string>> = [];
                     zipFile.forEach((relativePath, file) => {
                         let names = relativePath.split("/");
-                        if (names[0] !== "courses") {return; }
-                        if (!file.dir) {
-                            allPromise.push(file.async("text"));
+                        if (names[0] !== "courses") {return; } // Determine if the file in the courses folder.
+                        if (!file.dir) { // Determine if file is a directory.
+                            allPromise.push(file.async("text")); // Add to list.
                         }
                     });
                     if (allPromise.length <= 0) {return reject(new InsightError("No file Found in 'courses/'")); }
                     return this.handleAllFiles(allPromise, id, resolve, reject);
                 }
             ).catch((reason: any) => {
-                delete this.dataSetMap[id];
+                delete this.dataSetMap[id]; // Remove the added DataSet.
                 return reject(new InsightError(reason));
             });
         });
