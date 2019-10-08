@@ -4,6 +4,7 @@ import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {JsonParser} from "./JsonParser";
 import {setInterval} from "timers";
+import InsightFacade from "./controller/InsightFacade";
 
 export enum CompOperators {
     GT,
@@ -20,11 +21,14 @@ export class Query {
     public queryObject: any;
     public Locgic: LogicElement | null;
     public dataset: string | null = null;
+    private insight: InsightFacade;
+    public datasetKind: InsightDatasetKind;
     public columnKeys: string[] = [];
     private orderKey: string = null;
 
-    constructor(queryObject: any) {
+    constructor(queryObject: any, insight: InsightFacade) {
         this.queryObject = queryObject;
+        this.insight = insight;
     }
 
     public static CompareNumberOperators() {
@@ -65,7 +69,7 @@ export class Query {
         }
         let whereClause: any = this.queryObject.WHERE;
         let options: any = this.queryObject.OPTIONS;
-        return (this.checkWhere(whereClause) || Object.keys(whereClause).length === 0) && this.checkOptions(options);
+        return this.checkWhere(whereClause) && this.checkOptions(options);
     }
 
     /**
@@ -91,12 +95,15 @@ export class Query {
         return true;
     }
 
+    private checkWhere(whereClause: any): boolean {
+        return Object.keys(whereClause).length === 0 || this.checkLogic(whereClause);
+    }
     /**
      * Check if Where Clause is valid
      * @param whereClause The where clause of the query. REQUIRES none EMPTY where.
      * Return true if the where is valid.
      */
-    private checkWhere(whereClause: any): boolean {
+    private checkLogic(whereClause: any): boolean {
         if (Object.keys(whereClause).length !== 1) {
             return false;
         }
@@ -110,12 +117,12 @@ export class Query {
         if (Query.CompareLogicKey().includes(logicKey)) {
             if (!(whereClause[logicKey] instanceof Array) || whereClause[logicKey].length === 0 ) {return false; }
             for (let item of whereClause[logicKey]) {
-                if (!this.checkWhere(item)) {return false; }
+                if (!this.checkLogic(item)) {return false; }
             }
             return true;
         }
         if (Query.CompareNotKey().includes(logicKey)) {
-            return this.checkWhere(whereClause[logicKey]);
+            return this.checkLogic(whereClause[logicKey]);
         }
         return false;
     }
@@ -127,7 +134,9 @@ export class Query {
         let dataset = keyArr[0];
         let field = keyArr[1];
         if (this.dataset == null) {this.dataset = dataset; }
-        return this.dataset === dataset && Object.values(JsonParser.getRequiredFieldCourses()).includes(field);
+        if (this.datasetKind == null) {this.datasetKind = this.insight.getDataKind(dataset); }
+        return this.dataset === dataset && this.datasetKind != null
+            && Object.values(JsonParser.getRequiredFieldCourses()).includes(field);
     }
     private checkLeaf(object: any, type: string): boolean {
         if (Object.keys(object).length !== 1) {return false; }

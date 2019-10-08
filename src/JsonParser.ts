@@ -1,6 +1,7 @@
 import {IDataRowCourse} from "./DataSetDataCourse";
 import Log from "./Util";
 import {InsightDatasetKind} from "./controller/IInsightFacade";
+import {IDataRow} from "./DataSet";
 
 export class JsonParser {
     /**
@@ -46,15 +47,10 @@ export class JsonParser {
      * Parse a Json object to a DataRow;
      * @return A list of DataRow
      */
-    public static parseData(data: string, dataType: InsightDatasetKind): IDataRowCourse[]|null {
+    public static parseData(data: string, dataType: InsightDatasetKind): IDataRow[]|null {
         try {
             let rawData = JSON.parse(data);
-            switch (dataType) {
-                case InsightDatasetKind.Courses:
-                    return this.jsonToDataRow(rawData);
-                default:
-                    return [];
-            }
+            return this.jsonToDataRow(rawData, dataType);
         } catch (e) {
             Log.error(e);
             return null;
@@ -65,18 +61,26 @@ export class JsonParser {
      *
      * @param jsonData an object contains JSON value
      *
+     * @param dataType the Kind od the Database.
      * @return a list of DataRows. Data from the Json File
      *
      * returns null if there is no valid rows.
      */
 
-    private static jsonToDataRow(jsonData: any): IDataRowCourse[] {
+    private static jsonToDataRow(jsonData: any, dataType: InsightDatasetKind): IDataRow[] {
         let resultArray: IDataRowCourse[] = [];
         if ("result" in jsonData) {
             for (let oneRow of jsonData.result) {
-                let result = this.jsonToOneRow(oneRow);
+                let result = null;
+                switch (dataType) {
+                    case InsightDatasetKind.Courses:
+                        result = this.jsonToOneRowCourse(oneRow);
+                        break;
+                    case InsightDatasetKind.Rooms:
+                        break;
+                }
                 if (result != null) {
-                   resultArray.push(result);
+                    resultArray.push(result);
                 }
             }
         } else {
@@ -98,7 +102,7 @@ export class JsonParser {
      * returns null if the row is invalid
      */
 
-    private static jsonToOneRow(jsonData: any): IDataRowCourse| null {
+    private static jsonToOneRowCourse(jsonData: any): IDataRowCourse| null {
         let dataRow: IDataRowCourse = {dept: "",
         id: "",
         instructor: "",

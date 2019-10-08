@@ -47,20 +47,21 @@ export class DataSetDataCourse extends DataSet {
         this.fileLocation = "data/" + name + ".json";
     }
 
-    public addData(data: IDataRowCourse): boolean {
+    public addData(data: IDataRow): boolean {
+        let dataRowData = data as IDataRowCourse;
         if (!this.datasetLoaded) {
             return false;
         }
-        this.dept.push(data.dept);
-        this.id.push(data.id);
-        this.instructor.push(data.instructor);
-        this.title.push(data.title);
-        this.uuid.push(data.uuid);
-        this.avg.push(data.avg);
-        this.pass.push(data.pass);
-        this.fail.push(data.fail);
-        this.audit.push(data.audit);
-        this.year.push(data.year);
+        this.dept.push(dataRowData.dept);
+        this.id.push(dataRowData.id);
+        this.instructor.push(dataRowData.instructor);
+        this.title.push(dataRowData.title);
+        this.uuid.push(dataRowData.uuid);
+        this.avg.push(dataRowData.avg);
+        this.pass.push(dataRowData.pass);
+        this.fail.push(dataRowData.fail);
+        this.audit.push(dataRowData.audit);
+        this.year.push(dataRowData.year);
         this.metaData.numRows += 1;
         return true;
     }

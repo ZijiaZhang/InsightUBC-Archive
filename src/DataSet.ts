@@ -35,7 +35,7 @@ export abstract class DataSet {
      * Add data to DataSet. If dataset is not loaded, return false.
      */
 
-    public abstract addData(data: IDataRowCourse): boolean;
+    public abstract addData(data: IDataRow): boolean;
 
     /**
      * Get the metaData

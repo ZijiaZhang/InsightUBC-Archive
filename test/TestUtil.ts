@@ -29,6 +29,7 @@ export default class TestUtil {
                     done(new Error("Error"));
                 }
             } else {
+                Log.error(e);
                 done(new Error("Error"));
             }
         }

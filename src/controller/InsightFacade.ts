@@ -111,7 +111,7 @@ export default class InsightFacade implements IInsightFacade {
 
     public performQuery(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-            let thisQuery: Query = new Query(query);
+            let thisQuery: Query = new Query(query, this);
 
             if (query === null || query === undefined) {
                 reject(new InsightError("Query is null or undefined"));
@@ -168,15 +168,12 @@ export default class InsightFacade implements IInsightFacade {
      * @return InsightDatasetKind the Kind of the data.
      * If there is no this kind of data reuturn null instead.
      */
-    private static getDataKind(name: string): InsightDatasetKind {
-        switch (name) {
-            case "courses":
-                return InsightDatasetKind.Courses;
-            default:
-                return null;
+    public getDataKind(name: string): InsightDatasetKind {
+        if (Object.keys(this.dataSetMap).includes(name)) {
+            return this.dataSetMap[name].getMetaData().kind;
         }
+        return null;
     }
-
     /**
      * Switch the active dataset
      * @param name The name of the target dataset.
