@@ -422,6 +422,14 @@ describe("InsightFacade Add/Remove Dataset", function () {
             });
         });
     });
+
+    it("Should load Room Dataset", function () {
+        return insightFacade.addDataset("room", "aaa", InsightDatasetKind.Rooms).then(
+            (result) => {
+                expect(result.length).equal(364);
+            }
+        ).catch((e) => expect.fail("Shoud not be rejected"));
+    });
 });
 
 /*

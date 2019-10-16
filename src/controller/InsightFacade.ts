@@ -6,7 +6,8 @@ import {JsonParser} from "../JsonParser";
 import {QueryParser} from "../QueryParser";
 import {DataSet} from "../DataSet";
 import {Query} from "../Query";
-import {DatasetLoader} from "../DatasetLoader";
+import {DatasetLoaderCourse} from "../DatasetLoaderCourse";
+import {DatasetLoaderRooms} from "../DatasetLoaderRooms";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -28,14 +29,19 @@ export default class InsightFacade implements IInsightFacade {
             // Create Database with name
             switch (kind) {
                 case InsightDatasetKind.Courses:
-                    return DatasetLoader.loadCourseData(content, id).then(
+                    return DatasetLoaderCourse.loadData(content, id).then(
                         (dataset) => {
                             this.dataSetMap[id] = dataset;
                             return Promise.resolve(Object.keys(this.dataSetMap));
                         }
                     ).catch(() => Promise.reject(new InsightError("Error Loading Files")));
                 case InsightDatasetKind.Rooms:
-                    return Promise.reject(new InsightError("Room not Implemented yet"));
+                    return DatasetLoaderRooms.loadData(content, id).then(
+                        (dataset) => {
+                            this.dataSetMap[id] = dataset;
+                            return Promise.resolve(Object.keys(this.dataSetMap));
+                        }
+                    ).catch(() => Promise.reject(new InsightError("Error Loading Files")));
                 default:
                     return Promise.reject(new InsightError("No such Type"));
             }

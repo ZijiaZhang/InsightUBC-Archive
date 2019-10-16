@@ -9,7 +9,7 @@ export interface IDataRow {
 export abstract class DataSet {
     protected metaData: InsightDataset;
     protected datasetLoaded = true;
-
+    protected fileLocation: string = "";
     /**
      *
      * @param data the data that add to the dataSet

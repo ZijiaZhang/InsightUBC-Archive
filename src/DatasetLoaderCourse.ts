@@ -4,8 +4,8 @@ import {InsightDatasetKind, InsightError} from "./controller/IInsightFacade";
 import {JsonParser} from "./JsonParser";
 import Log from "./Util";
 
-export class DatasetLoader {
-    public static loadCourseData(content: string, id: string): Promise<DataSetDataCourse> {
+export class DatasetLoaderCourse {
+    public static loadData(content: string, id: string): Promise<DataSetDataCourse> {
         return new Promise<DataSetDataCourse>((resolve, reject) => {
             let dataset = new DataSetDataCourse(id);
             JSZip.loadAsync(content, {base64: true}).then(
