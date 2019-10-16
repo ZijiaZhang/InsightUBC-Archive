@@ -25,6 +25,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
         coursesOneInvalidFile: "./test/data/coursesWithOneInvalidFile.zip",
         coursesWithNoValidFile: "./test/data/coursesWithNoValidFile.zip",
         coursesWithOneFileNoSection: "./test/data/coursesWithOneFileNoSection.zip",
+        room: "./test/data/rooms.zip"
     };
     let datasets: { [id: string]: string } = {};
     let insightFacade: InsightFacade;
@@ -424,7 +425,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     it("Should load Room Dataset", function () {
-        return insightFacade.addDataset("room", "aaa", InsightDatasetKind.Rooms).then(
+        return insightFacade.addDataset("room", datasets["room"], InsightDatasetKind.Rooms).then(
             (result) => {
                 expect(result.length).equal(364);
             }

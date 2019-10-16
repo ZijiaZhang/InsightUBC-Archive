@@ -3,7 +3,6 @@ import * as JSZip from "jszip";
 import * as fs from "fs";
 import Log from "./Util";
 import {DataSet, IDataRow} from "./DataSet";
-import {CompOperators} from "./Operators";
 
 export interface IDataRowCourse extends IDataRow {
     [key: string]: string | number;
