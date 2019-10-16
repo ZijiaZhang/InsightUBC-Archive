@@ -1,6 +1,6 @@
-import {CompOperators, LogicalOperators} from "./Query";
 import {IDataRow} from "./DataSet";
 import {InsightDatasetKind} from "./controller/IInsightFacade";
+import {CompOperators, LogicalOperators} from "./Operators";
 
 export class LogicElement {
     public data: IDataRow[];

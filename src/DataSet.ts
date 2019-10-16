@@ -1,6 +1,6 @@
 import {InsightDataset, InsightError} from "./controller/IInsightFacade";
 import {IDataRowCourse} from "./DataSetDataCourse";
-import {CompOperators} from "./Query";
+import {CompOperators} from "./Operators";
 
 export interface IDataRow {
     rowNumber?: number;
@@ -9,21 +9,6 @@ export interface IDataRow {
 export abstract class DataSet {
     protected metaData: InsightDataset;
     protected datasetLoaded = true;
-    /**
-     *
-     * @param column  The name of restricted column
-     * @param comp    The rule to the comparison.
-     * @param value   The value that is compared to.
-     * @param not     Not?
-     *
-     * @return IDataRow[]| InsightError Return the data queried.
-     *
-     * return a list of DataRow when the query successfully executed.
-     * return InsightError  if there is any error or dataSet is not loaded.
-     *
-     */
-    public abstract getData(column: string, comp: CompOperators,
-                            value: number| string , not: boolean): IDataRow[] | InsightError;
 
     /**
      *

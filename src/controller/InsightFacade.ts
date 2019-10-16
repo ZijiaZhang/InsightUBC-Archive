@@ -14,7 +14,8 @@ import {Query} from "../Query";
  */
 export default class InsightFacade implements IInsightFacade {
     private dataSetMap: { [name: string]: DataSet } = {};
-    private currentActiveDataset: string|null = null;
+    private currentActiveDataset: string | null = null;
+
     constructor() {
         Log.trace("InsightFacadeImpl::init()");
     }
@@ -36,16 +37,22 @@ export default class InsightFacade implements IInsightFacade {
             }
             return JSZip.loadAsync(content, {base64: true}).then(
                 (zipFile: JSZip) => {
-                    if (!("courses/" in zipFile.files)) {return reject(new InsightError("No Courses found in Zip")); }
+                    if (!("courses/" in zipFile.files)) {
+                        return reject(new InsightError("No Courses found in Zip"));
+                    }
                     let allPromise: Array<Promise<string>> = [];
                     zipFile.forEach((relativePath, file) => {
                         let names = relativePath.split("/");
-                        if (names[0] !== "courses") {return; } // Determine if the file in the courses folder.
+                        if (names[0] !== "courses") {
+                            return;
+                        } // Determine if the file in the courses folder.
                         if (!file.dir) { // Determine if file is a directory.
                             allPromise.push(file.async("text")); // Add to list.
                         }
                     });
-                    if (allPromise.length <= 0) {return reject(new InsightError("No file Found in 'courses/'")); }
+                    if (allPromise.length <= 0) {
+                        return reject(new InsightError("No file Found in 'courses/'"));
+                    }
                     return this.handleAllFiles(allPromise, id, resolve, reject);
                 }
             ).catch((reason: any) => {
@@ -127,7 +134,7 @@ export default class InsightFacade implements IInsightFacade {
                     new QueryParser(thisQuery, this.dataSetMap[datasetID] as DataSetDataCourse);
                 return this.switchDataSet(datasetID).then((result) => {
                     queryParser.query = thisQuery;
-                    return  queryParser.getQueryResult(query).then((result2) => {
+                    return queryParser.getQueryResult(query).then((result2) => {
                         resolve(result2);
                     }).catch((err) => {
                         reject(err);
@@ -158,7 +165,7 @@ export default class InsightFacade implements IInsightFacade {
      * Return if the given Dataset id is valid.
      */
     private static isIdValid(id: string): boolean {
-        return !(id == null || id.includes("_") || id ===  "" || id.match(/^\s*$/g)) ;
+        return !(id == null || id.includes("_") || id === "" || id.match(/^\s*$/g));
     }
 
     /**
@@ -174,6 +181,7 @@ export default class InsightFacade implements IInsightFacade {
         }
         return null;
     }
+
     /**
      * Switch the active dataset
      * @param name The name of the target dataset.
@@ -182,23 +190,27 @@ export default class InsightFacade implements IInsightFacade {
      *     Reject otherwise.
      */
     public switchDataSet(name: string): Promise<string> {
-        return new Promise<string>( (resolve, reject) => {
-            if (this.currentActiveDataset === name) {return resolve("Dataset Already Loaded"); }
-            if (!(name in this.dataSetMap)) {return reject("Dataset Not Found"); }
+        return new Promise<string>((resolve, reject) => {
+            if (this.currentActiveDataset === name) {
+                return resolve("Dataset Already Loaded");
+            }
+            if (!(name in this.dataSetMap)) {
+                return reject("Dataset Not Found");
+            }
             if (this.currentActiveDataset != null) {
                 this.dataSetMap[this.currentActiveDataset].unloadDataSet().then(
                     (result) => {
                         this.currentActiveDataset = null;
                         return this.activeDataSet(name).then(
-                            (result2) =>  resolve("Dataset Switched Successfully.")
-                        ).catch( (err) => reject( new InsightError(err)));
-                    }).catch( (err) => reject(new InsightError(err)));
+                            (result2) => resolve("Dataset Switched Successfully.")
+                        ).catch((err) => reject(new InsightError(err)));
+                    }).catch((err) => reject(new InsightError(err)));
             } else {
                 return this.activeDataSet(name).then(
-                    (result2) =>  resolve("Dataset Switched Successfully.")
-                ).catch( (err) => reject( new InsightError(err)));
+                    (result2) => resolve("Dataset Switched Successfully.")
+                ).catch((err) => reject(new InsightError(err)));
             }
-    });
+        });
     }
 
     /**
@@ -210,15 +222,21 @@ export default class InsightFacade implements IInsightFacade {
      */
 
     private activeDataSet(name: string): Promise<string> {
-        return new Promise<string>( (resolve, reject) => {
-            if (this.currentActiveDataset === name) {resolve("Dataset Already Loaded"); }
-            if (!(name in this.dataSetMap)) {reject("Dataset Not Found"); }
+        return new Promise<string>((resolve, reject) => {
+            if (this.currentActiveDataset === name) {
+                resolve("Dataset Already Loaded");
+            }
+            if (!(name in this.dataSetMap)) {
+                reject("Dataset Not Found");
+            }
             this.dataSetMap[name].loadDataSet().then((result) => {
                 this.currentActiveDataset = name;
-                return resolve("Dataset Loaded"); })
+                return resolve("Dataset Loaded");
+            })
                 .catch((err) => {
                     this.currentActiveDataset = null;
-                    return reject( new InsightError("Error When Loading Dataset")); } );
+                    return reject(new InsightError("Error When Loading Dataset"));
+                });
         });
     }
 }

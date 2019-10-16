@@ -3,19 +3,9 @@ import {IDataRowCourse} from "./DataSetDataCourse";
 import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {JsonParser} from "./JsonParser";
-import {setInterval} from "timers";
+import {LogicParser} from "./LogicParser";
 import InsightFacade from "./controller/InsightFacade";
-
-export enum CompOperators {
-    GT,
-    LT,
-    EQ,
-    IS
-}
-
-export enum LogicalOperators {
-    AND, OR
-}
+import {CompOperator} from "./Operators";
 
 export class Query {
     public queryObject: any;
@@ -31,21 +21,6 @@ export class Query {
         this.insight = insight;
     }
 
-    public static CompareNumberOperators() {
-        return ["GT", "LT", "EQ"];
-    }
-
-    public static CompareStringOperators() {
-        return ["IS"];
-    }
-
-    public static CompareLogicKey() {
-        return ["AND", "OR"];
-    }
-
-    public static CompareNotKey() {
-        return ["NOT"];
-    }
 
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
@@ -78,11 +53,19 @@ export class Query {
      * Return true if it is valid.
      */
     private checkOptions(options: any): boolean {
-        if (Object.keys(options).length > 2) {return false; }
-        if (!options.hasOwnProperty("COLUMNS")) {return false; }
-        if (Object.keys(options).length === 2 && !options.hasOwnProperty("ORDER")) {return false; }
+        if (Object.keys(options).length > 2) {
+            return false;
+        }
+        if (!options.hasOwnProperty("COLUMNS")) {
+            return false;
+        }
+        if (Object.keys(options).length === 2 && !options.hasOwnProperty("ORDER")) {
+            return false;
+        }
         let columns = options.COLUMNS;
-        if (!(columns instanceof Array) || columns.length === 0) {return false; }
+        if (!(columns instanceof Array) || columns.length === 0) {
+            return false;
+        }
         for (let key of columns) {
             if (!this.checkKey(key)) {
                 return false;
@@ -98,6 +81,7 @@ export class Query {
     private checkWhere(whereClause: any): boolean {
         return Object.keys(whereClause).length === 0 || this.checkLogic(whereClause);
     }
+
     /**
      * Check if Where Clause is valid
      * @param whereClause The where clause of the query. REQUIRES none EMPTY where.
@@ -108,41 +92,58 @@ export class Query {
             return false;
         }
         let logicKey = Object.keys(whereClause)[0];
-        if (Query.CompareNumberOperators().includes(logicKey)) {
-            return this.checkLeaf( whereClause[logicKey], "number");
+        if (CompOperator.compareNumberOperators().includes(logicKey)) {
+            return this.checkLeaf(whereClause[logicKey], "number");
         }
-        if (Query.CompareStringOperators().includes(logicKey)) {
+        if (CompOperator.compareStringOperators().includes(logicKey)) {
             return this.checkLeaf(whereClause[logicKey], "string");
         }
-        if (Query.CompareLogicKey().includes(logicKey)) {
-            if (!(whereClause[logicKey] instanceof Array) || whereClause[logicKey].length === 0 ) {return false; }
+        if (CompOperator.compareLogicKey().includes(logicKey)) {
+            if (!(whereClause[logicKey] instanceof Array) || whereClause[logicKey].length === 0) {
+                return false;
+            }
             for (let item of whereClause[logicKey]) {
-                if (!this.checkLogic(item)) {return false; }
+                if (!this.checkLogic(item)) {
+                    return false;
+                }
             }
             return true;
         }
-        if (Query.CompareNotKey().includes(logicKey)) {
+        if (CompOperator.compareNotKey().includes(logicKey)) {
             return this.checkLogic(whereClause[logicKey]);
         }
         return false;
     }
 
     private checkKey(key: string): boolean {
-        if (typeof key !== "string") {return false; }
-        if (!key.match(/^[^_]+_[^_]+$/g)) {return false; }
+        if (typeof key !== "string") {
+            return false;
+        }
+        if (!key.match(/^[^_]+_[^_]+$/g)) {
+            return false;
+        }
         let keyArr = key.split("_");
         let dataset = keyArr[0];
         let field = keyArr[1];
-        if (this.dataset == null) {this.dataset = dataset; }
-        if (this.datasetKind == null) {this.datasetKind = this.insight.getDataKind(dataset); }
+        if (this.dataset == null) {
+            this.dataset = dataset;
+        }
+        if (this.datasetKind == null) {
+            this.datasetKind = this.insight.getDataKind(dataset);
+        }
         return this.dataset === dataset && this.datasetKind != null
             && Object.values(JsonParser.getRequiredFieldCourses()).includes(field);
     }
+
     private checkLeaf(object: any, type: string): boolean {
-        if (Object.keys(object).length !== 1) {return false; }
+        if (Object.keys(object).length !== 1) {
+            return false;
+        }
         let key = Object.keys(object)[0];
         let value = Object.values(object)[0];
-        if (!this.checkKey(key)) {return false; }
+        if (!this.checkKey(key)) {
+            return false;
+        }
         switch (type) {
             case "number":
                 return typeof value === type && ["avg", "pass", "audit", "year", "fail"].includes(key.split("_")[1]);
@@ -153,55 +154,14 @@ export class Query {
         return false;
     }
 
+    /**
+     * Parse the logic of the Query.
+     */
     public parseLogic() {
         let logicStatements = this.queryObject["WHERE"];
-        let parsedLogic = Query.statementToLogic(logicStatements);
+        let parsedLogic = LogicParser.generateLogic(logicStatements);
         if (parsedLogic instanceof LogicElement) {
             this.Locgic = parsedLogic;
-        }
-    }
-
-    public static statementToLogic(statement: any): LogicElement | LogicElement[] {
-        if (statement instanceof Array) {
-            let result: LogicElement[] = [];
-            for (let e of statement) {
-                let elem = this.statementToLogic(e);
-                if (elem instanceof LogicElement) {
-                    result.push(elem);
-                }
-            }
-            return result;
-        } else {
-            if (Object.keys(statement).length === 0) {
-                return null;
-            }
-            let filterKey = Object.keys(statement)[0];
-            if (filterKey === "NOT") {
-                return new NotLogic(this.statementToLogic(statement[filterKey]) as LogicElement);
-            }
-            if (statement[filterKey] instanceof Array) {
-                let childResult = this.statementToLogic(statement[filterKey]) as LogicElement[];
-                switch (filterKey) {
-                    case "AND":
-                        return new ComplexLogic(LogicalOperators.AND, childResult);
-                    case "OR" :
-                        return new ComplexLogic(LogicalOperators.OR, childResult);
-                    default:
-                        return new ComplexLogic(LogicalOperators.AND, childResult);
-                }
-            } else {
-                let comp = CompOperators.GT;
-                switch (filterKey) {
-                    case "GT": comp = CompOperators.GT; break;
-                    case "LT": comp = CompOperators.LT; break;
-                    case "EQ": comp = CompOperators.EQ; break;
-                    case "IS": comp = CompOperators.IS; break;
-                }
-                let key = Object.keys(statement[filterKey])[0].split("_")[1];
-                let val = Object.values(statement[filterKey])[0] as string | number;
-                return new BasicLogic(comp, key, val);
-
-            }
         }
     }
 }
