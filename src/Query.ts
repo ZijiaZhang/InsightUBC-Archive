@@ -9,12 +9,10 @@ import {CompOperator} from "./Operators";
 
 export class Query {
     public queryObject: any;
-    public Locgic: LogicElement | null;
+    public Logic: LogicElement | null;
     public dataset: string | null = null;
     private insight: InsightFacade;
     public datasetKind: InsightDatasetKind;
-    public columnKeys: string[] = [];
-    private orderKey: string = null;
 
     constructor(queryObject: any, insight: InsightFacade) {
         this.queryObject = queryObject;
@@ -32,19 +30,24 @@ export class Query {
      * return true if the queryObject follows definition of EBNF,
      * return false otherwise.
      */
-    public chackValidQuery(): boolean {
+    public checkValidQuery(): boolean {
+        let isTransCorrect: boolean = true;
         if (this.queryObject == null) {
             return false;
         }
-        if (Object.keys(this.queryObject).length !== 2) {
+        if (!(Object.keys(this.queryObject).length === 2 || Object.keys(this.queryObject).length === 3)) {
             return false;
         }
         if (!this.queryObject.hasOwnProperty("WHERE") || !this.queryObject.hasOwnProperty("OPTIONS")) {
             return false;
         }
-        let whereClause: any = this.queryObject.WHERE;
-        let options: any = this.queryObject.OPTIONS;
-        return this.checkWhere(whereClause) && this.checkOptions(options);
+        if (Object.keys(this.queryObject).length === 3) {
+            if (!this.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
+                return false;
+            }
+            isTransCorrect = this.checkTrans(this.queryObject.TRANSFORMATIONS);
+        }
+        return this.checkWhere(this.queryObject.WHERE) && this.checkOptions(this.queryObject.OPTIONS) && isTransCorrect;
     }
 
     /**
@@ -115,6 +118,15 @@ export class Query {
         return false;
     }
 
+    private checkTrans(trans: any ): boolean {
+        if (Object.keys(trans).length !== 2) {
+            return false;
+        }
+        if (!trans.hasOwnProperty("GROUP") || !trans.hasOwnProperty("APPLY") ) {
+            return false;
+        }
+    }
+
     private checkKey(key: string): boolean {
         if (typeof key !== "string") {
             return false;
@@ -161,7 +173,7 @@ export class Query {
         let logicStatements = this.queryObject["WHERE"];
         let parsedLogic = LogicParser.generateLogic(logicStatements);
         if (parsedLogic instanceof LogicElement) {
-            this.Locgic = parsedLogic;
+            this.Logic = parsedLogic;
         }
     }
 }

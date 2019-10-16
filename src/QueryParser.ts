@@ -24,7 +24,7 @@ export class QueryParser {
      */
     public getQueryResult(query: any): Promise<any[]> {
         return new Promise<any[]>((resolve, reject) => {
-               let result = this.findCandidate(this.query.Locgic);
+               let result = this.findCandidate(this.query.Logic);
                if (result instanceof Array) {
                     // this.queryResult = this.selectFieldandOrder(result, query["OPTIONS"]);
                     resolve(result);
