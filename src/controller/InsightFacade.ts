@@ -61,7 +61,7 @@ export default class InsightFacade implements IInsightFacade {
 
             if (query === null || query === undefined) {
                 reject(new InsightError("Query is null or undefined"));
-            } else if (!thisQuery.chackValidQuery()) {
+            } else if (!thisQuery.checkValidQuery()) {
                 reject(new InsightError("Query Syntax Not Valid"));
             } else {
                 let datasetID = thisQuery.dataset;
