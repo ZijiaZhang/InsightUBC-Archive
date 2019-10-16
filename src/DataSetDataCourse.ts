@@ -128,55 +128,55 @@ export class DataSetDataCourse extends DataSet {
         );
     }
 
-    public listEntries(): string[] {
-        return ["dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
-    }
-
-    protected get(column: string): string[] | number[] | null {
-        switch (column) {
-            case "dept":
-                return this.dept;
-            case "id":
-                return this.id;
-            case "instructor":
-                return this.instructor;
-            case "title":
-                return this.title;
-            case "uuid":
-                return this.uuid;
-            case "avg":
-                return this.avg;
-            case "pass":
-                return this.pass;
-            case "fail":
-                return this.fail;
-            case "audit":
-                return this.audit;
-            case "year":
-                return this.year;
-            default:
-                return null;
-        }
-    }
-
-    protected getAll(indexes: number[]): IDataRowCourse[] {
-        let results: IDataRowCourse[] = [];
-        for (let index of indexes) {
-            results.push({
-                dept: this.dept[index],
-                id: this.id[index],
-                instructor: this.instructor[index],
-                title: this.title[index],
-                uuid: this.uuid[index],
-                avg: this.avg[index],
-                pass: this.pass[index],
-                fail: this.fail[index],
-                audit: this.audit[index],
-                year: this.year[index]
-            });
-        }
-        return results;
-    }
+    // public listEntries(): string[] {
+    //     return ["dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
+    // }
+    //
+    // protected get(column: string): string[] | number[] | null {
+    //     switch (column) {
+    //         case "dept":
+    //             return this.dept;
+    //         case "id":
+    //             return this.id;
+    //         case "instructor":
+    //             return this.instructor;
+    //         case "title":
+    //             return this.title;
+    //         case "uuid":
+    //             return this.uuid;
+    //         case "avg":
+    //             return this.avg;
+    //         case "pass":
+    //             return this.pass;
+    //         case "fail":
+    //             return this.fail;
+    //         case "audit":
+    //             return this.audit;
+    //         case "year":
+    //             return this.year;
+    //         default:
+    //             return null;
+    //     }
+    // }
+    //
+    // protected getAll(indexes: number[]): IDataRowCourse[] {
+    //     let results: IDataRowCourse[] = [];
+    //     for (let index of indexes) {
+    //         results.push({
+    //             dept: this.dept[index],
+    //             id: this.id[index],
+    //             instructor: this.instructor[index],
+    //             title: this.title[index],
+    //             uuid: this.uuid[index],
+    //             avg: this.avg[index],
+    //             pass: this.pass[index],
+    //             fail: this.fail[index],
+    //             audit: this.audit[index],
+    //             year: this.year[index]
+    //         });
+    //     }
+    //     return results;
+    // }
 
     public getAllData(): IDataRowCourse[] {
         let results: IDataRowCourse[] = [];

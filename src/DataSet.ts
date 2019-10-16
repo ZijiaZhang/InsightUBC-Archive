@@ -52,26 +52,26 @@ export abstract class DataSet {
      */
 
     public abstract unloadDataSet(): Promise<string>;
-
-    /**
-     * Will return all entries of Dataset.
-     */
-    public abstract listEntries(): string[];
-
-    /**
-     * Return the data of given column.
-     * @param column  the name of the column.
-     *
-     * @return string[]|number[] | null
-     * Will retuen null if the column does not exist.
-     */
-    protected abstract get(column: string): string[]|number[] | null;
-
-    /**
-     * Returns all data with given indexes
-     * @param indexes The required index
-     */
-    protected abstract getAll(indexes: number[]): IDataRowCourse[];
+    //
+    // /**
+    //  * Will return all entries of Dataset.
+    //  */
+    // public abstract listEntries(): string[];
+    //
+    // /**
+    //  * Return the data of given column.
+    //  * @param column  the name of the column.
+    //  *
+    //  * @return string[]|number[] | null
+    //  * Will retuen null if the column does not exist.
+    //  */
+    // protected abstract get(column: string): string[]|number[] | null;
+    //
+    // /**
+    //  * Returns all data with given indexes
+    //  * @param indexes The required index
+    //  */
+    // protected abstract getAll(indexes: number[]): IDataRowCourse[];
 
     public abstract getAllData(): IDataRow[];
 }
