@@ -3,17 +3,7 @@ import {IDataRowCourse} from "./DataSetDataCourse";
 import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {JsonParser} from "./JsonParser";
-
-export enum CompOperators {
-    GT ,
-    LT ,
-    EQ,
-    IS
-}
-
-export enum LogicalOperators {
-    AND, OR
-}
+import {LogicParser} from "./LogicParser";
 
 export class Query {
     private GTKey: string[] = [];
@@ -25,13 +15,14 @@ export class Query {
     private ISKey: string[] = [];
     private ISvalue: string[] = [];
     public queryObject: any;
-    public Locgic: LogicElement| null;
+    public Locgic: LogicElement | null;
     public columnKeys: string[] = [];
     private orderKey: string = null;
 
     constructor(queryObject: any) {
         this.queryObject = queryObject;
     }
+
     // check that where clause can only have zero or one "FILTER", cannot have more than one
     // check that option clause must have one "COLUMNS"
     // zero or one "ORDER", cannot have more than one "ORDER"
@@ -44,25 +35,45 @@ export class Query {
      */
     public checkEBNF(): boolean {
         let isSyntaxValid: boolean = true;
-        if (Object.keys(this.queryObject).length !== 2) {return false; }
-        if (!this.queryObject.hasOwnProperty("WHERE")) {return false; }
-        if (!this.queryObject.hasOwnProperty("OPTIONS")) {return false; }
+        if (Object.keys(this.queryObject).length !== 2) {
+            return false;
+        }
+        if (!this.queryObject.hasOwnProperty("WHERE")) {
+            return false;
+        }
+        if (!this.queryObject.hasOwnProperty("OPTIONS")) {
+            return false;
+        }
         const where: object = this.queryObject["WHERE"];
-        if (Object.keys(where).length > 1) {return false; }
-        if (Object.keys(where).length === 1) {isSyntaxValid = isSyntaxValid && this.checkFilter(where); }
+        if (Object.keys(where).length > 1) {
+            return false;
+        }
+        if (Object.keys(where).length === 1) {
+            isSyntaxValid = isSyntaxValid && this.checkFilter(where);
+        }
         const options: any = this.queryObject["OPTIONS"];
-        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {return false; }
-        if (!options.hasOwnProperty("COLUMNS") || !(options["COLUMNS"] instanceof Array)) {return false; }
+        if (Object.keys(options).length === 0 || Object.keys(options).length > 2) {
+            return false;
+        }
+        if (!options.hasOwnProperty("COLUMNS") || !(options["COLUMNS"] instanceof Array)) {
+            return false;
+        }
         const column: string[] = options["COLUMNS"];
-        if (column.length === 0) {return false; }
+        if (column.length === 0) {
+            return false;
+        }
         for (let columnKey of column) {
             this.columnKeys.push(columnKey);
-            if (!this.checkKeyExist(columnKey)) {return false; }
+            if (!this.checkKeyExist(columnKey)) {
+                return false;
+            }
         }
         if (Object.keys(options).length === 2) {
             if (options.hasOwnProperty("ORDER")) {
                 this.orderKey = options["ORDER"];
-                if (typeof this.orderKey !== "string") {return false; }
+                if (typeof this.orderKey !== "string") {
+                    return false;
+                }
                 isSyntaxValid = isSyntaxValid && this.checkKeyExist(this.orderKey);
             } else {
                 return false;
@@ -87,7 +98,9 @@ export class Query {
                 }
             }
         }
-        if (!this.checkReferenceDSValid(this.queryObject)) {return false; }
+        if (!this.checkReferenceDSValid(this.queryObject)) {
+            return false;
+        }
         return isSemanticCorrect;
     }
 
@@ -110,21 +123,37 @@ export class Query {
                 return false;
             } else {
                 for (let logicObj of logicArray) {
-                    if (!(isFilterCorrect && this.checkFilter(logicObj))) {return false; }
+                    if (!(isFilterCorrect && this.checkFilter(logicObj))) {
+                        return false;
+                    }
                 }
             }
         } else if (filterKey === "LT" || filterKey === "GT" || filterKey === "EQ") {
             const mCompBody: object = whereClause[filterKey];
-            if (Object.keys(mCompBody).length !== 1) {return false; }
-            if (!this.checkMKeyExist(Object.keys(mCompBody)[0])) {return false; }
-            if (typeof Object.values(mCompBody)[0] !== "number") {return false; }
+            if (Object.keys(mCompBody).length !== 1) {
+                return false;
+            }
+            if (!this.checkMKeyExist(Object.keys(mCompBody)[0])) {
+                return false;
+            }
+            if (typeof Object.values(mCompBody)[0] !== "number") {
+                return false;
+            }
             this.helpAddKeyandVal(filterKey, Object.keys(mCompBody)[0], Object.values(mCompBody)[0]);
         } else if (filterKey === "IS") {
             const sCompBody: object = whereClause[filterKey];
-            if (Object.keys(sCompBody).length !== 1) {return false; }
-            if (!this.checkSKeyExist((Object.keys(sCompBody)[0]))) {return false; }
-            if (typeof Object.values(sCompBody)[0] !== "string") {return false; }
-            if (!this.checkScompInputString(Object.values(sCompBody)[0])) {return false; }
+            if (Object.keys(sCompBody).length !== 1) {
+                return false;
+            }
+            if (!this.checkSKeyExist((Object.keys(sCompBody)[0]))) {
+                return false;
+            }
+            if (typeof Object.values(sCompBody)[0] !== "string") {
+                return false;
+            }
+            if (!this.checkScompInputString(Object.values(sCompBody)[0])) {
+                return false;
+            }
             this.helpAddIsKeyAndVal(Object.keys(sCompBody)[0], Object.values(sCompBody)[0]);
         } else if (filterKey === "NOT") {
             const not: object = whereClause[filterKey];
@@ -175,19 +204,25 @@ export class Query {
 // Check whether the input key is a key in the courses dataset
 // The given key must be one of the key in the courses dataset, otherwise we don't have the key
     private checkKeyExist(key: string): boolean {
-        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {return false; }
+        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {
+            return false;
+        }
         let keyType: string = key.split("_")[1];
         return Object.values(JsonParser.getRequiredFieldCourses()).includes(keyType);
     }
 
     private checkMKeyExist(key: string): boolean {
-        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {return false; }
+        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {
+            return false;
+        }
         let keyType: string = key.split("_")[1];
-        return ["avg" , "pass" , "fail", "audit", "year"].includes(keyType);
+        return ["avg", "pass", "fail", "audit", "year"].includes(keyType);
     }
 
     private checkSKeyExist(key: string): boolean {
-        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {return false; }
+        if (typeof key !== "string" || !key.match(/^[^_]+_[^_]+$/g)) {
+            return false;
+        }
         let keyType: string = key.split("_")[1];
         return ["dept", "id", "instructor", "title", "uuid"].includes(keyType);
     }
@@ -222,7 +257,9 @@ export class Query {
         allKeyInQuery = allKeyInQuery.concat(this.GTKey);
         allKeyInQuery = allKeyInQuery.concat(this.EQKey);
         allKeyInQuery = allKeyInQuery.concat(this.ISKey);
-        if (this.orderKey != null) { allKeyInQuery.push(this.orderKey); }
+        if (this.orderKey != null) {
+            allKeyInQuery.push(this.orderKey);
+        }
         allKeyInQuery = allKeyInQuery.concat(this.columnKeys);
         for (let key of allKeyInQuery) {
             allDSinQuery.push(key.split("_")[0]);
@@ -236,52 +273,14 @@ export class Query {
         return DS;
     }
 
+    /**
+     * Parse the logic of the Query.
+     */
     public parseLogic() {
         let logicStatements = this.queryObject["WHERE"];
-        let parsedLogic = Query.statementToLogic(logicStatements);
-        if ( parsedLogic instanceof LogicElement) {
+        let parsedLogic = LogicParser.generateLogic(logicStatements);
+        if (parsedLogic instanceof LogicElement) {
             this.Locgic = parsedLogic;
-        }
-    }
-
-    public static statementToLogic(statement: any): LogicElement| LogicElement[] {
-        if (statement instanceof Array) {
-            let result: LogicElement[] = [];
-            for (let e of statement) {
-                let elem = this.statementToLogic(e);
-                if (elem instanceof LogicElement) {
-                    result.push(elem);
-                }
-            }
-            return result;
-        } else {
-            if (Object.keys(statement).length === 0) {
-                return null;
-            }
-            let filterKey = Object.keys(statement)[0];
-            if (filterKey === "NOT") {
-                return new NotLogic(this.statementToLogic(statement[filterKey]) as LogicElement);
-            }
-            if (statement[filterKey] instanceof Array) {
-                let childResult = this.statementToLogic(statement[filterKey]) as LogicElement[];
-                switch (filterKey) {
-                    case "AND": return new ComplexLogic(LogicalOperators.AND, childResult);
-                    case "OR" : return new ComplexLogic(LogicalOperators.OR, childResult);
-                    default: return new ComplexLogic(LogicalOperators.AND, childResult);
-                }
-            } else {
-                let comp = CompOperators.GT;
-                switch (filterKey) {
-                    case "GT": comp = CompOperators.GT; break;
-                    case "LT": comp = CompOperators.LT; break;
-                    case "EQ": comp = CompOperators.EQ; break;
-                    case "IS": comp = CompOperators.IS; break;
-                }
-                let key = Object.keys(statement[filterKey])[0].split("_")[1];
-                let val = Object.values(statement[filterKey])[0] as string|number;
-                return new BasicLogic(comp, key, val);
-
-            }
         }
     }
 }

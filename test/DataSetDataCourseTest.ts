@@ -5,7 +5,7 @@ import {DataSetDataCourse} from "../src/DataSetDataCourse";
 import * as JSZip from "jszip";
 import {JsonParser} from "../src/JsonParser";
 import {expect} from "chai";
-import {CompOperators} from "../src/Query";
+import {CompOperators} from "../src/Operators";
 
 describe("Dataset Test", function () {
     // Reference any datasets you've added to test/data here and they will
@@ -34,39 +34,42 @@ describe("Dataset Test", function () {
     beforeEach(function () {
         // This section resets the data directory (removing any cached data) and resets the InsightFacade instance
         // This runs before each test, which should make each test independent from the previous one
-        return new Promise( (resolve) => {
-        Log.test(`BeforeTest: ${this.currentTest.title}`);
-        try {
-            let id = "courses";
-            fs.removeSync(cacheDir);
-            fs.mkdirSync(cacheDir);
-            dataset = new DataSetDataCourse("courses");
-            return JSZip.loadAsync(datasets["courses"], {base64: true}).then(
-                (zipFile: JSZip) => {
-                    let allPromise: Array<Promise<string>> = [];
-                    zipFile.forEach((relativePath, file) => {
-                        let names = relativePath.split("/");
-                        if (names[0] !== "courses") {return; }
-                        if (!file.dir) {
-                            allPromise.push(file.async("text"));
-                        }
-                    });
-                    return Promise.all(allPromise).then((datas) => {
-                        for (let data of datas) {
-                            let dataInFile = JsonParser.parseData(data, InsightDatasetKind.Courses);
-                            if (dataInFile != null) {
-                                for (let dataRow of dataInFile) {
-                                    dataset.addData(dataRow);
+        return new Promise((resolve) => {
+            Log.test(`BeforeTest: ${this.currentTest.title}`);
+            try {
+                let id = "courses";
+                fs.removeSync(cacheDir);
+                fs.mkdirSync(cacheDir);
+                dataset = new DataSetDataCourse("courses");
+                return JSZip.loadAsync(datasets["courses"], {base64: true}).then(
+                    (zipFile: JSZip) => {
+                        let allPromise: Array<Promise<string>> = [];
+                        zipFile.forEach((relativePath, file) => {
+                            let names = relativePath.split("/");
+                            if (names[0] !== "courses") {
+                                return;
+                            }
+                            if (!file.dir) {
+                                allPromise.push(file.async("text"));
+                            }
+                        });
+                        return Promise.all(allPromise).then((datas) => {
+                            for (let data of datas) {
+                                let dataInFile = JsonParser.parseData(data, InsightDatasetKind.Courses);
+                                if (dataInFile != null) {
+                                    for (let dataRow of dataInFile) {
+                                        dataset.addData(dataRow);
+                                    }
                                 }
                             }
-                        }
-                        resolve();
-                    });
-                }
-            );
-        } catch (err) {
-            Log.error(err);
-        }});
+                            resolve();
+                        });
+                    }
+                );
+            } catch (err) {
+                Log.error(err);
+            }
+        });
     });
 
     after(function () {
@@ -78,17 +81,17 @@ describe("Dataset Test", function () {
     });
 
     it("should Query Dataset", function () {
-       return dataset.loadDataSet().then(
-           () => {
-               let result = dataset.getData("avg", CompOperators.GT, -5, false);
-               if (result instanceof Array) {
-                   expect(dataset.getMetaData().numRows).equal(64612);
-                   return expect(result.length).equal(64612);
-               } else {
-                   return expect.fail("Wrong Value");
-               }
-           }
-       );
+        return dataset.loadDataSet().then(
+            () => {
+                let result = dataset.getData("avg", CompOperators.GT, -5, false);
+                if (result instanceof Array) {
+                    expect(dataset.getMetaData().numRows).equal(64612);
+                    return expect(result.length).equal(64612);
+                } else {
+                    return expect.fail("Wrong Value");
+                }
+            }
+        );
     });
 
     it("should Query Dataset avg GT", function () {
@@ -213,7 +216,7 @@ describe("Dataset Test", function () {
                     expect.fail("Wrong Value");
                 }
             }
-        ).catch( (err) => expect.fail("Should not catch"));
+        ).catch((err) => expect.fail("Should not catch"));
     });
 
     it("should Query Dataset avg NOT LT", function () {
@@ -226,6 +229,6 @@ describe("Dataset Test", function () {
                     expect.fail("Wrong Value");
                 }
             }
-        ).catch( (err) => expect.fail("Should not catch"));
+        ).catch((err) => expect.fail("Should not catch"));
     });
 });

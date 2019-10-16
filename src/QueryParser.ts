@@ -1,8 +1,9 @@
 import {DataSetDataCourse, IDataRowCourse} from "./DataSetDataCourse";
 import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
-import {CompOperators, LogicalOperators, Query} from "./Query";
 import {DataSet} from "./DataSet";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
+import {Query} from "./Query";
+import {CompOperator, LogicalOperators} from "./Operators";
 
 export class QueryParser {
     private queryResult: object[] = [];
@@ -112,29 +113,7 @@ export class QueryParser {
     private determineCandidate(logic: LogicElement, course: IDataRowCourse): boolean {
         let operator: string = null;
         if (logic instanceof BasicLogic) {
-            let compare;
-            switch (logic.comp) {
-                case CompOperators.EQ: compare = (x: any, y: any) => x === y; break;
-                case CompOperators.GT: compare = (x: any, y: any) => x > y; break;
-                case CompOperators.LT: compare = (x: any, y: any) => x < y; break;
-                case CompOperators.IS:
-                    compare = (x: any, y: any) => {
-                        let value: string = x as string;
-                        let match: string = y as string;
-                        if (match === "*") {return true; }
-                        if (match.startsWith("*") && match.endsWith("*")) {
-                            let matchStr = match.substring(1, match.length - 1);
-                            return value.indexOf(matchStr) !== -1;
-                        } else if (match.startsWith("*")) {
-                            return value.endsWith(match.substring(1));
-                        } else if (match.endsWith("*")) {
-                            return value.startsWith(match.substring(0, match.length - 1 ));
-                        } else {
-                            return value === match;
-                        }
-                    };
-                    break;
-            }
+            let compare = CompOperator.getCompareFunction(logic.comp);
             return compare(course[logic.key], logic.value);
         } else if (logic instanceof ComplexLogic) {
             let result: boolean = false;

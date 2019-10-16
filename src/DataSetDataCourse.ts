@@ -3,20 +3,21 @@ import * as JSZip from "jszip";
 import * as fs from "fs";
 import Log from "./Util";
 import {DataSet, IDataRow} from "./DataSet";
-import {CompOperators} from "./Query";
+import {CompOperators} from "./Operators";
 
 export interface IDataRowCourse extends IDataRow {
-    [key: string]: string|number;
+    [key: string]: string | number;
+
     dept: string;
-     id: string;
-     instructor: string;
-     title: string;
-     uuid: string;
-     avg: number;
-     pass: number;
-     fail: number;
-     audit: number;
-     year: number;
+    id: string;
+    instructor: string;
+    title: string;
+    uuid: string;
+    avg: number;
+    pass: number;
+    fail: number;
+    audit: number;
+    year: number;
 }
 
 export class DataSetDataCourse extends DataSet {
@@ -32,6 +33,7 @@ export class DataSetDataCourse extends DataSet {
     private audit: number[] = [];
     private year: number[] = [];
     private fileLocation: string = "";
+
     /**
      *
      * @param name
@@ -41,9 +43,9 @@ export class DataSetDataCourse extends DataSet {
         super();
         this.metaData = {
             id: name,
-        kind: InsightDatasetKind.Courses,
-        numRows: 0
-    };
+            kind: InsightDatasetKind.Courses,
+            numRows: 0
+        };
         this.fileLocation = "data/" + name + ".zip";
     }
 
@@ -66,8 +68,8 @@ export class DataSetDataCourse extends DataSet {
     }
 
     public loadDataSet(): Promise<string> {
-        return new Promise<string>( (resolve, reject) => {
-            if ( this.datasetLoaded) {
+        return new Promise<string>((resolve, reject) => {
+            if (this.datasetLoaded) {
                 return resolve("Dataset is Already Loaded");
             }
             let fileData: string = fs.readFileSync(this.fileLocation).toString("base64");
@@ -75,31 +77,32 @@ export class DataSetDataCourse extends DataSet {
                 (zipFile: JSZip) => {
                     return zipFile.files["data.json"]
                         .async("text").then(
-                        (data) => {
-                            try {
-                            let parsedJson = JSON.parse(data);
-                            this.audit = parsedJson.audit;
-                            this.avg = parsedJson.avg;
-                            this.dept = parsedJson.dept;
-                            this.fail = parsedJson.fail;
-                            this.id = parsedJson.id;
-                            this.instructor = parsedJson.instructor;
-                            this.pass = parsedJson.pass;
-                            this.title = parsedJson.title;
-                            this.uuid = parsedJson.uuid;
-                            this.year = parsedJson.year;
-                            this.datasetLoaded = true;
-                            resolve("Data loaded");
-                            } catch (e) {
-                                reject("Error Reading File");
+                            (data) => {
+                                try {
+                                    let parsedJson = JSON.parse(data);
+                                    this.audit = parsedJson.audit;
+                                    this.avg = parsedJson.avg;
+                                    this.dept = parsedJson.dept;
+                                    this.fail = parsedJson.fail;
+                                    this.id = parsedJson.id;
+                                    this.instructor = parsedJson.instructor;
+                                    this.pass = parsedJson.pass;
+                                    this.title = parsedJson.title;
+                                    this.uuid = parsedJson.uuid;
+                                    this.year = parsedJson.year;
+                                    this.datasetLoaded = true;
+                                    resolve("Data loaded");
+                                } catch (e) {
+                                    reject("Error Reading File");
+                                }
                             }
-                        }
-                    ); });
+                        );
+                });
         });
     }
 
     public saveDataSet(): Promise<string> {
-        return new Promise<string>( (resolve, reject) => {
+        return new Promise<string>((resolve, reject) => {
             let jsonFile: string = JSON.stringify(this); // Transform the JSON Object to string.
             let zip = new JSZip();
             zip.file("data.json", jsonFile); // Save JSOn File in data.json
@@ -109,51 +112,65 @@ export class DataSetDataCourse extends DataSet {
                     Log.info("Saved");
                     resolve("File Saved"); // If finish, will resolve.
                 }).on("error", function () {
-                    reject("Cannot Save File"); // If error, will reject
+                reject("Cannot Save File"); // If error, will reject
             });
         });
     }
 
     public unloadDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
-            return this.saveDataSet().then((result: string) => {
-                if (!this.datasetLoaded) {
-                    return resolve("Dataset Already Unloaded");
-                }
-                this.audit = [];
-                this.avg = [];
-                this.dept = [];
-                this.fail = [];
-                this.id = [];
-                this.instructor = [];
-                this.pass = [];
-                this.title = [];
-                this.uuid = [];
-                this.year = [];
-                this.datasetLoaded = false;
-                resolve("Dataset unloaded");
-                }
-            ).catch((err: any) => {
-                Log.error("Error unload Dataset");
-                reject();
-            });
-        }
-    );
+                return this.saveDataSet().then((result: string) => {
+                        if (!this.datasetLoaded) {
+                            return resolve("Dataset Already Unloaded");
+                        }
+                        this.audit = [];
+                        this.avg = [];
+                        this.dept = [];
+                        this.fail = [];
+                        this.id = [];
+                        this.instructor = [];
+                        this.pass = [];
+                        this.title = [];
+                        this.uuid = [];
+                        this.year = [];
+                        this.datasetLoaded = false;
+                        resolve("Dataset unloaded");
+                    }
+                ).catch((err: any) => {
+                    Log.error("Error unload Dataset");
+                    reject();
+                });
+            }
+        );
     }
 
     public getData(column: string, comp: CompOperators,
-                   value: string| number, not: boolean): IDataRowCourse[]|InsightError {
-        if (!this.datasetLoaded) {return new InsightError("Dataset Not Loaded"); }
-        if (!this.listEntries().includes(column)) {return new InsightError("Column not found"); }
+                   value: string | number, not: boolean): IDataRowCourse[] | InsightError {
+        if (!this.datasetLoaded) {
+            return new InsightError("Dataset Not Loaded");
+        }
+        if (!this.listEntries().includes(column)) {
+            return new InsightError("Column not found");
+        }
         let indexes: number[] = [];
         let data = this.get(column);
-        if (data == null) {return new InsightError("Error Getting Data"); }
+        if (data == null) {
+            return new InsightError("Error Getting Data");
+        }
         let compare;
         switch (comp) {
-            case CompOperators.EQ: compare = (x: any, y: any) => x === y; break;
-            case CompOperators.GT: compare = (x: any, y: any) => x > y; break;
-            case CompOperators.LT: compare = (x: any, y: any) => x < y; break;
-            case CompOperators.IS: compare = (x: any, y: any) => x === y; break;
+            case CompOperators.EQ:
+                compare = (x: any, y: any) => x === y;
+                break;
+            case CompOperators.GT:
+                compare = (x: any, y: any) => x > y;
+                break;
+            case CompOperators.LT:
+                compare = (x: any, y: any) => x < y;
+                break;
+            case CompOperators.IS:
+                compare = (x: any, y: any) => x === y;
+                break;
         }
         for (let index = 0; index < data.length; index++) {
             if (not !== compare(data[index], value)) {
@@ -164,29 +181,40 @@ export class DataSetDataCourse extends DataSet {
     }
 
     public listEntries(): string[] {
-        return [ "dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
+        return ["dept", "id", "instructor", "title", "uuid", "avg", "pass", "fail", "audit", "year"];
     }
 
     protected get(column: string): string[] | number[] | null {
         switch (column) {
-            case "dept": return this.dept;
-            case "id": return this.id;
-            case "instructor": return this.instructor;
-            case "title": return this.title;
-            case "uuid": return this.uuid;
-            case "avg": return this.avg;
-            case "pass": return this.pass;
-            case "fail": return this.fail;
-            case "audit": return this.audit;
-            case "year": return this.year;
-            default: return null;
+            case "dept":
+                return this.dept;
+            case "id":
+                return this.id;
+            case "instructor":
+                return this.instructor;
+            case "title":
+                return this.title;
+            case "uuid":
+                return this.uuid;
+            case "avg":
+                return this.avg;
+            case "pass":
+                return this.pass;
+            case "fail":
+                return this.fail;
+            case "audit":
+                return this.audit;
+            case "year":
+                return this.year;
+            default:
+                return null;
         }
     }
 
     protected getAll(indexes: number[]): IDataRowCourse[] {
         let results: IDataRowCourse[] = [];
         for (let index of indexes) {
-            results.push( {
+            results.push({
                 dept: this.dept[index],
                 id: this.id[index],
                 instructor: this.instructor[index],
@@ -205,7 +233,7 @@ export class DataSetDataCourse extends DataSet {
     public getAllData(): IDataRowCourse[] {
         let results: IDataRowCourse[] = [];
         for (let i = 0; i < this.dept.length; i++) {
-            results.push( {
+            results.push({
                 dept: this.dept[i],
                 id: this.id[i],
                 instructor: this.instructor[i],
