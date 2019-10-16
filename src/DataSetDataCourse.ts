@@ -46,7 +46,7 @@ export class DataSetDataCourse extends DataSet {
             kind: InsightDatasetKind.Courses,
             numRows: 0
         };
-        this.fileLocation = "data/" + name + ".zip";
+        this.fileLocation = "data/" + name + ".json";
     }
 
     public addData(data: IDataRowCourse): boolean {
