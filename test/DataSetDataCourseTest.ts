@@ -1,9 +1,9 @@
 import Log from "../src/Util";
 import * as fs from "fs-extra";
 import {InsightDatasetKind, InsightError} from "../src/controller/IInsightFacade";
-import {DataSetDataCourse, IDataRowCourse} from "../src/DataSetDataCourse";
+import {DataSetDataCourse, IDataRowCourse} from "../src/Datasets/DataSetDataCourse";
 import * as JSZip from "jszip";
-import {JsonParser} from "../src/JsonParser";
+import {JsonParser} from "../src/Loaders/Parsers/JsonParser";
 import {expect} from "chai";
 import {CompOperators} from "../src/Operators";
 

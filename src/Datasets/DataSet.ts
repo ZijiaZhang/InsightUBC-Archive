@@ -1,6 +1,6 @@
-import {InsightDataset, InsightError} from "./controller/IInsightFacade";
+import {InsightDataset, InsightError} from "../controller/IInsightFacade";
 import {IDataRowCourse} from "./DataSetDataCourse";
-import {CompOperators} from "./Operators";
+import {CompOperators} from "../Operators";
 
 export interface IDataRow {
     rowNumber?: number;

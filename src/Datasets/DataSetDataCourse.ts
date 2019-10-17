@@ -1,39 +1,36 @@
-import {InsightDatasetKind, InsightError} from "./controller/IInsightFacade";
+import {InsightDatasetKind, InsightError} from "../controller/IInsightFacade";
 import * as JSZip from "jszip";
 import * as fs from "fs";
-import Log from "./Util";
+import Log from "../Util";
 import {DataSet, IDataRow} from "./DataSet";
-import {CompOperators} from "./Operators";
 
-export interface IDataRowRoom extends IDataRow {
+export interface IDataRowCourse extends IDataRow {
     [key: string]: string | number;
 
-    fullname: string;
-    shortname: string;
-    number: string;
-    name: string;
-    address: string;
-    lat: number;
-    lon: number;
-    seats: number;
-    type: string;
-    furniture: string;
-    href: string;
+    dept: string;
+    id: string;
+    instructor: string;
+    title: string;
+    uuid: string;
+    avg: number;
+    pass: number;
+    fail: number;
+    audit: number;
+    year: number;
 }
 
-export class DataSetDataRoom extends DataSet {
+export class DataSetDataCourse extends DataSet {
 
-    private fullname: string[] = [];
-    private shortname: string[] = [];
-    private number: string[] = [];
-    private name: string[] = [];
-    private address: string[] = [];
-    private lat: number[] = [];
-    private lon: number[] = [];
-    private seats: number[] = [];
-    private type: string[] = [];
-    private furniture: string[] = [];
-    private href: string[] = [];
+    private dept: string[] = [];
+    private id: string[] = [];
+    private instructor: string[] = [];
+    private title: string[] = [];
+    private uuid: string[] = [];
+    private avg: number[] = [];
+    private pass: number[] = [];
+    private fail: number[] = [];
+    private audit: number[] = [];
+    private year: number[] = [];
 
     /**
      *
@@ -44,27 +41,26 @@ export class DataSetDataRoom extends DataSet {
         super();
         this.metaData = {
             id: name,
-            kind: InsightDatasetKind.Rooms,
+            kind: InsightDatasetKind.Courses,
             numRows: 0
         };
         this.fileLocation = "data/" + name + ".json";
     }
 
-    public addData(data: IDataRowRoom): boolean {
+    public addData(data: IDataRowCourse): boolean {
         if (!this.datasetLoaded) {
             return false;
         }
-        this.fullname.push(data.fullname);
-        this.shortname.push(data.shortname);
-        this.number.push(data.number);
-        this.name.push(data.name);
-        this.address.push(data.address);
-        this.lat.push(data.lat);
-        this.lon.push(data.lon);
-        this.seats.push(data.seats);
-        this.type.push(data.type);
-        this.furniture.push(data.furniture);
-        this.href.push(data.href);
+        this.dept.push(data.dept);
+        this.id.push(data.id);
+        this.instructor.push(data.instructor);
+        this.title.push(data.title);
+        this.uuid.push(data.uuid);
+        this.avg.push(data.avg);
+        this.pass.push(data.pass);
+        this.fail.push(data.fail);
+        this.audit.push(data.audit);
+        this.year.push(data.year);
         this.metaData.numRows += 1;
         return true;
     }
@@ -77,17 +73,16 @@ export class DataSetDataRoom extends DataSet {
             let fileData: string = fs.readFileSync(this.fileLocation).toString();
             try {
                 let parsedJson = JSON.parse(fileData);
-                this.fullname = parsedJson.fullname;
-                this.shortname = parsedJson.shortname;
-                this.number = parsedJson.number;
-                this.name = parsedJson.name;
-                this.address = parsedJson.address;
-                this.lat = parsedJson.lat;
-                this.lon = parsedJson.lon;
-                this.seats = parsedJson.seats;
-                this.type = parsedJson.type;
-                this.furniture = parsedJson.furniture;
-                this.href = parsedJson.href;
+                this.audit = parsedJson.audit;
+                this.avg = parsedJson.avg;
+                this.dept = parsedJson.dept;
+                this.fail = parsedJson.fail;
+                this.id = parsedJson.id;
+                this.instructor = parsedJson.instructor;
+                this.pass = parsedJson.pass;
+                this.title = parsedJson.title;
+                this.uuid = parsedJson.uuid;
+                this.year = parsedJson.year;
                 this.datasetLoaded = true;
                 resolve("Data loaded");
             } catch (e) {
@@ -117,17 +112,16 @@ export class DataSetDataRoom extends DataSet {
                         if (!this.datasetLoaded) {
                             return resolve("Dataset Already Unloaded");
                         }
-                        this.fullname = [];
-                        this.shortname = [];
-                        this.number = [];
-                        this.name = [];
-                        this.address = [];
-                        this.lat = [];
-                        this.lon = [];
-                        this.seats = [];
-                        this.type = [];
-                        this.furniture = [];
-                        this.href = [];
+                        this.audit = [];
+                        this.avg = [];
+                        this.dept = [];
+                        this.fail = [];
+                        this.id = [];
+                        this.instructor = [];
+                        this.pass = [];
+                        this.title = [];
+                        this.uuid = [];
+                        this.year = [];
                         this.datasetLoaded = false;
                         resolve("Dataset unloaded");
                     }
@@ -189,21 +183,20 @@ export class DataSetDataRoom extends DataSet {
     //     return results;
     // }
 
-    public getAllData(): IDataRowRoom[] {
-        let results: IDataRowRoom[] = [];
-        for (let i = 0; i < this.fullname.length; i++) {
+    public getAllData(): IDataRowCourse[] {
+        let results: IDataRowCourse[] = [];
+        for (let i = 0; i < this.dept.length; i++) {
             results.push({
-                fullname: this.fullname[i],
-                shortname: this.shortname[i],
-                number: this.number[i],
-                name: this.name[i],
-                address: this.address[i],
-                lat: this.lat[i],
-                lon: this.lon[i],
-                seats: this.seats[i],
-                type: this.type[i],
-                furniture: this.furniture[i],
-                href: this.href[i]
+                dept: this.dept[i],
+                id: this.id[i],
+                instructor: this.instructor[i],
+                title: this.title[i],
+                uuid: this.uuid[i],
+                avg: this.avg[i],
+                pass: this.pass[i],
+                fail: this.fail[i],
+                audit: this.audit[i],
+                year: this.year[i]
             });
         }
         return results;

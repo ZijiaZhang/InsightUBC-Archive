@@ -1,8 +1,8 @@
 import Log from "./Util";
-import {IDataRowCourse} from "./DataSetDataCourse";
+import {IDataRowCourse} from "./Datasets/DataSetDataCourse";
 import {InsightDataset, InsightDatasetKind} from "./controller/IInsightFacade";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
-import {JsonParser} from "./JsonParser";
+import {JsonParser} from "./Loaders/Parsers/JsonParser";
 import {LogicParser} from "./LogicParser";
 import InsightFacade from "./controller/InsightFacade";
 import {CompOperator} from "./Operators";

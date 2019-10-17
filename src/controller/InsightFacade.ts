@@ -1,12 +1,12 @@
 import Log from "../Util";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightError, NotFoundError} from "./IInsightFacade";
-import {DataSetDataCourse} from "../DataSetDataCourse";
+import {DataSetDataCourse} from "../Datasets/DataSetDataCourse";
 import {QueryParser} from "../QueryParser";
-import {DataSet} from "../DataSet";
+import {DataSet} from "../Datasets/DataSet";
 import {Query} from "../Query";
-import {DatasetLoaderCourse} from "../DatasetLoaderCourse";
-import {DatasetLoaderRooms} from "../DatasetLoaderRooms";
-import {DatasetLoader} from "../DatasetLoader";
+import {DatasetLoaderCourse} from "../Loaders/DatasetLoaderCourse";
+import {DatasetLoaderRooms} from "../Loaders/DatasetLoaderRooms";
+import {DatasetLoader} from "../Loaders/DatasetLoader";
 
 /**
  * This is the main programmatic entry point for the project.

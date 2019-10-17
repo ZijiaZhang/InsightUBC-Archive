@@ -1,4 +1,4 @@
-import {DataSet} from "./DataSet";
+import {DataSet} from "../Datasets/DataSet";
 
 export abstract class DatasetLoader {
     private id: string;

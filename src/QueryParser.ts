@@ -1,6 +1,6 @@
-import {DataSetDataCourse, IDataRowCourse} from "./DataSetDataCourse";
+import {DataSetDataCourse, IDataRowCourse} from "./Datasets/DataSetDataCourse";
 import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
-import {DataSet} from "./DataSet";
+import {DataSet} from "./Datasets/DataSet";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {Query} from "./Query";
 import {CompOperator, LogicalOperators} from "./Operators";

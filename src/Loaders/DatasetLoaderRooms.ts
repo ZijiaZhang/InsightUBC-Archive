@@ -1,8 +1,8 @@
-import {DataSetDataRoom} from "./DataSetDataRoom";
+import {DataSetDataRoom} from "../Datasets/DataSetDataRoom";
 import * as JSZip from "jszip";
-import {InsightError} from "./controller/IInsightFacade";
+import {InsightError} from "../controller/IInsightFacade";
 import chaiHttp = require("chai-http");
-import {HTMLParser} from "./HTMLParser";
+import {HTMLParser} from "./Parsers/HTMLParser";
 import {DatasetLoader} from "./DatasetLoader";
 
 const chai = require("chai");

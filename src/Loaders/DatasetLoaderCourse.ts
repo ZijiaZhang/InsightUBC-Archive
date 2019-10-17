@@ -1,7 +1,7 @@
-import {DataSetDataCourse, IDataRowCourse} from "./DataSetDataCourse";
+import {DataSetDataCourse, IDataRowCourse} from "../Datasets/DataSetDataCourse";
 import * as JSZip from "jszip";
-import {InsightDatasetKind, InsightError} from "./controller/IInsightFacade";
-import {JsonParser} from "./JsonParser";
+import {InsightDatasetKind, InsightError} from "../controller/IInsightFacade";
+import {JsonParser} from "./Parsers/JsonParser";
 import {DatasetLoader} from "./DatasetLoader";
 
 export class DatasetLoaderCourse extends DatasetLoader {
