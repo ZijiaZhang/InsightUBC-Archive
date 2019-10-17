@@ -41,7 +41,7 @@ export default class InsightFacade implements IInsightFacade {
                             this.dataSetMap[id] = dataset;
                             return Promise.resolve(Object.keys(this.dataSetMap));
                         }
-                    ).catch(() => Promise.reject(new InsightError("Error Loading Files")));
+                    ).catch((e) => Promise.reject(new InsightError("Error Loading Files")));
                 default:
                     return Promise.reject(new InsightError("No such Type"));
             }

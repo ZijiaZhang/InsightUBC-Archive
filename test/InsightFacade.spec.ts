@@ -25,7 +25,9 @@ describe("InsightFacade Add/Remove Dataset", function () {
         coursesOneInvalidFile: "./test/data/coursesWithOneInvalidFile.zip",
         coursesWithNoValidFile: "./test/data/coursesWithNoValidFile.zip",
         coursesWithOneFileNoSection: "./test/data/coursesWithOneFileNoSection.zip",
-        room: "./test/data/rooms.zip"
+        room: "./test/data/rooms.zip",
+        roomMiss: "./test/data/rooms_MissingFiles.zip",
+        roomTwoTable: "./test/data/rooms_twoTable.zip"
     };
     let datasets: { [id: string]: string } = {};
     let insightFacade: InsightFacade;
@@ -427,7 +429,23 @@ describe("InsightFacade Add/Remove Dataset", function () {
     it("Should load Room Dataset", function () {
         return insightFacade.addDataset("room", datasets["room"], InsightDatasetKind.Rooms).then(
             (result) => {
-                expect(result.length).equal(364);
+                expect(result).to.deep.equals(["room"]);
+            }
+        ).catch((e) => expect.fail("Shoud not be rejected"));
+    });
+
+    it("Should load Room Dataset With Missing Files", function () {
+        return insightFacade.addDataset("room", datasets["roomMiss"], InsightDatasetKind.Rooms).then(
+            (result) => {
+                expect(result).to.deep.equals(["room"]);
+            }
+        ).catch((e) => expect.fail("Shoud not be rejected"));
+    });
+
+    it("Should load Room Dataset With Two Tables", function () {
+        return insightFacade.addDataset("room", datasets["roomTwoTable"], InsightDatasetKind.Rooms).then(
+            (result) => {
+                expect(result).to.deep.equals(["room"]);
             }
         ).catch((e) => expect.fail("Shoud not be rejected"));
     });
