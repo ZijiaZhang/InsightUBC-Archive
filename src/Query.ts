@@ -107,16 +107,48 @@ export class Query {
             return false;
         }
         for (let key of columns) {
-            if (!this.checkKey(key)) {
+            if (!( this.checkKey(key) || this.checkApplyKey(key))) {
                 return false;
             }
         }
+        let isOrderOk = true;
         if (options.hasOwnProperty("ORDER")) {
             let order = options.ORDER;
-            return this.checkKey(order) && columns.includes(order);
+            if (typeof order === "object") {
+                isOrderOk = this.checkOrderObject(order);
+            } else {
+                isOrderOk = this.checkKey(order) || this.checkApplyKey(order);
+            }
+        }
+        return true && isOrderOk;
+    }
+
+    // Does the order of "dir" and "key" matter?????????
+    // UI : does not matter
+    // EBNF: seems "dir" is first, "keys" is second??????????
+    private checkOrderObject(order: any): boolean {
+        if (Object.keys(order).length !== 2) {
+            return false;
+        }
+        if (!(order.hasOwnProperty("dir")) || !(order.hasOwnProperty("keys"))) {
+            return false;
+        }
+        const dir = order["dir"];
+        const keys = order["keys"];
+        if (! (dir === "UP" || dir === "DOWN")) {
+            return false;
+        }
+        if (!(keys instanceof Array) || keys.length === 0) {
+            return false;
+        }
+        for (let key of keys) {
+            if (!( this.checkKey(key) || this.checkApplyKey(key))) {
+                return false;
+            }
         }
         return true;
     }
+
 
     private checkTrans(trans: any ): boolean {
         if (Object.keys(trans).length !== 2) {
