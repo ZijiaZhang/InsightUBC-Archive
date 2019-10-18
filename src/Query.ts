@@ -50,37 +50,6 @@ export class Query {
         return this.checkWhere(this.queryObject.WHERE) && this.checkOptions(this.queryObject.OPTIONS) && isTransCorrect;
     }
 
-    /**
-     * Check if options is valid
-     * @param options The object of option section
-     * Return true if it is valid.
-     */
-    private checkOptions(options: any): boolean {
-        if (Object.keys(options).length > 2) {
-            return false;
-        }
-        if (!options.hasOwnProperty("COLUMNS")) {
-            return false;
-        }
-        if (Object.keys(options).length === 2 && !options.hasOwnProperty("ORDER")) {
-            return false;
-        }
-        let columns = options.COLUMNS;
-        if (!(columns instanceof Array) || columns.length === 0) {
-            return false;
-        }
-        for (let key of columns) {
-            if (!this.checkKey(key)) {
-                return false;
-            }
-        }
-        if (options.hasOwnProperty("ORDER")) {
-            let order = options.ORDER;
-            return this.checkKey(order) && columns.includes(order);
-        }
-        return true;
-    }
-
     private checkWhere(whereClause: any): boolean {
         return Object.keys(whereClause).length === 0 || this.checkLogic(whereClause);
     }
@@ -118,6 +87,37 @@ export class Query {
         return false;
     }
 
+    /**
+     * Check if options is valid
+     * @param options The object of option section
+     * Return true if it is valid.
+     */
+    private checkOptions(options: any): boolean {
+        if (Object.keys(options).length > 2) {
+            return false;
+        }
+        if (!options.hasOwnProperty("COLUMNS")) {
+            return false;
+        }
+        if (Object.keys(options).length === 2 && !options.hasOwnProperty("ORDER")) {
+            return false;
+        }
+        let columns = options.COLUMNS;
+        if (!(columns instanceof Array) || columns.length === 0) {
+            return false;
+        }
+        for (let key of columns) {
+            if (!this.checkKey(key)) {
+                return false;
+            }
+        }
+        if (options.hasOwnProperty("ORDER")) {
+            let order = options.ORDER;
+            return this.checkKey(order) && columns.includes(order);
+        }
+        return true;
+    }
+
     private checkTrans(trans: any ): boolean {
         if (Object.keys(trans).length !== 2) {
             return false;
@@ -125,9 +125,48 @@ export class Query {
         if (!trans.hasOwnProperty("GROUP") || !trans.hasOwnProperty("APPLY") ) {
             return false;
         }
+        let groups = trans.GROUP;
+        if (!(groups instanceof Array) || groups.length === 0) {
+            return false;
+        }
+        for (let key of groups) {
+            if (!this.checkKey(key)) {
+                return false;
+            }
+        }
+        let apply = trans.APPLY;
+        if (!(apply instanceof Array) ) {
+            return false;
+        }
+        for (let rule of apply) {
+            if (!this.checkApplyRule(rule)) {
+                return false;
+            }
+        }
     }
 
-    private checkKey(key: string): boolean {
+    private checkApplyRule(rule: any): boolean {
+        if (Object.keys(rule).length !== 1 || !(this.checkApplyKey(Object.keys(rule)[0]))) {
+            return false;
+        }
+        const applyBody = rule[Object.keys(rule)[0]];
+        if (Object.keys(applyBody).length !== 1 || Object.values(applyBody).length !== 1) {
+            return false;
+        }
+        return this.checkApplyToken(Object.keys(applyBody)[0]) && this.checkKey(Object.values(applyBody)[0]);
+    }
+
+    private checkApplyKey(key: string): boolean {
+        return !(key == null || key.includes("_") || key === "" || key.match(/^\s*$/g));
+    }
+
+    private checkApplyToken(token: string): boolean {
+        const validToken: string[] = ["MAX", "MIN", "AVG", "COUNT", "SUM"];
+        return validToken.includes(token);
+    }
+
+
+    private checkKey(key: any): boolean {
         if (typeof key !== "string") {
             return false;
         }
