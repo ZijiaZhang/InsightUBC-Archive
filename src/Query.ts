@@ -122,9 +122,7 @@ export class Query {
         return true;
     }
 
-    // Does the order of "dir" and "key" matter?????????
-    // UI : does not matter
-    // EBNF: seems "dir" is first, "keys" is second??????????
+    // Does the order of "dir" and "key" matter????????? UI: no; EBNF: yes???
     private checkOrderObject(order: any): boolean {
         if (Object.keys(order).length !== 2) {
             return false;
@@ -188,20 +186,24 @@ export class Query {
         if (Object.keys(applyBody).length !== 1 || Object.values(applyBody).length !== 1) {
             return false;
         }
-        return this.checkApplyToken(Object.keys(applyBody)[0]) && this.checkKey(Object.values(applyBody)[0]);
+        return this.checkApplyToken(Object.keys(applyBody)[0], Object.values(applyBody)[0])
+            && this.checkKey(Object.values(applyBody)[0]);
     }
 
-    // syntaxValid: check against EBNF
-    // isUnique: according to the semantic checking, the applykey in an APPLYRULE should be unique
-    // no two APPLYRULE's should share an applykey with the same name).
-    // Dpes it have to be string????????????????????
+    // Does it have to be string????????????????????
     private checkApplyKey(key: any): boolean {
         return !(key == null || key.includes("_") || key === "" || key.match(/^\s*$/g));
     }
 
-    private checkApplyToken(token: string): boolean {
+    private checkApplyToken(token: string, field: any): boolean {
         const validToken: string[] = ["MAX", "MIN", "AVG", "COUNT", "SUM"];
-        return validToken.includes(token);
+        const numericToken: string[] = ["MAX", "MIN", "AVG", "SUM"];
+        const syntax = validToken.includes(token);
+        let semantic = true;
+        if (numericToken.includes(token)) {
+            semantic  = ["avg", "pass", "fail", "audit", "year", "lat", "lon", "seats"].includes(field);
+        }
+        return syntax && semantic;
     }
 
     private checkKey(key: any): boolean {
@@ -235,18 +237,16 @@ export class Query {
         }
         switch (type) {
             case "number":
-                return typeof value === type && ["avg", "pass", "audit", "year", "fail"].includes(key.split("_")[1]);
+                return typeof value === type
+                    && ["avg", "pass", "fail", "audit", "year", "lat", "lon", "seats"].includes(key.split("_")[1]);
             case "string":
                 return (typeof value === "string") && !!value.match(/^[*]?[^*]*[*]?$/g)
-                    && ["instructor", "uuid", "dept", "title", "id"].includes(key.split("_")[1]);
+                    && ["instructor", "uuid", "dept", "title", "id", "fullname", "shortname", "number", "name",
+                        "address", "type", "furniture", "href"].includes(key.split("_")[1]);
         }
         return false;
     }
 
-    // constraint1: no two APPLYRULE's should share an applykey with the same name.
-    // constraint2: If a GROUP is present, all COLUMNS terms must correspond to either GROUP keys
-    // or to applykeys defined in the APPLY block.
-    // constraint3: SORT - Any keys provided must be in the COLUMNS.
     public checkSemantic(): boolean {
         let constraint1 = true;
         let constraint2 = true;
