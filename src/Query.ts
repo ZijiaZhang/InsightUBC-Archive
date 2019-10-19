@@ -13,16 +13,15 @@ export class Query {
     public dataset: string | null = null;
     private insight: InsightFacade;
     public datasetKind: InsightDatasetKind;
+    public columnKeys: string[] = [];
+    public orderKeys: string[] = [];
+    public groupByKeys: string[] = [];
+    public applyKeysNew: string[] = [];
 
     constructor(queryObject: any, insight: InsightFacade) {
         this.queryObject = queryObject;
         this.insight = insight;
     }
-
-
-    // check that where clause can only have zero or one "FILTER", cannot have more than one
-    // check that option clause must have one "COLUMNS"
-    // zero or one "ORDER", cannot have more than one "ORDER"
 
     /**
      * Check that if the query object isValid.
@@ -110,17 +109,17 @@ export class Query {
             if (!( this.checkKey(key) || this.checkApplyKey(key))) {
                 return false;
             }
+            this.columnKeys.push(key);
         }
-        let isOrderOk = true;
         if (options.hasOwnProperty("ORDER")) {
             let order = options.ORDER;
             if (typeof order === "object") {
-                isOrderOk = this.checkOrderObject(order);
+                return this.checkOrderObject(order);
             } else {
-                isOrderOk = this.checkKey(order) || this.checkApplyKey(order);
+                return (this.checkKey(order) || this.checkApplyKey(order)) && columns.includes(order);
             }
         }
-        return true && isOrderOk;
+        return true;
     }
 
     // Does the order of "dir" and "key" matter?????????
@@ -145,6 +144,7 @@ export class Query {
             if (!( this.checkKey(key) || this.checkApplyKey(key))) {
                 return false;
             }
+            this.orderKeys.push(key);
         }
         return true;
     }
@@ -165,6 +165,7 @@ export class Query {
             if (!this.checkKey(key)) {
                 return false;
             }
+            this.groupByKeys.push(key);
         }
         let apply = trans.APPLY;
         if (!(apply instanceof Array) ) {
@@ -174,7 +175,9 @@ export class Query {
             if (!this.checkApplyRule(rule)) {
                 return false;
             }
+            this.applyKeysNew.push(Object.keys(rule)[0]);
         }
+        return true;
     }
 
     private checkApplyRule(rule: any): boolean {
@@ -188,7 +191,11 @@ export class Query {
         return this.checkApplyToken(Object.keys(applyBody)[0]) && this.checkKey(Object.values(applyBody)[0]);
     }
 
-    private checkApplyKey(key: string): boolean {
+    // syntaxValid: check against EBNF
+    // isUnique: according to the semantic checking, the applykey in an APPLYRULE should be unique
+    // no two APPLYRULE's should share an applykey with the same name).
+    // Dpes it have to be string????????????????????
+    private checkApplyKey(key: any): boolean {
         return !(key == null || key.includes("_") || key === "" || key.match(/^\s*$/g));
     }
 
@@ -196,7 +203,6 @@ export class Query {
         const validToken: string[] = ["MAX", "MIN", "AVG", "COUNT", "SUM"];
         return validToken.includes(token);
     }
-
 
     private checkKey(key: any): boolean {
         if (typeof key !== "string") {
@@ -235,6 +241,47 @@ export class Query {
                     && ["instructor", "uuid", "dept", "title", "id"].includes(key.split("_")[1]);
         }
         return false;
+    }
+
+    // constraint1: no two APPLYRULE's should share an applykey with the same name.
+    // constraint2: If a GROUP is present, all COLUMNS terms must correspond to either GROUP keys
+    // or to applykeys defined in the APPLY block.
+    // constraint3: SORT - Any keys provided must be in the COLUMNS.
+    public checkSemantic(): boolean {
+        let constraint1 = true;
+        let constraint2 = true;
+        let constraint3 = true;
+        if (this.applyKeysNew.length !== 0) {
+            constraint1 = new Set(this.applyKeysNew).size !== this.applyKeysNew.length;
+        }
+        if (this.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
+            constraint2 = this.helpCheckConstraint2();
+        }
+        if (this.queryObject.OPTIONS.hasOwnProperty("ORDER")) {
+            let order = this.queryObject.OPTIONS.ORDER;
+            if (typeof order === "object") {
+                constraint3 = this.helpCheckConstraint3();
+            }
+        }
+        return constraint1 && constraint2 && constraint3;
+    }
+
+    private helpCheckConstraint2(): boolean {
+        for (let key of this.columnKeys) {
+            if (!(this.groupByKeys.includes(key) || this.applyKeysNew.includes(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private helpCheckConstraint3(): boolean {
+        for (let key of this.orderKeys) {
+            if (!(this.columnKeys.includes(key))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
