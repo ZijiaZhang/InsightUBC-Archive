@@ -1,12 +1,12 @@
 import Log from "../Util";
 import {IInsightFacade, InsightDataset, InsightDatasetKind, InsightError, NotFoundError} from "./IInsightFacade";
-import * as JSZip from "jszip";
-import {DataSetDataCourse} from "../DataSetDataCourse";
-import {JsonParser} from "../JsonParser";
+import {DataSetDataCourse} from "../Datasets/DataSetDataCourse";
 import {QueryParser} from "../QueryParser";
-import {DataSet} from "../DataSet";
+import {DataSet} from "../Datasets/DataSet";
 import {Query} from "../Query";
-import {DatasetLoader} from "../DatasetLoader";
+import {DatasetLoaderCourse} from "../Loaders/DatasetLoaderCourse";
+import {DatasetLoaderRooms} from "../Loaders/DatasetLoaderRooms";
+import {DatasetLoader} from "../Loaders/DatasetLoader";
 
 /**
  * This is the main programmatic entry point for the project.
@@ -22,23 +22,29 @@ export default class InsightFacade implements IInsightFacade {
     }
 
     public addDataset(id: string, content: string, kind: InsightDatasetKind): Promise<string[]> {
-            if (!(InsightFacade.isIdValid(id)) || id in this.dataSetMap) {
-                return Promise.reject(new InsightError("the given Parameter is not valid"));
+        if (!(InsightFacade.isIdValid(id)) || id in this.dataSetMap) {
+            return Promise.reject(new InsightError("the given Parameter is not valid"));
+        }
+        // Create Database with name
+        let loader: DatasetLoader = null;
+        switch (kind) {
+            case InsightDatasetKind.Courses:
+                loader = new DatasetLoaderCourse(content, id);
+                break;
+            case InsightDatasetKind.Rooms:
+                loader = new DatasetLoaderRooms(content, id);
+                break;
+            default:
+                return Promise.reject(new InsightError("No such Type"));
+        }
+        return loader.getDataset().then(
+            (dataset) => {
+                this.dataSetMap[id] = dataset;
+                return dataset.unloadDataSet()
+                    .then(() =>  Promise.resolve(Object.keys(this.dataSetMap)))
+                    .catch(() => Promise.reject(new InsightError("Error saving Dataset")));
             }
-            // Create Database with name
-            switch (kind) {
-                case InsightDatasetKind.Courses:
-                    return DatasetLoader.loadCourseData(content, id).then(
-                        (dataset) => {
-                            this.dataSetMap[id] = dataset;
-                            return Promise.resolve(Object.keys(this.dataSetMap));
-                        }
-                    ).catch(() => Promise.reject(new InsightError("Error Loading Files")));
-                case InsightDatasetKind.Rooms:
-                    return Promise.reject(new InsightError("Room not Implemented yet"));
-                default:
-                    return Promise.reject(new InsightError("No such Type"));
-            }
+        ).catch((e) => Promise.reject(new InsightError(e)));
     }
 
     public removeDataset(id: string): Promise<string> {
@@ -73,7 +79,7 @@ export default class InsightFacade implements IInsightFacade {
                 thisQuery.parseLogic();
                 let queryParser: QueryParser =
                     new QueryParser(thisQuery, this.dataSetMap[datasetID] as DataSetDataCourse);
-                return this.switchDataSet(datasetID).then((result) => {
+                return this.switchDataSet(datasetID).then(() => {
                     queryParser.query = thisQuery;
                     return queryParser.getQueryResult(query).then((result2) => {
                         resolve(result2);
@@ -81,14 +87,14 @@ export default class InsightFacade implements IInsightFacade {
                         reject(err);
                     });
                 }).catch((err) => {
-                    reject(new InsightError("Reference non-exist dataset"));
+                    reject(new InsightError(err));
                 });
             }
         });
     }
 
     public listDatasets(): Promise<InsightDataset[]> {
-        return new Promise<InsightDataset[]>((resolve, reject) => {
+        return new Promise<InsightDataset[]>((resolve) => {
                 let result: InsightDataset[] = [];
                 for (let data of Object.values(this.dataSetMap)) {
                     result.push(data.getMetaData());
@@ -140,15 +146,15 @@ export default class InsightFacade implements IInsightFacade {
             }
             if (this.currentActiveDataset != null) {
                 this.dataSetMap[this.currentActiveDataset].unloadDataSet().then(
-                    (result) => {
+                    () => {
                         this.currentActiveDataset = null;
                         return this.activeDataSet(name).then(
-                            (result2) => resolve("Dataset Switched Successfully.")
+                            () => resolve("Dataset Switched Successfully.")
                         ).catch((err) => reject(new InsightError(err)));
                     }).catch((err) => reject(new InsightError(err)));
             } else {
                 return this.activeDataSet(name).then(
-                    (result2) => resolve("Dataset Switched Successfully.")
+                    () => resolve("Dataset Switched Successfully.")
                 ).catch((err) => reject(new InsightError(err)));
             }
         });
@@ -172,11 +178,11 @@ export default class InsightFacade implements IInsightFacade {
             }
             this.dataSetMap[name].loadDataSet().then((result) => {
                 this.currentActiveDataset = name;
-                return resolve("Dataset Loaded");
+                return resolve(result);
             })
                 .catch((err) => {
                     this.currentActiveDataset = null;
-                    return reject(new InsightError("Error When Loading Dataset"));
+                    return reject(new InsightError(err));
                 });
         });
     }

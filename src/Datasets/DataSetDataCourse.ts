@@ -1,9 +1,8 @@
-import {InsightDatasetKind, InsightError} from "./controller/IInsightFacade";
+import {InsightDatasetKind, InsightError} from "../controller/IInsightFacade";
 import * as JSZip from "jszip";
 import * as fs from "fs";
-import Log from "./Util";
+import Log from "../Util";
 import {DataSet, IDataRow} from "./DataSet";
-import {CompOperators} from "./Operators";
 
 export interface IDataRowCourse extends IDataRow {
     [key: string]: string | number;
@@ -32,7 +31,6 @@ export class DataSetDataCourse extends DataSet {
     private fail: number[] = [];
     private audit: number[] = [];
     private year: number[] = [];
-    private fileLocation: string = "";
 
     /**
      *
@@ -96,8 +94,15 @@ export class DataSetDataCourse extends DataSet {
     public saveDataSet(): Promise<string> {
         return new Promise<string>((resolve, reject) => {
             let jsonFile: string = JSON.stringify(this); // Transform the JSON Object to string.
-            fs.writeFileSync(this.fileLocation, jsonFile);
-            resolve("Save Successfully");
+            try {
+                fs.writeFileSync(this.fileLocation, jsonFile);
+                // Hint from
+                // https://stackoverflow.com/questions/15543235/checking-if-writefilesync-successfully-wrote-the-file
+                // Use try catch block to get error.
+                return resolve("Save Successfully");
+            } catch (e) {
+                return reject("Error Saving file");
+            }
         });
     }
 

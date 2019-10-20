@@ -1,4 +1,4 @@
-import {IDataRow} from "./DataSet";
+import {IDataRow} from "./Datasets/DataSet";
 import {InsightDatasetKind} from "./controller/IInsightFacade";
 import {CompOperators, LogicalOperators} from "./Operators";
 

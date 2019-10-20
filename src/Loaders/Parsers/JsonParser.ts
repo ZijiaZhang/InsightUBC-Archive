@@ -1,7 +1,7 @@
-import {IDataRowCourse} from "./DataSetDataCourse";
-import Log from "./Util";
-import {InsightDatasetKind} from "./controller/IInsightFacade";
-import {IDataRow} from "./DataSet";
+import {IDataRowCourse} from "../../Datasets/DataSetDataCourse";
+import Log from "../../Util";
+import {InsightDatasetKind} from "../../controller/IInsightFacade";
+import {IDataRow} from "../../Datasets/DataSet";
 
 export class JsonParser {
     /**
