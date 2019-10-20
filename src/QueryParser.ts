@@ -4,6 +4,7 @@ import {DataSet} from "./Datasets/DataSet";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {Query} from "./Query";
 import {CompOperator, CompOperators, LogicalOperators} from "./Operators";
+import Decimal from "decimal.js";
 
 export class QueryParser {
     public query: Query;
@@ -147,14 +148,14 @@ export class QueryParser {
                     }
                 }
                 return min;
-            // case "AVG":
-            //     let total = new decimal(0);
-            //     for (let obj of group) {
-            //         const val = new Decimal(obj[key]);
-            //         total = Decimal.add(total, val);
-            //     }
-            //     const avg = total.toNumber() / (group.length);
-            //     return Number(avg.toFixed(2));
+            case "AVG":
+                let total = new Decimal(0);
+                for (let obj of group) {
+                    const val = new Decimal(obj[key]);
+                    total = Decimal.add(total, val);
+                }
+                const avg = total.toNumber() / (group.length);
+                return Number(avg.toFixed(2));
             case "COUNT":
                 return group.length;
             case "SUM":
