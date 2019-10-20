@@ -3,7 +3,7 @@ import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
 import {DataSet} from "./Datasets/DataSet";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {Query} from "./Query";
-import {CompOperator, LogicalOperators} from "./Operators";
+import {CompOperator, CompOperators, LogicalOperators} from "./Operators";
 
 export class QueryParser {
     public query: Query;
@@ -121,7 +121,7 @@ export class QueryParser {
             for (let rule of this.query.applyRules) {
                 const newField = Object.keys(rule)[0];
                 const func = Object.keys(Object.values(rule)[0])[0];
-                const key = Object.values(Object.values(rule)[0])[0];
+                const key = Object.values(Object.values(rule)[0])[0] as string;
                 aggregatedObJ[newField] = this.doAggregation(func, key, group);
             }
             afterApply.push(aggregatedObJ);
@@ -129,8 +129,41 @@ export class QueryParser {
         return afterApply;
     }
 
-    private doAggregation(func: string, key: any, group: object[]): any {
-        return;
+    private doAggregation(func: string, key: string, group: Array<{ [key: string]: number | string}>): any {
+        switch (func) {
+            case "MAX":
+                let max = group[0][key];
+                for (let obj of group) {
+                    if (obj[key] > max) {
+                        max = obj[key];
+                    }
+                }
+                return max;
+            case "MIN":
+                let min = group[0][key];
+                for (let obj of group) {
+                    if (obj[key] < min) {
+                        min = obj[key];
+                    }
+                }
+                return min;
+            // case "AVG":
+            //     let total = new decimal(0);
+            //     for (let obj of group) {
+            //         const val = new Decimal(obj[key]);
+            //         total = Decimal.add(total, val);
+            //     }
+            //     const avg = total.toNumber() / (group.length);
+            //     return Number(avg.toFixed(2));
+            case "COUNT":
+                return group.length;
+            case "SUM":
+                let sum = 0;
+                for (let obj of group) {
+                    sum = sum + (obj[key] as number);
+                }
+                return Number(sum.toFixed(2));
+        }
     }
 
     private formResult(result: object[], course: any, column: string[], databaseID: string): object[] {
