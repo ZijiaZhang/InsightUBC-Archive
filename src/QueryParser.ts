@@ -6,8 +6,7 @@ import {Query} from "./Query";
 import {CompOperator, LogicalOperators} from "./Operators";
 
 export class QueryParser {
-    private queryResult: object[] = [];
-    private candidate: IDataRowCourse[] = [];
+    private grouped: object[] = [];
     public query: Query;
     public database: DataSetDataCourse;
 
@@ -37,14 +36,14 @@ export class QueryParser {
 
     /**
      * Ger result from a valid Logic.
-     * @param Locgic A the logic that is used to find the candidates or null.
+     * @param Logic A the logic that is used to find the candidates or null.
      * Will return a List of result that satisfies the Logic.
      * Will return a ResultTooLargeError if the result is too large.
      * Will return All result if Logic is null.
      */
-    private findCandidate(Locgic: LogicElement): any[]| ResultTooLargeError {
+    private findCandidate(Logic: LogicElement): any[]| ResultTooLargeError {
         let allResult = this.database.getAllData();
-        if (Locgic == null) {
+        if (Logic == null) {
             if (allResult.length > 5000) {
                 return new ResultTooLargeError("Result of this query exceeds maximum length");
             }
@@ -60,7 +59,7 @@ export class QueryParser {
             }
             return r;
         }
-        let result = [];
+        let result: object[] = [];
         let size = 0;
         let queryOptions: any = this.query.queryObject.OPTIONS;
         const column: string[] = queryOptions.COLUMNS;
@@ -69,19 +68,40 @@ export class QueryParser {
             column[i] = column[i].split("_")[1];
         }
         for (let course of allResult) {
-            if (this.determineCandidate(Locgic, course)) {
-                let obj = this.refactorCourse(course, column, databaseID);
-                result.push(obj);
-                size++;
-                if (size > 5000) {
-                    return new ResultTooLargeError("Result of this query exceeds maximum length");
+            if (this.determineCandidate(Logic, course)) {
+                if (!(this.query.queryObject.hasOwnProperty("TRANSFORMATION"))) {
+                    this.formResult(result, course, column, databaseID, size);
+                } else {
+                    this.grouped.push(course);
+                    this.transformCourse();
+                    for (let groupedCourse of this.grouped) {
+                        this.formResult(result, groupedCourse, column, databaseID, size);
+                    }
                 }
             }
         }
         if (queryOptions.hasOwnProperty("ORDER")) {
-            this.orderBy(result, queryOptions["ORDER"]);
+            if (typeof this.query.queryObject.OPTIONS.ORDER !== "object") {
+                this.orderBy(result, queryOptions["ORDER"]);
+            } else {
+                this.complexOrderBy(result, queryOptions["ORDER"]);
+            }
         }
         return result;
+    }
+
+    // 一定要直接改this.grouped这个field
+    private transformCourse() {
+        return;
+    }
+
+    private formResult(result: object[], course: any, column: string[], databaseID: string, size: number) {
+        let obj = this.refactorCourse(course, column, databaseID);
+        result.push(obj);
+        size++;
+        if (size > 5000) {
+            return new ResultTooLargeError("Result of this query exceeds maximum length");
+        }
     }
 
     /**
@@ -136,12 +156,12 @@ export class QueryParser {
     }
 
     /**
-     * Order the queryResult by the orderKey..
+     * Order the queryResult by the orderKey, default direction is "UP"/ascending.
      * @param queryResult the query result.
      * @param orderKey the orderKey.
      */
     private orderBy(queryResult: object[], orderKey: string) {
-            queryResult.sort(function (a: any, b: any) {
+        queryResult.sort(function (a: any, b: any) {
                 if (a[orderKey] < b[orderKey]) {
                     return -1;
                 } else if (a[orderKey] > b[orderKey]) {
@@ -150,5 +170,35 @@ export class QueryParser {
                     return 0;
                 }
             });
+    }
+
+    private complexOrderBy(queryResult: object[], orderObj: object) {
+        const direction = Object.values(orderObj)[0];
+        const orderKeys = Object.values(orderObj)[1];
+        if (direction === "UP") {
+            for (let orderKey of orderKeys) {
+                queryResult.sort(function (a: any, b: any) {
+                    if (a[orderKey] < b[orderKey]) {
+                        return -1;
+                    } else if (a[orderKey] > b[orderKey]) {
+                        return 1;
+                    } else {
+                        return 0;
+                    }
+                });
+            }
+        } else {
+            for (let orderKey of orderKeys) {
+                queryResult.sort(function (a: any, b: any) {
+                    if (a[orderKey] < b[orderKey]) {
+                        return 1;
+                    } else if (a[orderKey] > b[orderKey]) {
+                        return -1;
+                    } else {
+                        return 0;
+                    }
+                });
+            }
+        }
     }
 }
