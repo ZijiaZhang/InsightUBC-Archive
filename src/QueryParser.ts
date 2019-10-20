@@ -6,7 +6,6 @@ import {Query} from "./Query";
 import {CompOperator, LogicalOperators} from "./Operators";
 
 export class QueryParser {
-    private grouped: object[] = [];
     public query: Query;
     public database: DataSetDataCourse;
 
@@ -60,7 +59,9 @@ export class QueryParser {
             return r;
         }
         let result: object[] = [];
-        let size = 0;
+        let beforeGroupBy: object[] = [];
+        let afterGroupBy: object = {};
+        let afterApply: object[] = [];
         let queryOptions: any = this.query.queryObject.OPTIONS;
         const column: string[] = queryOptions.COLUMNS;
         const databaseID = column[0].split("_")[0];
@@ -70,15 +71,21 @@ export class QueryParser {
         for (let course of allResult) {
             if (this.determineCandidate(Logic, course)) {
                 if (!(this.query.queryObject.hasOwnProperty("TRANSFORMATION"))) {
-                    this.formResult(result, course, column, databaseID, size);
+                    result = this.formResult(result, course, column, databaseID);
                 } else {
-                    this.grouped.push(course);
-                    this.transformCourse();
-                    for (let groupedCourse of this.grouped) {
-                        this.formResult(result, groupedCourse, column, databaseID, size);
-                    }
+                    beforeGroupBy.push(course);
                 }
             }
+        }
+        if (this.query.queryObject.hasOwnProperty("TRANSFORMATION")) {
+            afterGroupBy = this.doGroupBy(beforeGroupBy);
+            afterApply = this.doApply(afterGroupBy);
+            for (let groupedObj of afterApply) {
+                result = this.formResult(result, groupedObj, column, databaseID);
+            }
+        }
+        if (result.length > 5000) {
+            return new ResultTooLargeError("Result of this query exceeds maximum length");
         }
         if (queryOptions.hasOwnProperty("ORDER")) {
             if (typeof this.query.queryObject.OPTIONS.ORDER !== "object") {
@@ -90,18 +97,46 @@ export class QueryParser {
         return result;
     }
 
-    // 一定要直接改this.grouped这个field
-    private transformCourse() {
+    // https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
+    private doGroupBy(before: object[]): object {
+        let after: object = {};
+        const groupBy = function (array: any, property: any) {
+            return array.reduce(function (returnVal: any, x: any) {
+                const value = x[property];
+                (returnVal[value] = returnVal[value] || []).push(x);
+                return returnVal;
+            }, {});
+        };
+        for (let property of this.query.groupByKeys) {
+            after = groupBy(before, property);
+        }
+        return after;
+    }
+
+    private doApply(afterGroupByObj: object): object[] {
+        const afterGroupBy: Array<Array<{ [key: string]: number | string }>> = Object.values(afterGroupByObj);
+        let afterApply: object[] = [];
+        for (let group of afterGroupBy) {
+            let aggregatedObJ: { [key: string]: number | string } = group[0];
+            for (let rule of this.query.applyRules) {
+                const newField = Object.keys(rule)[0];
+                const func = Object.keys(Object.values(rule)[0])[0];
+                const key = Object.values(Object.values(rule)[0])[0];
+                aggregatedObJ[newField] = this.doAggregation(func, key, group);
+            }
+            afterApply.push(aggregatedObJ);
+        }
+        return afterApply;
+    }
+
+    private doAggregation(func: string, key: any, group: object[]): any {
         return;
     }
 
-    private formResult(result: object[], course: any, column: string[], databaseID: string, size: number) {
+    private formResult(result: object[], course: any, column: string[], databaseID: string): object[] {
         let obj = this.refactorCourse(course, column, databaseID);
         result.push(obj);
-        size++;
-        if (size > 5000) {
-            return new ResultTooLargeError("Result of this query exceeds maximum length");
-        }
+        return result;
     }
 
     /**

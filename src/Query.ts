@@ -16,7 +16,7 @@ export class Query {
     public columnKeys: string[] = [];
     public orderKeys: string[] = [];
     public groupByKeys: string[] = [];
-    public applyKeysNew: string[] = [];
+    public applyRules: object[] = [];
 
     constructor(queryObject: any, insight: InsightFacade) {
         this.queryObject = queryObject;
@@ -173,7 +173,7 @@ export class Query {
             if (!this.checkApplyRule(rule)) {
                 return false;
             }
-            this.applyKeysNew.push(Object.keys(rule)[0]);
+            this.applyRules.push(rule);
         }
         return true;
     }
@@ -251,31 +251,31 @@ export class Query {
         let constraint1 = true;
         let constraint2 = true;
         let constraint3 = true;
-        if (this.applyKeysNew.length !== 0) {
-            constraint1 = new Set(this.applyKeysNew).size !== this.applyKeysNew.length;
+        if (this.applyRules.length !== 0) {
+            constraint1 = new Set(this.applyRules).size !== this.applyRules.length;
         }
         if (this.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
-            constraint2 = this.helpCheckConstraint2();
+            constraint2 = this.columnKeyInGroupOrApply();
         }
         if (this.queryObject.OPTIONS.hasOwnProperty("ORDER")) {
             let order = this.queryObject.OPTIONS.ORDER;
             if (typeof order === "object") {
-                constraint3 = this.helpCheckConstraint3();
+                constraint3 = this.sortKeyInColumn();
             }
         }
         return constraint1 && constraint2 && constraint3;
     }
 
-    private helpCheckConstraint2(): boolean {
+    private columnKeyInGroupOrApply(): boolean {
         for (let key of this.columnKeys) {
-            if (!(this.groupByKeys.includes(key) || this.applyKeysNew.includes(key))) {
+            if (!(this.groupByKeys.includes(key) || Object.keys(this.applyRules).includes(key))) {
                 return false;
             }
         }
         return true;
     }
 
-    private helpCheckConstraint3(): boolean {
+    private sortKeyInColumn(): boolean {
         for (let key of this.orderKeys) {
             if (!(this.columnKeys.includes(key))) {
                 return false;
