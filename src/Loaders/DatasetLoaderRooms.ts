@@ -150,15 +150,15 @@ export class DatasetLoaderRooms extends DatasetLoader {
         let roomHref = HTMLParser.getLinkofChild(tableCells[4]);
         this.dataset.addData({
             address: buildinginfo.address,
-            fullname: buildinginfo.fullName,
+            fullname: buildinginfo.fullname,
             furniture: roomFur,
             href: roomHref,
             lat: buildinginfo.lat,
             lon: buildinginfo.lon,
-            name: buildinginfo.shortName + roomNum,
+            name: buildinginfo.shortname + roomNum,
             number: roomNum,
             seats: roomCap,
-            shortname: buildinginfo.shortName,
+            shortname: buildinginfo.shortname,
             type: roomType
         });
     }

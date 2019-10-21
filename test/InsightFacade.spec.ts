@@ -410,15 +410,23 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 "  \"WHERE\": {},\n" +
                 "  \"OPTIONS\": {\n" +
                 "    \"COLUMNS\": [\n" +
-                "      \"rooms_shortname\",\n" +
                 "      \"rooms_fullname\",\n" +
-                "      \"rooms_seats\"\n" +
+                "      \"rooms_shortname\",\n" +
+                "      \"rooms_number\",\n" +
+                "      \"rooms_name\",\n" +
+                "      \"rooms_address\",\n" +
+                "      \"rooms_lat\",\n" +
+                "      \"rooms_lon\",\n" +
+                "      \"rooms_seats\",\n" +
+                "      \"rooms_type\",\n" +
+                "      \"rooms_furniture\",\n" +
+                "      \"rooms_href\"\n" +
                 "    ]\n" +
                 "  }\n" +
                 "}")).then( (result) => {
                     expect(result.length).equal(49);
             }).catch((err) => {
-                expect.fail("Should not be rejected.");
+                expect.fail(err);
             });
         });
     });
