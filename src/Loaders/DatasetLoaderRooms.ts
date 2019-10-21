@@ -155,7 +155,7 @@ export class DatasetLoaderRooms extends DatasetLoader {
             href: roomHref,
             lat: buildinginfo.lat,
             lon: buildinginfo.lon,
-            name: buildinginfo.shortname + roomNum,
+            name: buildinginfo.shortname + "_" + roomNum,
             number: roomNum,
             seats: roomCap,
             shortname: buildinginfo.shortname,
