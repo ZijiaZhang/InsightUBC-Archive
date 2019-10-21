@@ -31,7 +31,7 @@ export class DatasetLoaderRooms extends DatasetLoader {
                         const document = parse5.parse(file);
                         return this.parseHTML5(document).then(
                             () => resolve(this.dataset)
-                        ).catch(() => reject(new InsightError("Error Loading data set")));
+                        ).catch((e) => reject(e));
                     });
                 })
                 .catch(() => reject(new InsightError("Error Reading files")));
@@ -56,7 +56,7 @@ export class DatasetLoaderRooms extends DatasetLoader {
             Promise.all(promises).then(
                 () => {
                     if (this.dataset.getMetaData().numRows === 0) {
-                        return reject(this.dataset);
+                        return reject("No Data added");
                     }
                     return resolve("Dataset Added");
                 }
@@ -87,7 +87,7 @@ export class DatasetLoaderRooms extends DatasetLoader {
                 let serverText = "http://cs310.students.cs.ubc.ca:11316";
                 let locText = "/api/v1/project_team212/" + encodeURIComponent(address);
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
-                chai.request(serverText).get(locText).end((err: any, res: any) => {
+                return chai.request(serverText).get(locText).end((err: any, res: any) => {
                     let result = res.body;
                     let buildingInfo = {
                         shortname: shortname,
@@ -99,7 +99,7 @@ export class DatasetLoaderRooms extends DatasetLoader {
                     this.loadAllRooms(filepath, buildingInfo).then(
                         () => resolve1("Succefully add a building")
                     ).catch(
-                        () => (resolve1("Error"))
+                        (e) => (resolve1(e))
                     );
                 });
             });

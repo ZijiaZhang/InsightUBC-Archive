@@ -27,7 +27,8 @@ describe("InsightFacade Add/Remove Dataset", function () {
         coursesWithOneFileNoSection: "./test/data/coursesWithOneFileNoSection.zip",
         room: "./test/data/rooms.zip",
         roomMiss: "./test/data/rooms_MissingFiles.zip",
-        roomTwoTable: "./test/data/rooms_twoTable.zip"
+        roomTwoTable: "./test/data/rooms_twoTable.zip",
+        roomNoBuilding: "./test/data/rooms_NoBuilding.zip"
     };
     let datasets: { [id: string]: string } = {};
     let insightFacade: InsightFacade;
@@ -446,6 +447,23 @@ describe("InsightFacade Add/Remove Dataset", function () {
         return insightFacade.addDataset("room", datasets["roomTwoTable"], InsightDatasetKind.Rooms).then(
             (result) => {
                 expect(result).to.deep.equals(["room"]);
+            }
+        ).catch((e) => expect.fail("Shoud not be rejected"));
+    });
+
+    it("Should not load Room Dataset With No Building", function () {
+        return insightFacade.addDataset("room", datasets["roomNoBuilding"], InsightDatasetKind.Rooms).then(
+            (result) => {
+                expect.fail("Shoud not be rejected");
+            }
+        ).catch((e) => expect(e).instanceOf(InsightError));
+    });
+
+    it("Should not switch to a dataset that does not exist.", function () {
+        return insightFacade.addDataset("room", datasets["room"], InsightDatasetKind.Rooms).then(
+            (result) => {
+                return insightFacade.switchDataSet("a").then( () => expect.fail("Should be rejected"))
+                    .catch( (e) => expect(e).equals("Dataset Not Found"));
             }
         ).catch((e) => expect.fail("Shoud not be rejected"));
     });
