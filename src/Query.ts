@@ -87,11 +87,6 @@ export class Query {
         return false;
     }
 
-    /**
-     * Check if options is valid
-     * @param options The object of option section
-     * Return true if it is valid.
-     */
     private checkOptions(options: any): boolean {
         if (Object.keys(options).length > 2) {
             return false;
@@ -196,6 +191,9 @@ export class Query {
 
     // Does it have to be string????????????????????
     private checkApplyKey(key: any): boolean {
+        if (typeof key !== "string") {
+            return false;
+        }
         return !(key == null || key.includes("_") || key === "" || key.match(/^\s*$/g));
     }
 

@@ -111,6 +111,7 @@ export class QueryParser {
             }, {});
         };
         for (let property of this.query.groupByKeys) {
+            property = property.split("_")[1];
             after = groupBy(before, property);
         }
         return after;
