@@ -17,6 +17,7 @@ export class Query {
     public orderKeys: string[] = [];
     public groupByKeys: string[] = [];
     public applyRules: object[] = [];
+    public applyKeyNewName: string[] = [];
 
     constructor(queryObject: any, insight: InsightFacade) {
         this.queryObject = queryObject;
@@ -182,12 +183,15 @@ export class Query {
         if (Object.keys(rule).length !== 1 || !(this.checkApplyKey(Object.keys(rule)[0]))) {
             return false;
         }
+        this.applyKeyNewName.push(Object.keys(rule)[0]);
         const applyBody = rule[Object.keys(rule)[0]];
         if (Object.keys(applyBody).length !== 1 || Object.values(applyBody).length !== 1) {
             return false;
         }
-        return this.checkApplyToken(Object.keys(applyBody)[0], Object.values(applyBody)[0])
-            && this.checkKey(Object.values(applyBody)[0]);
+        if (! this.checkKey(Object.values(applyBody)[0])) {
+            return false;
+        }
+        return this.checkApplyToken(Object.keys(applyBody)[0], Object.values(applyBody)[0]);
     }
 
     // Does it have to be string????????????????????
@@ -201,7 +205,7 @@ export class Query {
         const syntax = validToken.includes(token);
         let semantic = true;
         if (numericToken.includes(token)) {
-            semantic  = ["avg", "pass", "fail", "audit", "year", "lat", "lon", "seats"].includes(field);
+            semantic  = ["avg", "pass", "fail", "audit", "year", "lat", "lon", "seats"].includes(field.split("_")[1]);
         }
         return syntax && semantic;
     }
@@ -251,8 +255,8 @@ export class Query {
         let constraint1 = true;
         let constraint2 = true;
         let constraint3 = true;
-        if (this.applyRules.length !== 0) {
-            constraint1 = new Set(this.applyRules).size !== this.applyRules.length;
+        if (this.applyKeyNewName.length !== 0) {
+            constraint1 = new Set(this.applyKeyNewName).size === this.applyKeyNewName.length;
         }
         if (this.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
             constraint2 = this.columnKeyInGroupOrApply();
@@ -268,7 +272,7 @@ export class Query {
 
     private columnKeyInGroupOrApply(): boolean {
         for (let key of this.columnKeys) {
-            if (!(this.groupByKeys.includes(key) || Object.keys(this.applyRules).includes(key))) {
+            if (!(this.groupByKeys.includes(key) || this.applyKeyNewName.includes(key))) {
                 return false;
             }
         }
@@ -284,9 +288,6 @@ export class Query {
         return true;
     }
 
-    /**
-     * Parse the logic of the Query.
-     */
     public parseLogic() {
         let logicStatements = this.queryObject["WHERE"];
         let parsedLogic = LogicParser.generateLogic(logicStatements);

@@ -67,18 +67,20 @@ export class QueryParser {
         const column: string[] = queryOptions.COLUMNS;
         const databaseID = column[0].split("_")[0];
         for (let i = 0; i < column.length; i++) {
-            column[i] = column[i].split("_")[1];
+            if (! this.query.applyKeyNewName.includes(column[i])) {
+                column[i] = column[i].split("_")[1];
+            }
         }
         for (let course of allResult) {
             if (this.determineCandidate(Logic, course)) {
-                if (!(this.query.queryObject.hasOwnProperty("TRANSFORMATION"))) {
+                if (!(this.query.queryObject.hasOwnProperty("TRANSFORMATIONS"))) {
                     result = this.formResult(result, course, column, databaseID);
                 } else {
                     beforeGroupBy.push(course);
                 }
             }
         }
-        if (this.query.queryObject.hasOwnProperty("TRANSFORMATION")) {
+        if (this.query.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
             afterGroupBy = this.doGroupBy(beforeGroupBy);
             afterApply = this.doApply(afterGroupBy);
             for (let groupedObj of afterApply) {
@@ -133,25 +135,25 @@ export class QueryParser {
     private doAggregation(func: string, key: string, group: Array<{ [key: string]: number | string}>): any {
         switch (func) {
             case "MAX":
-                let max = group[0][key];
+                let max = group[0][key.split("_")[1]];
                 for (let obj of group) {
-                    if (obj[key] > max) {
-                        max = obj[key];
+                    if (obj[key.split("_")[1]] > max) {
+                        max = obj[key.split("_")[1]];
                     }
                 }
                 return max;
             case "MIN":
-                let min = group[0][key];
+                let min = group[0][key.split("_")[1]];
                 for (let obj of group) {
-                    if (obj[key] < min) {
-                        min = obj[key];
+                    if (obj[key.split("_")[1]] < min) {
+                        min = obj[key.split("_")[1]];
                     }
                 }
                 return min;
             case "AVG":
                 let total = new Decimal(0);
                 for (let obj of group) {
-                    const val = new Decimal(obj[key]);
+                    const val = new Decimal(obj[key.split("_")[1]]);
                     total = Decimal.add(total, val);
                 }
                 const avg = total.toNumber() / (group.length);
@@ -161,7 +163,7 @@ export class QueryParser {
             case "SUM":
                 let sum = 0;
                 for (let obj of group) {
-                    sum = sum + (obj[key] as number);
+                    sum = sum + (obj[key.split("_")[1]] as number);
                 }
                 return Number(sum.toFixed(2));
         }
@@ -187,7 +189,11 @@ export class QueryParser {
         }
         let obj: any = {};
         for (let i of Object.keys(course)) {
-            obj[databaseID + "_" + i] = course[i];
+            if (! this.query.applyKeyNewName.includes(i)) {
+                obj[databaseID + "_" + i] = course[i];
+            } else {
+                obj[i] = course[i];
+            }
         }
         return obj;
     }

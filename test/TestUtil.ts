@@ -26,7 +26,7 @@ export default class TestUtil {
                 if (response.length === test.result.length) {
                     done(new Error("Error but length Same"));
                 } else {
-                    done(new Error(e));
+                    done(e);
                 }
             } else {
                 Log.error(e);
