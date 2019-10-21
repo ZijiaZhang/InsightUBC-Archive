@@ -1,0 +1,39 @@
+{
+    "title": "SELECT dept, avg WHERE avg > 97",
+    "query": {
+        "WHERE": {
+        },
+        "OPTIONS": {
+            "COLUMNS": [
+                "rooms_shortname",
+                "minSeats",
+                "countSeats"
+            ],
+            "ORDER": {
+                "dir": "DOWN",
+                "keys": [
+                    "minSeats"
+                ]
+            }
+        },
+        "TRANSFORMATIONS": {
+            "GROUP": [
+                "rooms_shortname"
+            ],
+            "APPLY": [
+                {
+                    "minSeats": {
+                        "MIN": "rooms_seats"
+                    }
+                },
+                {
+                    "countSeats": {
+                        "COUNT": "rooms_seats"
+                    }
+                }
+            ]
+        }
+    },
+    "isQueryValid": true,
+    "result":[{"rooms_shortname":"CIRS","minSeats":426,"countSeats":1},{"rooms_shortname":"SRC","minSeats":299,"countSeats":1},{"rooms_shortname":"FRDM","minSeats":160,"countSeats":1},{"rooms_shortname":"AERL","minSeats":144,"countSeats":1},{"rooms_shortname":"LSC","minSeats":125,"countSeats":2},{"rooms_shortname":"MATX","minSeats":106,"countSeats":1},{"rooms_shortname":"WESB","minSeats":102,"countSeats":2},{"rooms_shortname":"CHEM","minSeats":90,"countSeats":4},{"rooms_shortname":"ESB","minSeats":80,"countSeats":3},{"rooms_shortname":"CHBE","minSeats":60,"countSeats":3},{"rooms_shortname":"HEBB","minSeats":54,"countSeats":2},{"rooms_shortname":"EOSM","minSeats":50,"countSeats":1},{"rooms_shortname":"IONA","minSeats":50,"countSeats":2},{"rooms_shortname":"LSK","minSeats":42,"countSeats":4},{"rooms_shortname":"MCLD","minSeats":40,"countSeats":5},{"rooms_shortname":"DMP","minSeats":40,"countSeats":4},{"rooms_shortname":"OSBO","minSeats":39,"countSeats":3},{"rooms_shortname":"FORW","minSeats":35,"countSeats":3},{"rooms_shortname":"HENN","minSeats":30,"countSeats":5},{"rooms_shortname":"UCLL","minSeats":30,"countSeats":3},{"rooms_shortname":"SWNG","minSeats":27,"countSeats":5},{"rooms_shortname":"ANSO","minSeats":26,"countSeats":4},{"rooms_shortname":"MGYM","minSeats":25,"countSeats":2},{"rooms_shortname":"MATH","minSeats":25,"countSeats":5},{"rooms_shortname":"BRKX","minSeats":24,"countSeats":2},{"rooms_shortname":"PCOH","minSeats":24,"countSeats":2},{"rooms_shortname":"CEME","minSeats":22,"countSeats":6},{"rooms_shortname":"GEOG","minSeats":21,"countSeats":7},{"rooms_shortname":"LASR","minSeats":20,"countSeats":5},{"rooms_shortname":"SCRF","minSeats":20,"countSeats":7},{"rooms_shortname":"ALRD","minSeats":20,"countSeats":4},{"rooms_shortname":"AUDX","minSeats":20,"countSeats":2},{"rooms_shortname":"BUCH","minSeats":18,"countSeats":19},{"rooms_shortname":"FSC","minSeats":18,"countSeats":7},{"rooms_shortname":"ANGU","minSeats":16,"countSeats":15},{"rooms_shortname":"BIOL","minSeats":16,"countSeats":3},{"rooms_shortname":"ORCH","minSeats":16,"countSeats":5},{"rooms_shortname":"SOWK","minSeats":12,"countSeats":5},{"rooms_shortname":"SPPH","minSeats":12,"countSeats":6},{"rooms_shortname":"FNH","minSeats":12,"countSeats":6},{"rooms_shortname":"WOOD","minSeats":10,"countSeats":10},{"rooms_shortname":"IBLC","minSeats":8,"countSeats":10},{"rooms_shortname":"PHRM","minSeats":7,"countSeats":5},{"rooms_shortname":"MCML","minSeats":6,"countSeats":8}]
+}

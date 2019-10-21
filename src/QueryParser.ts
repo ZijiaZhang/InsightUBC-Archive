@@ -1,6 +1,6 @@
 import {DataSetDataCourse, IDataRowCourse} from "./Datasets/DataSetDataCourse";
 import {InsightError, ResultTooLargeError} from "./controller/IInsightFacade";
-import {DataSet} from "./Datasets/DataSet";
+import {DataSet, IDataRow} from "./Datasets/DataSet";
 import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {Query} from "./Query";
 import {CompOperator, CompOperators, LogicalOperators} from "./Operators";
@@ -43,50 +43,21 @@ export class QueryParser {
      */
     private findCandidate(Logic: LogicElement): any[]| ResultTooLargeError {
         let allResult = this.database.getAllData();
-        if (Logic == null) {
-            if (allResult.length > 5000) {
-                return new ResultTooLargeError("Result of this query exceeds maximum length");
-            }
-            let r = [];
-            let columns = this.query.queryObject.OPTIONS.COLUMNS;
-            let id = columns[0].split("_")[0];
-            for (let i = 0; i < columns.length; i++) {
-                columns[i] = columns[i].split("_")[1];
-            }
-            for (let course of allResult) {
-                let obj = this.refactorCourse(course, columns, id);
-                r.push(obj);
-            }
-            return r;
-        }
         let result: object[] = [];
-        let beforeGroupBy: object[] = [];
-        let afterGroupBy: object = {};
-        let afterApply: object[] = [];
         let queryOptions: any = this.query.queryObject.OPTIONS;
         const column: string[] = queryOptions.COLUMNS;
         const databaseID = column[0].split("_")[0];
         for (let i = 0; i < column.length; i++) {
-            if (! this.query.applyKeyNewName.includes(column[i])) {
+            if (!this.query.applyKeyNewName.includes(column[i])) {
                 column[i] = column[i].split("_")[1];
             }
         }
         for (let course of allResult) {
-            if (this.determineCandidate(Logic, course)) {
-                if (!(this.query.queryObject.hasOwnProperty("TRANSFORMATIONS"))) {
-                    result = this.formResult(result, course, column, databaseID);
-                } else {
-                    beforeGroupBy.push(course);
+                if (this.determineCandidate(Logic, course)) {
+                        result.push(course);
                 }
-            }
         }
-        if (this.query.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
-            afterGroupBy = this.doGroupBy(beforeGroupBy);
-            afterApply = this.doApply(afterGroupBy);
-            for (let groupedObj of afterApply) {
-                result = this.formResult(result, groupedObj, column, databaseID);
-            }
-        }
+        result = this.transFormDataSet(result, column, databaseID);
         if (result.length > 5000) {
             return new ResultTooLargeError("Result of this query exceeds maximum length");
         }
@@ -96,6 +67,23 @@ export class QueryParser {
             } else {
                 this.complexOrderBy(result, queryOptions["ORDER"]);
             }
+        }
+        return result;
+    }
+
+    /**
+     * Rename the columns of the dataset and apply the transformations.
+     * @param data the data from the database tht satisfy the query.
+     * @param column The columns that we care about.
+     * @param databaseID The id of the Database.
+     */
+    private transFormDataSet(data: IDataRow[], column: string[] , databaseID: string) {
+        let result: any[] = [];
+        if (this.query.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
+            data = this.doApply(this.doGroupBy(data));
+        }
+        for (let groupedObj of data) {
+            result.push(this.refactorCourse(groupedObj, column, databaseID));
         }
         return result;
     }
@@ -136,7 +124,7 @@ export class QueryParser {
     private doAggregation(func: string, key: string, group: Array<{ [key: string]: number | string}>): any {
         switch (func) {
             case "MAX":
-                let max = group[0][key.split("_")[1]];
+                let max = Object.values(group)[0][key.split("_")[1]];
                 for (let obj of group) {
                     if (obj[key.split("_")[1]] > max) {
                         max = obj[key.split("_")[1]];
@@ -144,7 +132,7 @@ export class QueryParser {
                 }
                 return max;
             case "MIN":
-                let min = group[0][key.split("_")[1]];
+                let min = Object.values(group)[0][key.split("_")[1]];
                 for (let obj of group) {
                     if (obj[key.split("_")[1]] < min) {
                         min = obj[key.split("_")[1]];
@@ -160,7 +148,15 @@ export class QueryParser {
                 const avg = total.toNumber() / (group.length);
                 return Number(avg.toFixed(2));
             case "COUNT":
-                return group.length;
+                let count = 0;
+                let seen: any[] = [];
+                for (let obj of group) {
+                    if (!(seen.includes(obj[key.split("_")[1]]))) {
+                        count++;
+                        seen.push(obj[key.split("_")[1]]);
+                    }
+                }
+                return count;
             case "SUM":
                 let sum = 0;
                 for (let obj of group) {
@@ -208,6 +204,9 @@ export class QueryParser {
      */
     private determineCandidate(logic: LogicElement, course: IDataRowCourse): boolean {
         let operator: string = null;
+        if (logic == null) {
+            return true;
+        }
         if (logic instanceof BasicLogic) {
             let compare = CompOperator.getCompareFunction(logic.comp);
             return compare(course[logic.key], logic.value);
