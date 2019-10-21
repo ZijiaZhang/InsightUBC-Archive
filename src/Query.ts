@@ -24,12 +24,6 @@ export class Query {
         this.insight = insight;
     }
 
-    /**
-     * Check that if the query object isValid.
-     * @return boolean
-     * return true if the queryObject follows definition of EBNF,
-     * return false otherwise.
-     */
     public checkValidQuery(): boolean {
         let isTransCorrect: boolean = true;
         if (this.queryObject == null) {
@@ -224,8 +218,15 @@ export class Query {
         if (this.datasetKind == null) {
             this.datasetKind = this.insight.getDataKind(dataset);
         }
+        let fields: string[];
+        if (this.datasetKind === InsightDatasetKind.Courses) {
+            fields = Object.values(JsonParser.getRequiredFieldCourses());
+        } else {
+            fields = ["fullname", "shortname", "number", "name", "address",
+                "lat", "lon", "seats", "type", "furniture", "href"];
+        }
         return this.dataset === dataset && this.datasetKind != null
-            && Object.values(JsonParser.getRequiredFieldCourses()).includes(field);
+            && fields.includes(field);
     }
 
     private checkLeaf(object: any, type: string): boolean {

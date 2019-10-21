@@ -405,21 +405,17 @@ describe("InsightFacade Add/Remove Dataset", function () {
     });
 
     it(" Should Perform Simple Query", function () {
-        return insightFacade.addDataset("courses", datasets["courses"], InsightDatasetKind.Courses).then( () => {
+        return insightFacade.addDataset("rooms", datasets["room"], InsightDatasetKind.Rooms).then( () => {
             return insightFacade.performQuery(JSON.parse("{\n" +
-                "        \"WHERE\": {\n" +
-                "            \"GT\": {\n" +
-                "                \"courses_avg\":97\n" +
-                "            }\n" +
-                "        },\n" +
-                "        \"OPTIONS\": {\n" +
-                "            \"COLUMNS\": [\n" +
-                "               \"courses_dept\",\n" +
-                "                \"courses_avg\"\n" +
-                "            ],\n" +
-                "            \"ORDER\": \"courses_avg\"\n" +
-                "        }\n" +
-                "    }")).then( (result) => {
+                "  \"WHERE\": {},\n" +
+                "  \"OPTIONS\": {\n" +
+                "    \"COLUMNS\": [\n" +
+                "      \"rooms_shortname\",\n" +
+                "      \"rooms_fullname\",\n" +
+                "      \"rooms_seats\"\n" +
+                "    ]\n" +
+                "  }\n" +
+                "}")).then( (result) => {
                     expect(result.length).equal(49);
             }).catch((err) => {
                 expect.fail("Should not be rejected.");
@@ -478,7 +474,8 @@ describe("InsightFacade PerformQuery", () => {
     const datasetsToQuery: { [id: string]: any } = {
         courses: {id: "courses", path: "./test/data/courses.zip", kind: InsightDatasetKind.Courses},
         coursesSmall: {id: "coursesSmall",
-            path: "./test/data/coursesWithOneInvalidFile.zip", kind: InsightDatasetKind.Courses}
+            path: "./test/data/coursesWithOneInvalidFile.zip", kind: InsightDatasetKind.Courses},
+        room: {id: "rooms", path: "./test/data/rooms.zip", kind: InsightDatasetKind.Rooms}
     };
     let insightFacade: InsightFacade = new InsightFacade();
     let testQueries: ITestQuery[] = [];
