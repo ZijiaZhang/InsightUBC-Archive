@@ -89,8 +89,8 @@ export class QueryParser {
     }
 
     // https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
-    private doGroupBy(before: object[]): object {
-        let after: object = {};
+    private doGroupBy(before: object[]): any {
+        let after: any = {r: before};
         const groupBy = function (array: any, property: any) {
             return array.reduce(function (returnVal: any, x: any) {
                 const value = x[property];
@@ -100,7 +100,14 @@ export class QueryParser {
         };
         for (let property of this.query.groupByKeys) {
             property = property.split("_")[1];
-            after = groupBy(before, property);
+            let t: any = {};
+            for (let a in after) {
+                let temp = groupBy( after[a], property);
+                for (let k in temp) {
+                    t[a + "_" + k] = temp[k];
+                }
+            }
+            after = t;
         }
         return after;
     }
