@@ -24,7 +24,12 @@ export default class TestUtil {
         } catch (e) {
             if (test.isQueryValid) {
                 if (response.length === test.result.length) {
-                    done(new Error("Error but length Same"));
+                    try {
+                        expect(response).to.have.deep.members(test.result);
+                        done(new Error("Error but same elements"));
+                    } catch (e2) {
+                        done(e2);
+                    }
                 } else {
                     done(e);
                 }
