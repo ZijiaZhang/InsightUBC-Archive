@@ -424,7 +424,7 @@ describe("InsightFacade Add/Remove Dataset", function () {
                 "    ]\n" +
                 "  }\n" +
                 "}")).then( (result) => {
-                    expect(result.length).equal(49);
+                    expect(result.length).equal(364);
             }).catch((err) => {
                 expect.fail(err);
             });
@@ -468,6 +468,15 @@ describe("InsightFacade Add/Remove Dataset", function () {
             (result) => {
                 return insightFacade.switchDataSet("a").then( () => expect.fail("Should be rejected"))
                     .catch( (e) => expect(e).equals("Dataset Not Found"));
+            }
+        ).catch((e) => expect.fail("Shoud not be rejected"));
+    });
+
+    it("Should not query null Query.", function () {
+        return insightFacade.addDataset("room", datasets["room"], InsightDatasetKind.Rooms).then(
+            (result) => {
+                return insightFacade.performQuery(null).then( () => expect.fail("Should be rejected"))
+                    .catch( (e) => expect(e).instanceOf(InsightError));
             }
         ).catch((e) => expect.fail("Shoud not be rejected"));
     });

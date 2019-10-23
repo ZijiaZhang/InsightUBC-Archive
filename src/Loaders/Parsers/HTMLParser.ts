@@ -7,14 +7,13 @@ export class HTMLParser {
         if (node.nodeName === "#text") {
             return node.value;
         }
+        let r = "";
         if (node.hasOwnProperty("childNodes")) {
-            let r = "";
             for (let chNode of node.childNodes) {
                 r += this.extractTextFromNode(chNode);
             }
-            return r.trim();
         }
-        return "";
+        return r.trim();
     }
 
     /**
@@ -60,13 +59,8 @@ export class HTMLParser {
      * Get rows in a table
      * @param table
      */
-    public static getRowsInTable(table: any) {
-        try {
-            // let tbody = this.findFirstNodeWithTag(table, "tbody");
-            return HTMLParser.findAllChildNodeWithTag(table, "tr");
-        } catch (e) {
-            return []; // Invalid Table
-        }
+    public static getRowsInTable(table: any): any[] {
+        return HTMLParser.findAllChildNodeWithTag(table, "tr");
     }
 
     /**

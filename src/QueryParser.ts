@@ -173,12 +173,6 @@ export class QueryParser {
         }
     }
 
-    private formResult(result: object[], course: any, column: string[], databaseID: string): object[] {
-        let obj = this.refactorCourse(course, column, databaseID);
-        result.push(obj);
-        return result;
-    }
-
     /**
      * Will refactor Course to the add the Database Name at the front and remove unnecessary fields.
      * @param course  The course that need to be modified.

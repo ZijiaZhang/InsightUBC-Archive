@@ -76,8 +76,6 @@ export class JsonParser {
                     case InsightDatasetKind.Courses:
                         result = this.jsonToOneRowCourse(oneRow);
                         break;
-                    case InsightDatasetKind.Rooms:
-                        break;
                 }
                 if (result != null) {
                     resultArray.push(result);
