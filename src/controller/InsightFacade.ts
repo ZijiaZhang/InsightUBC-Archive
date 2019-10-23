@@ -67,6 +67,8 @@ export default class InsightFacade implements IInsightFacade {
 
             if (!thisQuery.checkValidQuery()) {
                 reject(new InsightError("Query Syntax Not Valid"));
+            } else if (!thisQuery.checkSemantic()) {
+                reject(new InsightError("Query Semantic Not Valid"));
             } else {
                 let datasetID = thisQuery.dataset;
                 thisQuery.parseLogic();

@@ -250,42 +250,42 @@ export class Query {
         return false;
     }
 
-    // public checkSemantic(): boolean {
-    //     let constraint1 = true;
-    //     let constraint2 = true;
-    //     let constraint3 = true;
-    //     if (this.applyKeyNewName.length !== 0) {
-    //         constraint1 = new Set(this.applyKeyNewName).size === this.applyKeyNewName.length;
-    //     }
-    //     if (this.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
-    //         constraint2 = this.columnKeyInGroupOrApply();
-    //     }
-    //     if (this.queryObject.OPTIONS.hasOwnProperty("ORDER")) {
-    //         let order = this.queryObject.OPTIONS.ORDER;
-    //         if (typeof order === "object") {
-    //             constraint3 = this.sortKeyInColumn();
-    //         }
-    //     }
-    //     return constraint1 && constraint2 && constraint3;
-    // }
+    public checkSemantic(): boolean {
+        let constraint1 = true;
+        let constraint2 = true;
+        let constraint3 = true;
+        if (this.applyKeyNewName.length !== 0) {
+            constraint1 = new Set(this.applyKeyNewName).size === this.applyKeyNewName.length;
+        }
+        if (this.queryObject.hasOwnProperty("TRANSFORMATIONS")) {
+            constraint2 = this.columnKeyInGroupOrApply();
+        }
+        if (this.queryObject.OPTIONS.hasOwnProperty("ORDER")) {
+            let order = this.queryObject.OPTIONS.ORDER;
+            if (typeof order === "object") {
+                constraint3 = this.sortKeyInColumn();
+            }
+        }
+        return constraint1 && constraint2 && constraint3;
+    }
 
-    // private columnKeyInGroupOrApply(): boolean {
-    //     for (let key of this.columnKeys) {
-    //         if (!(this.groupByKeys.includes(key) || this.applyKeyNewName.includes(key))) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
-    //
-    // private sortKeyInColumn(): boolean {
-    //     for (let key of this.orderKeys) {
-    //         if (!(this.columnKeys.includes(key))) {
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
+    private columnKeyInGroupOrApply(): boolean {
+        for (let key of this.columnKeys) {
+            if (!(this.groupByKeys.includes(key) || this.applyKeyNewName.includes(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private sortKeyInColumn(): boolean {
+        for (let key of this.orderKeys) {
+            if (!(this.columnKeys.includes(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public parseLogic() {
         let logicStatements = this.queryObject["WHERE"];
