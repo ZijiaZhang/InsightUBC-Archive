@@ -5,7 +5,6 @@ import {BasicLogic, ComplexLogic, LogicElement, NotLogic} from "./Logic";
 import {Query} from "./Query";
 import {CompOperator, CompOperators, LogicalOperators} from "./Operators";
 import Decimal from "decimal.js";
-
 export class QueryParser {
     public query: Query;
     public database: DataSetDataCourse;
@@ -88,7 +87,13 @@ export class QueryParser {
         return result;
     }
 
-    // https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
+    /**
+     * group the result by the group key.
+     * @param before The result before group by.
+     * @return The result after the group by
+     */
+    // From https://stackoverflow.com/questions/14446511/most-efficient-method-to-groupby-on-an-array-of-objects
+    // Modified to work with multiple groups.
     private doGroupBy(before: object[]): any {
         let after: any = {r: before};
         const groupBy = function (array: any, property: any) {
@@ -112,6 +117,10 @@ export class QueryParser {
         return after;
     }
 
+    /**
+     * Apply the Apply for the query.
+     * @param afterGroupByObj The query after GroupBy.
+     */
     private doApply(afterGroupByObj: object): object[] {
         const afterGroupBy: Array<Array<{ [key: string]: number | string }>> = Object.values(afterGroupByObj);
         let afterApply: object[] = [];
@@ -128,6 +137,12 @@ export class QueryParser {
         return afterApply;
     }
 
+    /**
+     * return the result of aggragation on a group.
+     * @param func One of "MAX","Min", "AVG", "COUNT", "SUM
+     * @param key The key that is going to apply.
+     * @param group All members in the group.
+     */
     private doAggregation(func: string, key: string, group: Array<{ [key: string]: number | string}>): any {
         switch (func) {
             case "MAX":
