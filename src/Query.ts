@@ -112,7 +112,6 @@ export class Query {
         return true;
     }
 
-    // Does the order of "dir" and "key" matter????????? UI: no; EBNF: yes???
     private checkOrderObject(order: any): boolean {
         if (Object.keys(order).length !== 2) {
             return false;
@@ -183,12 +182,11 @@ export class Query {
         return this.checkApplyToken(Object.keys(applyBody)[0], Object.values(applyBody)[0]);
     }
 
-    // Does it have to be string????????????????????
     private checkApplyKey(key: any): boolean {
         if (typeof key !== "string") {
             return false;
         }
-        return !(key == null || key.includes("_") || key === "" || key.match(/^\s*$/g));
+        return !(key.includes("_") || key === "" || key.match(/^\s*$/g));
     }
 
     private checkApplyToken(token: string, field: any): boolean {
