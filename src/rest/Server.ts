@@ -6,7 +6,7 @@ import fs = require("fs");
 import restify = require("restify");
 import Log from "../Util";
 import InsightFacade from "../controller/InsightFacade";
-import {InsightDatasetKind, InsightError, NotFoundError} from "../controller/IInsightFacade";
+import {IInsightFacade, InsightDatasetKind, InsightError, NotFoundError} from "../controller/IInsightFacade";
 
 /**
  * This configures the REST endpoints for the server.
@@ -72,26 +72,23 @@ export default class Server {
                     that.addDataSet(instight));
                 that.rest.del("/dataset/:id",
                     that.removeDataSet(instight));
-
                 that.rest.post("/query",
+                    that.performQuery(instight));
+                that.rest.get("/datasets",
                     (req: restify.Request, res: restify.Response, next: restify.Next) => {
-                        let query = req.body;
-                        return instight.performQuery(query).then( (result) => {
-                            res.send(200, {result: result});
+                    instight.listDatasets().then(
+                        (ret) =>  {
+                            res.send(200, {result: ret});
                             return next();
-                        }).catch((err) => {
-                            res.send(400, {error: err.message});
-                            return next();
-                        }) ;
-                    });
+                        }
+                    );
+                });
                 // This must be the last endpoint!
                 that.rest.get("/.*", Server.getStatic);
-
                 that.rest.listen(that.port, function () {
                     Log.info("Server::start() - restify listening: " + that.rest.url);
                     fulfill(true);
                 });
-
                 that.rest.on("error", function (err: string) {
                     // catches errors in restify start; unusual syntax due to internal
                     // node not using normal exceptions here
@@ -106,7 +103,20 @@ export default class Server {
         });
     }
 
-    private removeDataSet(instight: InsightFacade) {
+    private performQuery(instight: IInsightFacade) {
+        return (req: restify.Request, res: restify.Response, next: restify.Next) => {
+            let query = req.body;
+            return instight.performQuery(query).then((result) => {
+                res.send(200, {result: result});
+                return next();
+            }).catch((err) => {
+                res.send(400, {error: err.message});
+                return next();
+            });
+        };
+    }
+
+    private removeDataSet(instight: IInsightFacade) {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             return instight.removeDataset(req.params.id).then(
                 (ret) => {
@@ -124,7 +134,7 @@ export default class Server {
         };
     }
 
-    private addDataSet(instight: InsightFacade) {
+    private addDataSet(instight: IInsightFacade) {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             // Log.trace(req);
             let data = req.body.toString("base64");

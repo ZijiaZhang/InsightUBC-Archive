@@ -9,7 +9,6 @@ import * as fs from "fs";
 import Log from "../src/Util";
 import TestUtil from "./TestUtil";
 import {ITestQuery} from "./InsightFacade.spec";
-import {InsightDatasetKind} from "../src/controller/IInsightFacade";
 
 describe("Facade D3", function () {
 
@@ -188,6 +187,29 @@ describe("Facade D3", function () {
         }
     });
 
+
+    it("Get List Dataset", function () {
+        try {
+            return chai.request("http://[::]:4321")
+                .get("/datasets")
+                .then(function (res: Response) {
+                    // some logging here please!
+                    Log.trace(res.body);
+                    expect(res.status).to.be.equal(200);
+                    expect(res.body.result).to.deep.equal([{id: "rooms", kind: "rooms", numRows: 364},
+                        {id: "courses", kind: "courses", numRows: 64612},
+                        {id: "coursesSmall", kind: "courses", numRows: 2}]);
+                })
+                .catch(function (err) {
+                    // some logging here please!
+                    Log.trace(err);
+                    expect.fail();
+                });
+        } catch (err) {
+            // and some more logging here!
+        }
+    });
+
     let tests: ITestQuery[];
     try {
         tests = TestUtil.readTestQueries();
@@ -200,40 +222,40 @@ describe("Facade D3", function () {
     it("Query dataset", function () {
         let promises: Array<Promise<any>> = [];
         for (let t of tests) {
-            let p = new Promise( (resolve, reject) => {
-            try {
-                return chai.request("http://[::]:4321")
-                    .post("/query")
-                    .send(t.query)
-                    .then(function (res: Response) {
-                        // some logging here please!
-                        // Log.trace(res.body);
-                        if (!t.isQueryValid) {
-                            expect.fail();
-                        } else {
-                            expect(res.body.result).to.deep.members(t.result);
-                        }
-                        resolve();
-                    })
-                    .catch(function (err) {
-                        // some logging here please!
-                        if (t.isQueryValid) {
-                            Log.trace(t.filename);
-                            Log.trace(err);
-                            expect.fail();
-                        } else {
-                            Log.trace(t.filename, err.response.body);
-                            expect(err.status).to.be.equal(400);
-                        }
-                        resolve();
-                    });
-            } catch (err) {
-                reject("Error");
-            }
+            let p = new Promise((resolve, reject) => {
+                try {
+                    return chai.request("http://[::]:4321")
+                        .post("/query")
+                        .send(t.query)
+                        .then(function (res: Response) {
+                            // some logging here please!
+                            // Log.trace(res.body);
+                            if (!t.isQueryValid) {
+                                expect.fail();
+                            } else {
+                                expect(res.body.result).to.deep.members(t.result);
+                            }
+                            resolve();
+                        })
+                        .catch(function (err) {
+                            // some logging here please!
+                            if (t.isQueryValid) {
+                                Log.trace(t.filename);
+                                Log.trace(err);
+                                expect.fail();
+                            } else {
+                                Log.trace(t.filename, err.response.body);
+                                expect(err.status).to.be.equal(400);
+                            }
+                            resolve();
+                        });
+                } catch (err) {
+                    reject("Error");
+                }
             });
             promises.push(p);
         }
-        return Promise.all(promises).then( () => Log.trace("Good")).catch( (e) => Log.trace(e));
+        return Promise.all(promises).then(() => Log.trace("Good")).catch((e) => Log.trace(e));
     });
     // The other endpoints work similarly. You should be able to find all instructions at the chai-http documentation
 });
