@@ -10,13 +10,13 @@ let dataset = document.getElementsByClassName("nav-item tab active")[0].innerTex
 CampusExplorer.buildQuery = function () {
     let query = {};
     query.WHERE = getWhereClause();
-    query.OPTIONS = getOptionClause();
     if(document.getElementsByClassName("transformations-container")[0]
         .getElementsByClassName("control-group transformation")[0]
         .getElementsByClassName("control term")[0]
         .getElementsByTagName("input")[0].value !== undefined) {
         query.TRANSFORMATIONS = getTrans();
     }
+    query.OPTIONS = getOptionClause();
     return query;
 };
 
@@ -64,11 +64,22 @@ function getWhereClause () {
         return logic;
     }
 
-    // function getOptionClause() {
-    //
-    // }
-    //
-    // function getTrans() {
-    //
-    // }
+    function getTrans() {
+        let trans = {};
+        trans.GROUP = [];
+        trans.APPLY = [];
+        let numGroupFields = document.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].childElementCount;
+        for (let i = 0; i < numGroupFields; i++) {
+            const childField = document.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].children[i].getElementsByTagName("input")[0];
+            if (childField.checked === true) {
+               trans.GROUP.push((dataset.concat("_")).concat(childField.getAttribute("data-key")));
+            }
+        }
+        return trans;
+    }
+
+    function getOptionClause() {
+        let options = {};
+        return options;
+    }
 }
