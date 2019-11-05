@@ -68,7 +68,7 @@ function getWhereClause () {
         let trans = {};
         trans.GROUP = [];
         trans.APPLY = [];
-        let numGroupFields = document.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].childElementCount;
+        const numGroupFields = document.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].childElementCount;
         for (let i = 0; i < numGroupFields; i++) {
             const childField = document.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].children[i].getElementsByTagName("input")[0];
             if (childField.checked === true) {
@@ -80,6 +80,14 @@ function getWhereClause () {
 
     function getOptionClause() {
         let options = {};
+        options.COLUMNS = [];
+        const numColFields = document.getElementsByClassName("form-group columns")[0].getElementsByClassName("control-group")[0].childElementCount;
+        for (let i = 0; i < numColFields; i++) {
+            const childField = document.getElementsByClassName("form-group columns")[0].getElementsByClassName("control-group")[0].children[i].getElementsByTagName("input")[0];
+            if (childField.checked === true) {
+                options.COLUMNS.push((dataset.concat("_")).concat(childField.getAttribute("data-key")));
+            }
+        }
         return options;
     }
 }
