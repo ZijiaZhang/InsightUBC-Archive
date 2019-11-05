@@ -7,35 +7,42 @@ import Log from "../Util";
 export class Evaluator {
     public static generateRoomScores(rooms: SchedRoom[]): {[key: string]: number} {
         let Geos: {[key: string]: number} = {};
+        let Geos2: {[key: string]: number} = {};
+        let Geos3: {[key: string]: number} = {};
         let ret: {[key: string]: number} = {};
         for (let room of rooms) {
             Geos[RoomInfo.getRoomLocationId(room)] =
                 Geos[RoomInfo.getRoomLocationId(room)] ?
                     Geos[RoomInfo.getRoomLocationId(room)] + room.rooms_seats : room.rooms_seats;
+            Geos2[RoomInfo.getRoomLocationId(room)] =
+                Geos2[RoomInfo.getRoomLocationId(room)] ?
+                    Math.max(Geos2[RoomInfo.getRoomLocationId(room)], room.rooms_seats) : room.rooms_seats;
+            Geos3[RoomInfo.getRoomLocationId(room)] =
+                Geos3[RoomInfo.getRoomLocationId(room)] ?
+                    Geos3[RoomInfo.getRoomLocationId(room)] + 1 : 1;
         }
 
         for (let room of rooms) {
             let score = 0;
             let location = {lon: room.rooms_lon, lat: room.rooms_lat};
             for (let loc of Object.keys(Geos)) {
-                score += Geos[loc] *
+                score += (Math.log(room.rooms_seats) * Geos3[loc] + (Geos[loc])) *
                     2000 / (1 + GeoLocationInfo.lonLatToMetere(location, GeoLocationInfo.getGeoLocationFromId(loc)));
             }
             ret[RoomInfo.getRoomid(room)] = score;
         }
-
         return ret;
     }
 
 
     public static tempMeasure(result: Array<[SchedRoom, SchedSection, TimeSlot]>, total: number): number {
         let ret = 0;
-        let invalidCount = 0;
         let Rooms: Set<SchedRoom> = new Set();
         let Geos: any = {};
         let roomTimeConflict = this.CountRoomTimeConfilct(result);
         let courseTimeConflict = this.CountCourseTimeConflict(result);
         let courseRoomConflict = this.CountRoomCourseConfilict(result);
+        let invalidCount = roomTimeConflict + courseTimeConflict + courseRoomConflict;
         for (let elem of result) {
             let room: SchedRoom = elem[0];
             let section: SchedSection = elem[1];
@@ -56,7 +63,7 @@ export class Evaluator {
                 }
             }
         }
-        Log.trace(invalidCount);
+        // Log.trace(invalidCount);
         return 0.7 * (ret / total) + 0.3 * (1 - maxDistance / 2000);
     }
 

@@ -1,3 +1,5 @@
+import Log from "../Util";
+
 export interface SchedSection {
     courses_dept: string;
     courses_id: string;
@@ -47,4 +49,27 @@ export interface IScheduler {
      * return a timetable, which is an array of [room, section, time slot] assignment tuples
      */
     schedule(sections: SchedSection[], rooms: SchedRoom[]): Array<[SchedRoom, SchedSection, TimeSlot]>;
+}
+
+export interface Score {
+    enrollMent: number;
+    distance: number;
+    roomCourseConfilict: number;
+    roomTimeConfilict: number;
+    courseTimeConflict: number;
+}
+
+export function greaterThan(s1: Score, s2: Score, total: number): boolean {
+    if (getScore(s1, total) > getScore(s2, total)) {
+        return true;
+    }
+    return false;
+}
+
+export function getScore(s: Score, total: number): number {
+    if (s.roomCourseConfilict + s.roomTimeConfilict + s.courseTimeConflict > 0) {
+        return -(s.roomCourseConfilict + s.roomTimeConfilict + s.courseTimeConflict);
+    }
+    // Log.trace(0.7 * (s.enrollMent / total) + 0.3 * (1 - s.distance / 2000));
+    return 0.7 * (s.enrollMent / total) + 0.3 * (1 - s.distance / 2000);
 }

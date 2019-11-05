@@ -20,8 +20,12 @@ export default class Scheduler implements IScheduler {
         // let sortedRooms = Sorter.RadixSortRoom(rooms);
         let RoomScores = Evaluator.generateRoomScores(rooms);
         let sortedRooms = Sorter.RadixSortRoombyScore(rooms, RoomScores);
+        // Log.trace(sortedRooms);
         let RoomTime: { [key: string]: TimeSlot[] } = {};
         let sectionTime: { [key: string]: TimeSlot[] } = {};
+        // Log.trace(sortedRooms);
+        // Log.trace(RoomScores["CIRS_1250"]);
+        // Log.trace(RoomScores["SRC_220A"]);
         let total = 0;
         for (let r of sortedSextions) {
             total += CourseInfo.getRegisterCount(r);

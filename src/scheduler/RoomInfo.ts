@@ -4,7 +4,7 @@ import {CourseInfo} from "./CourseInfo";
 
 export class RoomInfo {
     public static getRoomid(room: SchedRoom) {
-        return room.rooms_fullname;
+        return room.rooms_name;
     }
 
     public static getRoomLocationId(room: SchedRoom) {
