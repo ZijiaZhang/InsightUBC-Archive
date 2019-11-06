@@ -67,6 +67,48 @@ describe("Facade D3", function () {
         }
     });
 
+    it("Add Invalid Dataset", function () {
+        try {
+            return chai.request("http://[::]:4321")
+                .put("/dataset/courses/courseasdadadsadass")
+                .send(courseDataset)
+                .set("Content-Type", "application/x-zip-compressed")
+                .then(function (res: Response) {
+                    // some logging here please!
+                    Log.trace(res.body);
+                    expect.fail();
+                })
+                .catch(function (err) {
+                    // some logging here please!
+                    Log.trace(err);
+                    expect(err.status).to.be.equal(400);
+                });
+        } catch (err) {
+            // and some more logging here!
+        }
+    });
+
+    it("Add Invalid Dataset ID", function () {
+        try {
+            return chai.request("http://[::]:4321")
+                .put("/dataset/aa_aaaa/courses")
+                .send(courseDataset)
+                .set("Content-Type", "application/x-zip-compressed")
+                .then(function (res: Response) {
+                    // some logging here please!
+                    Log.trace(res.body);
+                    expect.fail();
+                })
+                .catch(function (err) {
+                    // some logging here please!
+                    Log.trace(err);
+                    expect(err.status).to.be.equal(400);
+                });
+        } catch (err) {
+            // and some more logging here!
+        }
+    });
+
     it("PUT test for room dataset", function () {
         try {
             return chai.request("http://[::]:4321")
@@ -258,4 +300,62 @@ describe("Facade D3", function () {
         return Promise.all(promises).then(() => Log.trace("Good")).catch((e) => Log.trace(e));
     });
     // The other endpoints work similarly. You should be able to find all instructions at the chai-http documentation
+
+    it("echo", function () {
+        try {
+            return chai.request("http://[::]:4321")
+                .get("/echo/aaa")
+                .then(function (res: Response) {
+                    // some logging here please!
+                    Log.trace(res.body);
+                    expect(res.status).to.be.equal(200);
+                    expect(res.body.result).to.deep.equal("aaa...aaa");
+                })
+                .catch(function (err) {
+                    // some logging here please!
+                    Log.trace(err);
+                    expect.fail();
+                });
+        } catch (err) {
+            // and some more logging here!
+        }
+    });
+
+    it("getStatic", function () {
+        try {
+            return chai.request("http://[::]:4321")
+                .get("/loading.gif")
+                .then(function (res: Response) {
+                    // some logging here please!
+                    Log.trace(res.body);
+                    expect(res.status).to.be.equal(200);
+                })
+                .catch(function (err) {
+                    // some logging here please!
+                    Log.trace(err);
+                    expect.fail();
+                });
+        } catch (err) {
+            // and some more logging here!
+        }
+    });
+
+    it("getStatic", function () {
+        try {
+            return chai.request("http://[::]:4321")
+                .get("/loading.giffffff")
+                .then(function (res: Response) {
+                    // some logging here please!
+                    Log.trace(res.body);
+                    expect.fail();
+                })
+                .catch(function (err) {
+                    // some logging here please!
+                    Log.trace(err);
+                    expect(err.status).to.be.equal(500);
+                });
+        } catch (err) {
+            // and some more logging here!
+        }
+    });
 });

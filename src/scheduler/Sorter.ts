@@ -18,19 +18,19 @@ export class Sorter {
         return list;
     }
 
-    public static RadixSortRoom(list: SchedRoom[]): SchedRoom[] {
-        for (let i = 1; i < 5; i++) {
-            let arr: SchedRoom[][] = [[], [], [], [], [], [], [], [], [], []];
-            for (let j of list) {
-                arr[9 - (Math.floor(j.rooms_seats % 10 ** i / 10 ** (i - 1)))].push(j);
-            }
-            list = [];
-            for (let l of arr) {
-                list = list.concat(l);
-            }
-        }
-        return list;
-    }
+    // public static RadixSortRoom(list: SchedRoom[]): SchedRoom[] {
+    //     for (let i = 1; i < 5; i++) {
+    //         let arr: SchedRoom[][] = [[], [], [], [], [], [], [], [], [], []];
+    //         for (let j of list) {
+    //             arr[9 - (Math.floor(j.rooms_seats % 10 ** i / 10 ** (i - 1)))].push(j);
+    //         }
+    //         list = [];
+    //         for (let l of arr) {
+    //             list = list.concat(l);
+    //         }
+    //     }
+    //     return list;
+    // }
 
     public static RadixSortRoombyScore(list: SchedRoom[], roomScore: {[key: string]: number}): SchedRoom[] {
         for (let i = 1; i < 8; i++) {
