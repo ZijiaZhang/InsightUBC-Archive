@@ -55,6 +55,7 @@ function getWhereClause () {
         }
         return where;
     }
+}
 
     function getSimpleLogic(node) {
         let logic = {};
@@ -122,4 +123,4 @@ function getWhereClause () {
         }
         return options;
     }
-}
+
