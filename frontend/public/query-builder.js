@@ -75,6 +75,20 @@ function getWhereClause () {
                trans.GROUP.push((dataset.concat("_")).concat(childField.getAttribute("data-key")));
             }
         }
+        for (let i = 0; i <document.getElementsByClassName("transformations-container")[0].childElementCount; i++) {
+            let applyobj = {};
+            const newfield = document.getElementsByClassName("transformations-container")[0]
+                .getElementsByClassName("control-group transformation")[i]
+                .getElementsByClassName("control term")[0]
+                .getElementsByTagName("input")[0].value;
+            const newFiledVal = {};
+            const node = document.getElementsByClassName("transformations-container")[0].childNodes[i];
+            const op = node.getElementsByClassName("control operators")[0].childNodes[1].value;
+            const field = (dataset.concat("_")).concat(node.getElementsByClassName("control fields")[0].childNodes[1].value);
+            newFiledVal[op] = field;
+            applyobj[newfield] = newFiledVal;
+            trans.APPLY.push(applyobj);
+        }
         return trans;
     }
 
