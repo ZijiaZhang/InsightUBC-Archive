@@ -3,6 +3,7 @@ import Log from "../src/Util";
 import { ITestQuery } from "./InsightFacade.spec";
 import {expect} from "chai";
 import {InsightError, ResultTooLargeError} from "../src/controller/IInsightFacade";
+import {SchedRoom, SchedSection} from "../src/scheduler/IScheduler";
 
 export default class TestUtil {
 
@@ -127,4 +128,51 @@ export default class TestUtil {
 
         }
     }
+
+    public static readAllSchesuleProblem(path: string = "test/Scheduler") {
+        const methodName: string = "TestUtil::readTestQueries --";
+        const testQueries: ISchedulerProblem[] = [];
+        let files: string[];
+
+        try {
+            files = TestUtil.readAllFiles(path);
+            if (files.length === 0) {
+                Log.warn(`${methodName} No query files found in ${path}.`);
+            }
+        } catch (err) {
+            Log.error(`${methodName} Exception reading files in ${path}.`);
+            throw err;
+        }
+
+        for (const file of files) {
+            const skipFile: string = file.replace(__dirname, "test");
+            let content: Buffer;
+
+            try {
+                content = fs.readFileSync(file);
+            } catch (err) {
+                Log.error(`${methodName} Could not read ${skipFile}.`);
+                throw err;
+            }
+
+            try {
+                const query = JSON.parse(content.toString());
+                // let rooms = query["rooms"];
+                // let sctions = query["sections"];
+                query["filename"] = file;
+                testQueries.push(query);
+            } catch (err) {
+                Log.error(`${methodName} ${skipFile} does not conform to the query schema.`);
+                throw new Error(`In ${file} ${err.message}`);
+            }
+        }
+
+        return testQueries;
+    }
+}
+
+export interface ISchedulerProblem {
+    rooms: SchedRoom[];
+    sections: SchedSection[];
+    filename: string;
 }

@@ -5,11 +5,11 @@ import {CourseInfo} from "./CourseInfo";
 import Log from "../Util";
 
 export class Evaluator {
-    public static generateRoomScores(rooms: SchedRoom[]): {[key: string]: number} {
-        let Geos: {[key: string]: number} = {};
-        let Geos2: {[key: string]: number} = {};
-        let Geos3: {[key: string]: number} = {};
-        let ret: {[key: string]: number} = {};
+    public static generateRoomScores(rooms: SchedRoom[]): { [key: string]: number } {
+        let Geos: { [key: string]: number } = {};
+        let Geos2: { [key: string]: number } = {};
+        let Geos3: { [key: string]: number } = {};
+        let ret: { [key: string]: number } = {};
         for (let room of rooms) {
             Geos[RoomInfo.getRoomLocationId(room)] =
                 Geos[RoomInfo.getRoomLocationId(room)] ?
@@ -47,9 +47,9 @@ export class Evaluator {
             let room: SchedRoom = elem[0];
             let section: SchedSection = elem[1];
             let time: TimeSlot = elem[2];
-            Geos[room.rooms_lon + "_" +  room.rooms_lat] =
-                Geos[room.rooms_lon + "_" +  room.rooms_lat] ?
-                    Geos[room.rooms_lon + "_" +  room.rooms_lat] + 1 : 1;
+            Geos[room.rooms_lon + "_" + room.rooms_lat] =
+                Geos[room.rooms_lon + "_" + room.rooms_lat] ?
+                    Geos[room.rooms_lon + "_" + room.rooms_lat] + 1 : 1;
             Rooms.add(room);
             ret += CourseInfo.getRegisterCount(section);
         }
@@ -113,5 +113,13 @@ export class Evaluator {
             }
         }
         return invalidCount;
+    }
+
+    public static getTotalPossibleEnrollment(scetions: SchedSection[]): number {
+        let ret = 0;
+        for (let section of scetions) {
+            ret += CourseInfo.getRegisterCount(section);
+        }
+        return ret;
     }
 }
