@@ -8,4 +8,15 @@
  * 4.) Result is rendered in the reference UI by calling CampusExplorer.renderResult with the response from the endpoint as argument
  */
 
-// TODO: implement!
+document.getElementById('submit-button').addEventListener('click', function () {
+    let query = CampusExplorer.buildQuery();
+    let resultSpace= document.getElementById('result-container');
+
+    CampusExplorer.sendQuery(query)
+        .then(function (result) {
+            CampusExplorer.renderResult(result);
+        })
+        .catch(function (error) {
+            resultSpace.innerText = error;
+        });
+});

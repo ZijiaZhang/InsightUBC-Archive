@@ -15,7 +15,7 @@ export default class Server {
 
     private port: number;
     private rest: restify.Server;
-
+    private insight: IInsightFacade = new InsightFacade();
     constructor(port: number) {
         Log.info("Server::<init>( " + port + " )");
         this.port = port;
@@ -46,6 +46,7 @@ export default class Server {
      */
     public start(): Promise<boolean> {
         const that = this;
+        this.loadDataset();
         return new Promise(function (fulfill, reject) {
             try {
                 Log.info("Server::start() - start");
@@ -60,7 +61,6 @@ export default class Server {
                         res.header("Access-Control-Allow-Headers", "X-Requested-With");
                         return next();
                     });
-                let instight = new InsightFacade();
                 // This is an example endpoint that you can invoke by accessing this URL in your browser:
                 // http://localhost:4321/echo/hello
                 that.rest.get("/echo/:msg", Server.echo);
@@ -69,14 +69,14 @@ export default class Server {
                 // All template from
                 // https://github.com/junzew/cpsc310-rest-demo-server/blob/master/src/rest/Server.ts
                 that.rest.put("/dataset/:id/:kind",
-                    that.addDataSet(instight));
+                    that.addDataSet());
                 that.rest.del("/dataset/:id",
-                    that.removeDataSet(instight));
+                    that.removeDataSet());
                 that.rest.post("/query",
-                    that.performQuery(instight));
+                    that.performQuery());
                 that.rest.get("/datasets",
                     (req: restify.Request, res: restify.Response, next: restify.Next) => {
-                    instight.listDatasets().then(
+                    that.insight.listDatasets().then(
                         (ret) =>  {
                             res.send(200, {result: ret});
                             return next();
@@ -103,10 +103,11 @@ export default class Server {
         });
     }
 
-    private performQuery(instight: IInsightFacade) {
+    private performQuery() {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             let query = req.body;
-            return instight.performQuery(query).then((result) => {
+            Log.trace(JSON.stringify(query));
+            return this.insight.performQuery(query).then((result) => {
                 res.send(200, {result: result});
                 return next();
             }).catch((err) => {
@@ -116,9 +117,9 @@ export default class Server {
         };
     }
 
-    private removeDataSet(instight: IInsightFacade) {
+    private removeDataSet() {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
-            return instight.removeDataset(req.params.id).then(
+            return this.insight.removeDataset(req.params.id).then(
                 (ret) => {
                     res.send(200, {result: ret});
                     return next();
@@ -134,7 +135,7 @@ export default class Server {
         };
     }
 
-    private addDataSet(instight: IInsightFacade) {
+    private addDataSet() {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             // Log.trace(req);
             let data = req.body.toString("base64");
@@ -147,7 +148,7 @@ export default class Server {
                 res.send(400, {error: "invalid dataset kind"});
                 return next();
             }
-            return instight.addDataset(req.params.id, data, kind).then((r) => {
+            return this.insight.addDataset(req.params.id, data, kind).then((r) => {
                 res.send(200, {result: r});
                 return next();
             }).catch((e) => {
@@ -199,6 +200,13 @@ export default class Server {
             res.end();
             return next();
         });
+    }
+
+    private loadDataset() {
+        let dataset = fs.readFileSync("./test/data/courses.zip");
+        let room = fs.readFileSync("./test/data/rooms.zip");
+        this.insight.addDataset("courses", dataset.toString("base64"), InsightDatasetKind.Courses);
+        this.insight.addDataset("rooms", room.toString("base64"), InsightDatasetKind.Rooms);
     }
 
 }
