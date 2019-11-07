@@ -76,8 +76,8 @@ function getWhereClause () {
             }
         }
         for (let i = 0; i <document.getElementsByClassName("transformations-container")[0].childElementCount; i++) {
-            let applyobj = {};
-            const newfield = document.getElementsByClassName("transformations-container")[0]
+            let applyObj = {};
+            const newFieldName = document.getElementsByClassName("transformations-container")[0]
                 .getElementsByClassName("control-group transformation")[i]
                 .getElementsByClassName("control term")[0]
                 .getElementsByTagName("input")[0].value;
@@ -86,8 +86,8 @@ function getWhereClause () {
             const op = node.getElementsByClassName("control operators")[0].childNodes[1].value;
             const field = (dataset.concat("_")).concat(node.getElementsByClassName("control fields")[0].childNodes[1].value);
             newFiledVal[op] = field;
-            applyobj[newfield] = newFiledVal;
-            trans.APPLY.push(applyobj);
+            applyObj[newFieldName] = newFiledVal;
+            trans.APPLY.push(applyObj);
         }
         return trans;
     }
@@ -100,6 +100,24 @@ function getWhereClause () {
             const childField = document.getElementsByClassName("form-group columns")[0].getElementsByClassName("control-group")[0].children[i].getElementsByTagName("input")[0];
             if (childField.checked === true) {
                 options.COLUMNS.push((dataset.concat("_")).concat(childField.getAttribute("data-key")));
+            }
+        }
+        const orderLength = document.getElementsByClassName("control order fields")[0].childNodes[1].selectedOptions.length;
+        const orderDesc = document.getElementsByClassName("control descending")[0].getElementsByTagName("input")[0].checked;
+        if (orderLength === 0) {
+            return options;
+        } else if (orderLength === 1 && orderDesc=== false) {
+            options.ORDER = document.getElementsByClassName("control order fields")[0].childNodes[1].selectedOptions[0].value;
+        } else {
+            options.ORDER = {}
+            options.ORDER.keys = [];
+            if (orderDesc === true) {
+                options.ORDER.dir = "DOWN";
+            } else {
+                options.ORDER.dir = "UP";
+            }
+            for (let i = 0; i < orderLength; i++) {
+                options.ORDER.keys.push(document.getElementsByClassName("control order fields")[0].childNodes[1].selectedOptions[i].value);
             }
         }
         return options;
