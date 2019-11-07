@@ -46,7 +46,6 @@ export default class Server {
      */
     public start(): Promise<boolean> {
         const that = this;
-        this.loadDataset();
         return new Promise(function (fulfill, reject) {
             try {
                 Log.info("Server::start() - start");
@@ -201,12 +200,4 @@ export default class Server {
             return next();
         });
     }
-
-    private loadDataset() {
-        let dataset = fs.readFileSync("./test/data/courses.zip");
-        let room = fs.readFileSync("./test/data/rooms.zip");
-        this.insight.addDataset("courses", dataset.toString("base64"), InsightDatasetKind.Courses);
-        this.insight.addDataset("rooms", room.toString("base64"), InsightDatasetKind.Rooms);
-    }
-
 }
