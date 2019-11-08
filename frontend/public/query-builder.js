@@ -14,6 +14,7 @@ CampusExplorer.buildQuery = function () {
     bigContainer = document.getElementsByClassName("tab-panel active")[0];
     dataset = bigContainer.getAttribute("data-type");
     let query = {};
+    fieldInDS = [];
     for (let i = 0; i < bigContainer.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].childElementCount; i++) {
         fieldInDS.push(bigContainer.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].children[i].getElementsByTagName("input")[0].getAttribute("data-key"));
     }
@@ -27,12 +28,14 @@ CampusExplorer.buildQuery = function () {
 
 function getWhereClause () {
     let where = {};
+    let type = bigContainer.querySelector('input[name="conditionType"]:checked').value;
     if (bigContainer.getElementsByClassName("conditions-container")[0].childElementCount === 0) {
         return {};
-    } else if (bigContainer.getElementsByClassName("conditions-container")[0].childElementCount === 1) {
+    } else if (bigContainer.getElementsByClassName("conditions-container")[0].childElementCount === 1
+    && type !== "none") {
         return getSimpleLogic(bigContainer.getElementsByClassName("conditions-container")[0].childNodes[0]);
     } else {
-        if (bigContainer.getElementById("courses-conditiontype-all").checked === true) {
+        if (type === "all") {
             where.AND = [];
             for (let i = 0; i < bigContainer.getElementsByClassName("conditions-container")[0].childElementCount; i++) {
                 let node = bigContainer.getElementsByClassName("conditions-container")[0].childNodes[i];
@@ -45,17 +48,31 @@ function getWhereClause () {
                 where.AND.push(obj);
             }
         }
-        if (bigContainer.getElementById("courses-conditiontype-any").checked === true) {
+        if (type === "any") {
             where.OR = [];
             for (let i = 0; i < bigContainer.getElementsByClassName("conditions-container")[0].childElementCount; i++) {
-                where.OR.push();
+                let node = bigContainer.getElementsByClassName("conditions-container")[0].childNodes[i];
+                let obj = {};
+                if (node.getElementsByClassName("control not")[0].getElementsByTagName("input")[0].checked === true) {
+                    obj.NOT = getSimpleLogic(node);
+                } else {
+                    obj = getSimpleLogic(node);
+                }
+                where.OR.push(obj);
             }
         }
-        if (bigContainer.getElementById("courses-conditiontype-none").checked === true) {
+        if (type === "none") {
             where.NOT = {};
             where.NOT.OR = [];
             for (let i = 0; i < bigContainer.getElementsByClassName("conditions-container")[0].childElementCount; i++) {
-                where.NOT.OR.push();
+                let node = bigContainer.getElementsByClassName("conditions-container")[0].childNodes[i];
+                let obj = {};
+                if (node.getElementsByClassName("control not")[0].getElementsByTagName("input")[0].checked === true) {
+                    obj.NOT = getSimpleLogic(node);
+                } else {
+                    obj = getSimpleLogic(node);
+                }
+                where.NOT.OR.push(obj);
             }
         }
         return where;
@@ -67,7 +84,11 @@ function getWhereClause () {
         const op = node.getElementsByClassName("control operators")[0].childNodes[1].value;
         logic[op] = {};
         const field = (dataset.concat("_")).concat(node.getElementsByClassName("control fields")[0].childNodes[1].value);
-        logic[op][field] = node.getElementsByClassName("control term")[0].getElementsByTagName("input")[0].value;
+        if(op!== "IS") {
+            logic[op][field] = parseFloat(node.getElementsByClassName("control term")[0].getElementsByTagName("input")[0].value);
+        } else {
+            logic[op][field] = node.getElementsByClassName("control term")[0].getElementsByTagName("input")[0].value;
+        }
         return logic;
     }
 
