@@ -48,7 +48,7 @@ describe("Facade D3", function () {
 
     it("PUT test for courses dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .put("/dataset/courses/courses")
                 .send(courseDataset)
                 .set("Content-Type", "application/x-zip-compressed")
@@ -69,7 +69,7 @@ describe("Facade D3", function () {
 
     it("Add Invalid Dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .put("/dataset/courses/courseasdadadsadass")
                 .send(courseDataset)
                 .set("Content-Type", "application/x-zip-compressed")
@@ -90,7 +90,7 @@ describe("Facade D3", function () {
 
     it("Add Invalid Dataset ID", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .put("/dataset/aa_aaaa/courses")
                 .send(courseDataset)
                 .set("Content-Type", "application/x-zip-compressed")
@@ -111,7 +111,7 @@ describe("Facade D3", function () {
 
     it("PUT test for room dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .put("/dataset/rooms/rooms")
                 .send(roomDataset)
                 .set("Content-Type", "application/x-zip-compressed")
@@ -132,7 +132,7 @@ describe("Facade D3", function () {
 
     it("Remove dataset for courses dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .del("/dataset/courses")
                 .then(function (res: Response) {
                     // some logging here please!
@@ -151,7 +151,7 @@ describe("Facade D3", function () {
 
     it("Remove dataset again for courses dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .del("/dataset/courses")
                 .then(function (res: Response) {
                     // some logging here please!
@@ -170,7 +170,7 @@ describe("Facade D3", function () {
 
     it("Remove dataset for invalid Query", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .del("/dataset/my_courses")
                 .then(function (res: Response) {
                     // some logging here please!
@@ -189,7 +189,7 @@ describe("Facade D3", function () {
 
     it("PUT test for courses dataset again", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .put("/dataset/courses/courses")
                 .send(courseDataset)
                 .set("Content-Type", "application/x-zip-compressed")
@@ -210,7 +210,7 @@ describe("Facade D3", function () {
 
     it("PUT test for small courses dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .put("/dataset/coursesSmall/courses")
                 .send(smallDataset)
                 .set("Content-Type", "application/x-zip-compressed")
@@ -232,7 +232,7 @@ describe("Facade D3", function () {
 
     it("Get List Dataset", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .get("/datasets")
                 .then(function (res: Response) {
                     // some logging here please!
@@ -266,7 +266,7 @@ describe("Facade D3", function () {
         for (let t of tests) {
             let p = new Promise((resolve, reject) => {
                 try {
-                    return chai.request("http://[::]:4321")
+                    return chai.request("http://localhost:4321")
                         .post("/query")
                         .send(t.query)
                         .then(function (res: Response) {
@@ -303,7 +303,7 @@ describe("Facade D3", function () {
 
     it("echo", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .get("/echo/aaa")
                 .then(function (res: Response) {
                     // some logging here please!
@@ -323,7 +323,7 @@ describe("Facade D3", function () {
 
     it("getStatic", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .get("/loading.gif")
                 .then(function (res: Response) {
                     // some logging here please!
@@ -342,7 +342,7 @@ describe("Facade D3", function () {
 
     it("getStatic", function () {
         try {
-            return chai.request("http://[::]:4321")
+            return chai.request("http://localhost:4321")
                 .get("/loading.giffffff")
                 .then(function (res: Response) {
                     // some logging here please!
