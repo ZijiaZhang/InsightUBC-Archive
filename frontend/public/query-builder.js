@@ -14,6 +14,7 @@ CampusExplorer.buildQuery = function () {
     bigContainer = document.getElementsByClassName("tab-panel active")[0];
     dataset = bigContainer.getAttribute("data-type");
     let query = {};
+    fieldInDS = [];
     for (let i = 0; i < bigContainer.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].childElementCount; i++) {
         fieldInDS.push(bigContainer.getElementsByClassName("form-group groups")[0].getElementsByClassName("control-group")[0].children[i].getElementsByTagName("input")[0].getAttribute("data-key"));
     }
