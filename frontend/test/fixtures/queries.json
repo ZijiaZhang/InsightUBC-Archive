@@ -1,3 +1,4 @@
 {
     "query1":{"WHERE": {"IS": {"courses_dept": "cpsc"} }, "OPTIONS": {"COLUMNS": ["courses_dept", "courses_id"], "ORDER": "courses_id"} },
+    "query2": {"WHERE":{"NOT":{"EQ":{"courses_pass":123}}},"OPTIONS":{"COLUMNS":["courses_audit","123"]},"TRANSFORMATIONS":{"GROUP":["courses_audit"],"APPLY":[{"123":{"COUNT":"courses_audit"}},{"345":{"MIN":"courses_audit"}}]}}
 }
