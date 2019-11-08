@@ -15,6 +15,7 @@ export default class Server {
 
     private port: number;
     private rest: restify.Server;
+    // Initialize the InsightFacade
     private insight: IInsightFacade = new InsightFacade();
     constructor(port: number) {
         Log.info("Server::<init>( " + port + " )");
@@ -102,6 +103,9 @@ export default class Server {
         });
     }
 
+    /**
+     * The perform Query function for server end point. Return the result to the user.
+     */
     private performQuery() {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             let query = req.body;
@@ -116,6 +120,9 @@ export default class Server {
         };
     }
 
+    /**
+     * The remove dataset function for server end point. Remove a dataset and respond the information to the sender.
+     */
     private removeDataSet() {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             return this.insight.removeDataset(req.params.id).then(
@@ -134,6 +141,9 @@ export default class Server {
         };
     }
 
+    /**
+     * The add dataset function for server end point. Add new dataset and respond the information to the sender.
+     */
     private addDataSet() {
         return (req: restify.Request, res: restify.Response, next: restify.Next) => {
             // Log.trace(req);

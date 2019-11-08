@@ -5,6 +5,10 @@ import {CourseInfo} from "./CourseInfo";
 import Log from "../Util";
 
 export class Evaluator {
+    /**
+     * Generate the score for each room, Higher the better
+     * @param rooms All Rooms.
+     */
     public static generateRoomScores(rooms: SchedRoom[]): { [key: string]: number } {
         let Geos: { [key: string]: number } = {};
         let Geos2: { [key: string]: number } = {};
@@ -35,6 +39,11 @@ export class Evaluator {
     }
 
 
+    /**
+     * Measure the score of a result.
+     * @param result The result of a plan
+     * @param total The total number of registration possible.
+     */
     public static tempMeasure(result: Array<[SchedRoom, SchedSection, TimeSlot]>, total: number): number {
         let ret = 0;
         let Rooms: Set<SchedRoom> = new Set();
@@ -67,6 +76,11 @@ export class Evaluator {
         return 0.7 * (ret / total) + 0.3 * (1 - maxDistance / 2000);
     }
 
+    /**
+     * Count number of Room-Time conflict.
+     * @param result
+     * @constructor
+     */
     public static CountRoomTimeConfilct(result: Array<[SchedRoom, SchedSection, TimeSlot]>): number {
         let RoomTime = new Set();
         let invalidCount = 0;
@@ -82,6 +96,11 @@ export class Evaluator {
         return invalidCount;
     }
 
+    /**
+     * Count number of Room-Course Conflict
+     * @param result
+     * @constructor
+     */
     public static CountRoomCourseConfilict(result: Array<[SchedRoom, SchedSection, TimeSlot]>): number {
         let invalidCount = 0;
         for (let elem of result) {
@@ -95,6 +114,11 @@ export class Evaluator {
         return invalidCount;
     }
 
+    /**
+     * Count number of course time conflict.
+     * @param result
+     * @constructor
+     */
     public static CountCourseTimeConflict(result: Array<[SchedRoom, SchedSection, TimeSlot]>): number {
         let invalidCount = 0;
         let courseTime: { [key: string]: TimeSlot[] } = {};
@@ -115,6 +139,10 @@ export class Evaluator {
         return invalidCount;
     }
 
+    /**
+     * Get total number of Enrollment Possible
+     * @param scetions All sections.
+     */
     public static getTotalPossibleEnrollment(scetions: SchedSection[]): number {
         let ret = 0;
         for (let section of scetions) {

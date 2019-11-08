@@ -4,6 +4,11 @@ import {RoomInfo} from "./RoomInfo";
 import Log from "../Util";
 
 export class Sorter {
+    /**
+     * Use radix sort for sections.
+     * @param list The list of sections
+     * Assume The number of regestration is small.
+     */
     public static RadixSortSection(list: SchedSection[]): SchedSection[] {
         for (let i = 1; i < 5; i++) {
             let arr: SchedSection[][] = [[], [], [], [], [], [], [], [], [], []];
@@ -32,6 +37,11 @@ export class Sorter {
     //     return list;
     // }
 
+    /**
+     * Sort the Room base on the score
+     * @param list Rooms
+     * @param roomScore The Score of each room
+     */
     public static RadixSortRoombyScore(list: SchedRoom[], roomScore: {[key: string]: number}): SchedRoom[] {
         for (let i = 1; i < 8; i++) {
             let arr: SchedRoom[][] = [[], [], [], [], [], [], [], [], [], []];

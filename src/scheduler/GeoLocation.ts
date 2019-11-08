@@ -6,6 +6,11 @@ export interface GeoLocation {
 }
 
 export class GeoLocationInfo {
+    /**
+     * Calculate the Distance between 2 geo-locations.
+     * @param l1 Location1
+     * @param l2 Location2
+     */
     // Copied from https://www.movable-type.co.uk/scripts/latlong.html
     public static lonLatToMetere(l1: GeoLocation, l2: GeoLocation): number {
         let R = 6371e3; // metres
@@ -23,7 +28,10 @@ export class GeoLocationInfo {
         return d;
     }
 
-
+    /**
+     * Translate the GeoLocation ID to GeoLocation
+     * @param id
+     */
     public static getGeoLocationFromId(id: string): GeoLocation {
         return {lon: parseFloat(id.split("_")[0]), lat: parseFloat(id.split("_")[1])};
     }
